@@ -217,10 +217,10 @@
 								<div class="testimonial-inner">
 									<div class="testimonial-main">
 										<div class="testimonial-header">
-											<img class="mb-16" src="dist/images/testimonial-01.png" alt="Testimonial">
+											<img class="mb-16" src="L-images/daniel.png" alt="Testimonial">
 										</div>
 										<div class="testimonial-body">
-											<p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+											<p class="mb-0">I am a 3rd-year college student at Southern Leyte State University, passionate about developing technical and practical skills in my chosen field. I'm dedicated to academic growth, actively engaging in projects and activities that deepen my understanding and contribute to my future career.</p>
 										</div>
 									</div>
 									<div class="testimonial-footer">
@@ -234,10 +234,10 @@
 								<div class="testimonial-inner">
 									<div class="testimonial-main">
 										<div class="testimonial-header">
-											<img class="mb-16" src="dist/images/testimonial-02.png" alt="Testimonial">
+											<img class="mb-16" src="L-images/ejie.jpg" alt="Testimonial">
 										</div>
 										<div class="testimonial-body">
-											<p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+											<p class="mb-0">I am a 3rd-year college student at Southern Leyte State University, passionate about developing technical and practical skills in my chosen field. I'm dedicated to academic growth, actively engaging in projects and activities that deepen my understanding and contribute to my future career.</p>
 										</div>
 									</div>
 									<div class="testimonial-footer">
@@ -252,10 +252,10 @@
 								<div class="testimonial-inner">
 									<div class="testimonial-main">
 										<div class="testimonial-header">
-											<img class="mb-16" src="dist/images/testimonial-01.png" alt="Testimonial">
+											<img class="mb-16" src="L-images/loblee.jpg" alt="Testimonial" style = "width: 60px; height: 60px;">
 										</div>
 										<div class="testimonial-body">
-											<p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+											<p class="mb-0">I am a 3rd-year college student at Southern Leyte State University, passionate about developing technical and practical skills in my chosen field. I'm dedicated to academic growth, actively engaging in projects and activities that deepen my understanding and contribute to my future career.</p>
 										</div>
 									</div>
 									<div class="testimonial-footer">
@@ -269,15 +269,33 @@
 								<div class="testimonial-inner">
 									<div class="testimonial-main">
 										<div class="testimonial-header">
-											<img class="mb-16" src="dist/images/testimonial-02.png" alt="Testimonial">
+											<img class="mb-16" src="L-images/ralph.jpg" alt="Testimonial">
 										</div>
 										<div class="testimonial-body">
-											<p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+											<p class="mb-0">I am a 3rd-year college student at Southern Leyte State University, passionate about developing technical and practical skills in my chosen field. I'm dedicated to academic growth, actively engaging in projects and activities that deepen my understanding and contribute to my future career.</p>
 										</div>
 									</div>
 									<div class="testimonial-footer">
 										<div class="testimonial-link">
 											<a href="#">Mr. Ralph Miole</a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="testimonial text-xs is-revealing">
+								<div class="testimonial-inner">
+									<div class="testimonial-main">
+										<div class="testimonial-header">
+											<img class="mb-16" src="L-images/athena.jpg" alt="Testimonial">
+										</div>
+										<div class="testimonial-body">
+											<p class="mb-0">I am a 3rd-year college student at Southern Leyte State University, passionate about developing technical and practical skills in my chosen field. I'm dedicated to academic growth, actively engaging in projects and activities that deepen my understanding and contribute to my future career.</p>
+										</div>
+									</div>
+									<div class="testimonial-footer">
+										<div class="testimonial-link">
+											<a href="#">Ms. Athena Joy Campania</a>
 										</div>
 									</div>
 								</div>
