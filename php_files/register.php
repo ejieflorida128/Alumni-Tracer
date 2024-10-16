@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if the email already exists using prepared statements
     $checkEmail = "SELECT * FROM `R_accounts` WHERE `email` = ?";
-    $stmt = mysqli_prepare($connection, $checkEmail);
+    $stmt = mysqli_prepare($conn, $checkEmail);
     mysqli_stmt_bind_param($stmt, 's', $email);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             $register = "INSERT INTO `R_accounts`(`name`, `email`, `school_role`, `school`, `password`, `date_registered`) 
                          VALUES (?, ?, ?, ?, ?, NOW())";
-            $stmt = mysqli_prepare($connection, $register);
+            $stmt = mysqli_prepare($conn, $register);
 
             mysqli_stmt_bind_param($stmt, 'sssss', $name, $email, $role, $school, $hashedPassword);
             
@@ -160,7 +160,7 @@ mysqli_close($conn);
                             <a href="">Forgot Password</a>
                         </div>
                         <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign Up</button>
-                        <p class="text-center mb-0">Already have an Account? <a href="">Sign In</a></p>
+                        <p class="text-center mb-0">Already have an Account? <a href="../php_files/login.php">Sign In</a></p>
                         </form>
                     </div>
                 </div>
