@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirmPassword = $_POST["confirm-password"];
 
     // Check if the email already exists using prepared statements
-    $checkEmail = "SELECT * FROM `R_accounts` WHERE `email` = ?";
+    $checkEmail = "SELECT * FROM `r_accounts` WHERE `email` = ?";
     $stmt = mysqli_prepare($conn, $checkEmail);
     mysqli_stmt_bind_param($stmt, 's', $email);
     mysqli_stmt_execute($stmt);
@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Hash the password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             
-            $register = "INSERT INTO `R_accounts`(`name`, `email`, `school_role`, `school`, `password`, `date_registered`) 
+            $register = "INSERT INTO `r_accounts`(`name`, `email`, `school_role`, `school`, `password`, `date_registered`) 
                          VALUES (?, ?, ?, ?, ?, NOW())";
             $stmt = mysqli_prepare($conn, $register);
 
