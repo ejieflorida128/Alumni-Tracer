@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = mysqli_real_escape_string($conn, $email);
 
         // SQL query to fetch user by email
-        $query = "SELECT * FROM users WHERE email = '$email'";
+        $query = "SELECT * FROM r_accounts WHERE email = '$email'";
         $result = mysqli_query($conn, $query);
 
         if (mysqli_num_rows($result) > 0) {
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                             <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
                         </form>
-                        <p class="text-center mb-0">Don't have an Account? <a href="">Sign Up</a></p>
+                        <p class="text-center mb-0">Don't have an Account? <a href="../php_files/register.php">Sign Up</a></p>
                         <!-- Display error message -->
                         <?php if (!empty($error)) { echo '<div class="alert alert-danger">' . $error . '</div>'; } ?>
                     </div>
