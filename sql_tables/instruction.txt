@@ -1,3 +1,9 @@
 aria e butang ang mga bag oh or latest na mga table sa injong ge himo para mag huwat nako e import sa db.>..
 
+CREATE TABLE users (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
