@@ -3,7 +3,9 @@ session_start();
 include '../connection/conn.php'; // Database connection
 
 // Initialize variables for error handling
-$error = '';
+$invalidPassword = false;
+$noAccountFound = false;
+$fillOutInputs = false;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Fetch input values from the login form
@@ -30,13 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 header('Location: dashboard.php'); // Redirect to a dashboard page
                 exit();
             } else {
-                $error = "Invalid password!";
+               $invalidPassword  = true;
             }
         } else {
-            $error = "No account found with that email!";
+            $noAccountFound = true;
         }
     } else {
-        $error = "Please fill out both fields!";
+       $fillOutInputs = true;
     }
 }   
 ?>
@@ -44,65 +46,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>ALumni Tracer - Login</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
 
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="../template/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="../template/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
+    <!-- Stylesheets -->
     <link href="../template/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
     <link href="../template/css/style.css" rel="stylesheet">
 </head>
 
-    <script>
-        function togglePasswordVisibility() {
-            var passwordInput = document.getElementById("floatingPassword");
-            var toggleButton = document.getElementById("togglePassword");
-            
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                toggleButton.innerHTML = "Hide Password";
-            } else {
-                passwordInput.type = "password";
-                toggleButton.innerHTML = "Show Password";
-            }
-        }
-    </script>
-</head>
-
 <body>
+    <!-- Login Form -->
     <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Sign In Start -->
         <div class="container-fluid">
             <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
                 <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
                     <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <a href="index.html" class="">
-                                <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
-                            </a>
-                            <h3>Sign In</h3>
+                         
+                            <h3 style="color: #2aaaeb; font-weight: bolder;">Sign In</h3>
                         </div>
                         <form method="POST" action="">
                             <div class="form-floating mb-3">
@@ -113,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" required>
                                 <label for="floatingPassword">Password</label>
                             </div>
-                            <!-- Show Password Checkbox -->
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="togglePassword" onclick="togglePasswordVisibility()">
@@ -124,28 +86,103 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
                         </form>
                         <p class="text-center mb-0">Don't have an Account? <a href="../php_files/register.php">Sign Up</a></p>
-                        <!-- Display error message -->
-                        <?php if (!empty($error)) { echo '<div class="alert alert-danger">' . $error . '</div>'; } ?>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Sign In End -->
     </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+   <!-- Invalid Password Modal -->
+<?php if ($invalidPassword): ?>
+<div class="modal fade" id="invalidPasswordModal" tabindex="-1" aria-labelledby="invalidPasswordLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Center the modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="invalidPasswordLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Invalid password!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<!-- No Account Found Modal -->
+<?php if ($noAccountFound): ?>
+<div class="modal fade" id="noAccountFoundModal" tabindex="-1" aria-labelledby="noAccountFoundLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Center the modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="noAccountFoundLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                No account found with that email!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<!-- Fill Out Inputs Modal -->
+<?php if ($fillOutInputs): ?>
+<div class="modal fade" id="fillOutInputsModal" tabindex="-1" aria-labelledby="fillOutInputsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Center the modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fillOutInputsLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Please fill out both fields!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+
+    <!-- JavaScript to trigger modals if error occurs -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../template/lib/chart/chart.min.js"></script>
-    <script src="../template/lib/easing/easing.min.js"></script>
-    <script src="../template/lib/waypoints/waypoints.min.js"></script>
-    <script src="../template/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="../template/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="../template/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="../template/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script>
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("floatingPassword");
+            var toggleButton = document.getElementById("togglePassword");
 
-    <!-- Template Javascript -->
-    <script src="../template/js/main.js"></script>
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleButton.innerHTML = "Hide Password";
+            } else {
+                passwordInput.type = "password";
+                toggleButton.innerHTML = "Show Password";
+            }
+        }
+
+        <?php if ($invalidPassword): ?>
+            var invalidPasswordModal = new bootstrap.Modal(document.getElementById('invalidPasswordModal'));
+            invalidPasswordModal.show();
+        <?php endif; ?>
+
+        <?php if ($noAccountFound): ?>
+            var noAccountFoundModal = new bootstrap.Modal(document.getElementById('noAccountFoundModal'));
+            noAccountFoundModal.show();
+        <?php endif; ?>
+
+        <?php if ($fillOutInputs): ?>
+            var fillOutInputsModal = new bootstrap.Modal(document.getElementById('fillOutInputsModal'));
+            fillOutInputsModal.show();
+        <?php endif; ?>
+    </script>
 </body>
-
 </html>
