@@ -2,7 +2,7 @@
 ob_start(); // Start buffering the output
 session_start();
 include '../connection/conn.php'; // Database connection
-include('../include/sidebar.php');
+include('../include/User_sidebar.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input values to avoid SQL injection
