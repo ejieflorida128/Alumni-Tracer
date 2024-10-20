@@ -30,17 +30,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Hash the password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             
-            $register = "INSERT INTO `r_accounts`(`name`, `email`, `school_role`, `school`, `password`, `date_registered`) 
-                         VALUES (?, ?, ?, ?, ?, NOW())";
-            $stmt = mysqli_prepare($conn, $register);
-            mysqli_stmt_bind_param($stmt, 'sssss', $name, $email, $role, $school, $hashedPassword);
-            
-            if (mysqli_stmt_execute($stmt)) {
+           // Prepare the SQL statement
+                $register = "INSERT INTO `r_accounts`(`profile_img`,`name`, `email`, `school_role`, `school`, `password`, `date_registered`) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW())";
+                $stmt = mysqli_prepare($conn, $register);
+
+                // Ensure all variables are passed correctly by reference
+                $defaultProfileImg = 'profilePicture/Default.png';
+
+                mysqli_stmt_bind_param($stmt, 'ssssss', $defaultProfileImg, $name, $email, $role, $school, $hashedPassword);
+
+                if (mysqli_stmt_execute($stmt)) {
                 // Optionally show a success modal
                 // header("Location: success.php"); // Redirect to a success page or display a modal
-            } else {
+                } else {
                 echo "Error: " . mysqli_error($conn);
-            }
+                }
         } else {
             $passwordNotMatchModal = true;
         }
