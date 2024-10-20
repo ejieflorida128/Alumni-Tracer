@@ -85,6 +85,9 @@
 									<a class="button button-primary button-block" href="php_files/register.php">Register</a>
 								</div>
 							</div>
+							<div class="div" style = "margin-top: 10px;">
+								- are you an alumni? <span><a href="php_files/question.php" style = "color: orange; font-weight: bolder;">Click Here!</a></span>
+							</div>
 						</div>
 						<div class="hero-illustration">
 							<div class="hero-shape hero-shape-1">
