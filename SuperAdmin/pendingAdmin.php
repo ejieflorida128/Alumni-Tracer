@@ -152,7 +152,7 @@
                                     $uniqueCheckModalId = "checkModal" . $getData['id'];
                                     $uniqueDeleteModalId = "deleteModal" . $getData['id'];
                             ?>
-                            <tr class="school-row">
+                            <tr class="school-row text-center">
                                 <th scope="row"><h6 style="color: grey; margin-top: 7px;"><?php echo $number; ?></h6></th>
                                 <td><img src="<?php echo $getData['logo']; ?>" alt="school logo" style="width: 30px; height: 30px;"></td>
                                 <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['school_name']; ?></h6></td>

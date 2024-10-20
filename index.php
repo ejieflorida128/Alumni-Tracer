@@ -260,7 +260,7 @@
 									</div>
 									<div class="testimonial-footer">
 										<div class="testimonial-link">
-											<a href="#">Mr. Lovely Anamzug</a>
+											<a href="#">Mr. Lovely Guzmana</a>
 										</div>
 									</div>
 								</div>
