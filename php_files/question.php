@@ -65,16 +65,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $job_stay = isset($_POST['job_stay']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_stay'])) : '';
     $stay_other_text = isset($_POST['stay_other_text']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['stay_other_text'])) : '';
 
+    $status = isset($_POST['status']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['status'])) : '';
+
+
     // SQL query to insert the data
     $query = "INSERT INTO l_study_response (name, sex, age, degree, year_awarded, current_study, if_no_jobs, if_yes_details, pursue_reasons, current_position, other_position, time_to_job, time_gap, 
                     employment_history, job_info_source, other_job_info, job_qualifications, gross_salary, job_benefits, work_location, num_employees, work_nature, other_work_nature_text, job_problem, 
                     problem_elaboration, self_employed_reason, knowledge_enhance, problem_solving, research_skills, learning_efficiency, communication_skills, more_inclined, team_spirit, job_relevance, 
-                    applied_course, possible_reasons, other_reasons, present_job, other_job, range_module, optional_module, relevance, worlkload, solving, learning, placement, environment, quality, job_satisfaction, job_stay, stay_other_text) 
+                    applied_course, possible_reasons, other_reasons, present_job, other_job, range_module, optional_module, relevance, worlkload, solving, learning, placement, environment, quality, job_satisfaction, job_stay, stay_other_text, status) 
               VALUES ('$name', '$sex', '$age', '$degree', '$year_awarded', '$current_study', '$if_no_jobs', '$if_yes_details', '$pursue_reasons', '$current_position', '$other_position', '$time_to_job', 
               '$time_gap', '$employment_history', '$job_info_source', '$other_job_info', '$job_qualifications', '$gross_salary', '$job_benefits', '$work_location', '$num_employees', '$work_nature', 
               '$other_work_nature_text', '$job_problem', '$problem_elaboration', '$self_employed_reason', '$knowledge_enhance', '$problem_solving', '$research_skills', '$learning_efficiency', 
               '$communication_skills', '$more_inclined', '$team_spirit', '$job_relevance', '$applied_course', '$possible_reasons', '$other_reasons', '$present_job', '$other_job', '$range_module', 
-              '$optional_module', '$relevance', '$worlkload', '$solving', '$learning', '$placement', '$environment', '$quality', '$job_satisfaction', '$job_stay', '$stay_other_text')";
+              '$optional_module', '$relevance', '$worlkload', '$solving', '$learning', '$placement', '$environment', '$quality', '$job_satisfaction', '$job_stay', '$stay_other_text', '$status')";
 
     // Execute the query
     if (mysqli_query($conn, $query)) {
@@ -607,6 +610,10 @@ ob_end_flush();
                             <input type="text" class="form-control" id="stay_other_text" name="stay_other_text[]">
                         </div>
                     </div>
+
+                    <!-- status -->
+                    <input type="hidden" id="status" name="status" value="pending">
+
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-primary">Submit</button>
 
