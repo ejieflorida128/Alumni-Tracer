@@ -186,7 +186,6 @@ ini_set('display_errors', 1);
             </nav>
             <!-- Navbar End -->
 
-
             <!-- Table Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="col-12">

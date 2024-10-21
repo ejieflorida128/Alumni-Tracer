@@ -249,6 +249,7 @@ include '../connection/conn.php'; // Database connection
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        
                                         <?php
                                             $sql = "SELECT * FROM l_study_response WHERE status = 'approved' ORDER BY id DESC"; // Assuming you have an 'id' field for each user
                                             $result = $conn->query($sql);
