@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $other_position = isset($_POST['other_position']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_position'])) : '';
 
     // New fields
-    $time_to_job = isset($_POST['time_to_job']) ? mysqli_real_escape_string($conn, $_POST['time_to_job']) : '';
+    $time_to_job = isset($_POST['time_to_job']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['time_to_job'])) : '';
     $time_gap = isset($_POST['time_gap']) ? mysqli_real_escape_string($conn, $_POST['time_gap']) : '';
     $employment_history = isset($_POST['employment_history']) ? mysqli_real_escape_string($conn, $_POST['employment_history']) : '';
     $job_info_source = isset($_POST['job_info_source']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_info_source'])) : '';
@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Additional new fields
     $work_nature = isset($_POST['work_nature']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['work_nature'])) : '';
     $other_work_nature_text = isset($_POST['other_work_nature_text']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_work_nature_text'])) : '';
+    $proof_image_path = '';
     $job_problem = isset($_POST['job_problem']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_problem'])) : '';
     $problem_elaboration = isset($_POST['problem_elaboration']) ? mysqli_real_escape_string($conn, $_POST['problem_elaboration']) : '';
     $self_employed_reason = isset($_POST['self_employed_reason']) ? mysqli_real_escape_string($conn, $_POST['self_employed_reason']) : '';
@@ -65,19 +66,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $job_stay = isset($_POST['job_stay']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_stay'])) : '';
     $stay_other_text = isset($_POST['stay_other_text']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['stay_other_text'])) : '';
 
-    $status = isset($_POST['status']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['status'])) : '';
+    $status = isset($_POST['status']) ? mysqli_real_escape_string($conn, $_POST['status']) : '';
 
+    // File upload handling
+    $proof_image_path = ''; // Initialize with empty path in case no file is uploaded
+    if (isset($_FILES['proof_image']) && $_FILES['proof_image']['error'] === UPLOAD_ERR_OK) {
+        // Define target directory and validate file
+        $target_dir = "../template/img/uploads/";
+        $file_name = basename($_FILES["proof_image"]["name"]);
+        $target_file = $target_dir . $file_name;
+        $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        // Validate file type and size (limit to 5MB)
+        $valid_extensions = array("jpg", "jpeg", "png", "gif");
+        if (in_array($file_type, $valid_extensions) && $_FILES["proof_image"]["size"] <= 5242880) { // 5MB = 5242880 bytes
+            // Move the file to the uploads directory
+            if (move_uploaded_file($_FILES["proof_image"]["tmp_name"], $target_file)) {
+                $proof_image_path = $target_file; // Save path for database entry
+            } else {
+                echo "Error: Failed to upload the file.";
+            }
+        } else {
+            echo "Error: Invalid file type or file size exceeded 5MB.";
+        }
+    }
 
     // SQL query to insert the data
     $query = "INSERT INTO l_study_response (name, sex, age, degree, year_awarded, current_study, if_no_jobs, if_yes_details, pursue_reasons, current_position, other_position, time_to_job, time_gap, 
-                    employment_history, job_info_source, other_job_info, job_qualifications, gross_salary, job_benefits, work_location, num_employees, work_nature, other_work_nature_text, job_problem, 
-                    problem_elaboration, self_employed_reason, knowledge_enhance, problem_solving, research_skills, learning_efficiency, communication_skills, more_inclined, team_spirit, job_relevance, 
-                    applied_course, possible_reasons, other_reasons, present_job, other_job, range_module, optional_module, relevance, worlkload, solving, learning, placement, environment, quality, job_satisfaction, job_stay, stay_other_text, status) 
-              VALUES ('$name', '$sex', '$age', '$degree', '$year_awarded', '$current_study', '$if_no_jobs', '$if_yes_details', '$pursue_reasons', '$current_position', '$other_position', '$time_to_job', 
-              '$time_gap', '$employment_history', '$job_info_source', '$other_job_info', '$job_qualifications', '$gross_salary', '$job_benefits', '$work_location', '$num_employees', '$work_nature', 
-              '$other_work_nature_text', '$job_problem', '$problem_elaboration', '$self_employed_reason', '$knowledge_enhance', '$problem_solving', '$research_skills', '$learning_efficiency', 
-              '$communication_skills', '$more_inclined', '$team_spirit', '$job_relevance', '$applied_course', '$possible_reasons', '$other_reasons', '$present_job', '$other_job', '$range_module', 
-              '$optional_module', '$relevance', '$worlkload', '$solving', '$learning', '$placement', '$environment', '$quality', '$job_satisfaction', '$job_stay', '$stay_other_text', '$status')";
+     employment_history, job_info_source, other_job_info, job_qualifications, gross_salary, job_benefits, work_location, num_employees, work_nature, other_work_nature_text, proof_image, job_problem, 
+     problem_elaboration, self_employed_reason, knowledge_enhance, problem_solving, research_skills, learning_efficiency, communication_skills, more_inclined, team_spirit, job_relevance, 
+     applied_course, possible_reasons, other_reasons, present_job, other_job, range_module, optional_module, relevance, worlkload, solving, learning, placement, environment, quality, job_satisfaction, 
+     job_stay, stay_other_text, status) 
+VALUES ('$name', '$sex', '$age', '$degree', '$year_awarded', '$current_study', '$if_no_jobs', '$if_yes_details', '$pursue_reasons', '$current_position', '$other_position', '$time_to_job', 
+'$time_gap', '$employment_history', '$job_info_source', '$other_job_info', '$job_qualifications', '$gross_salary', '$job_benefits', '$work_location', '$num_employees', '$work_nature', 
+'$other_work_nature_text', '$proof_image_path', '$job_problem', '$problem_elaboration', '$self_employed_reason', '$knowledge_enhance', '$problem_solving', '$research_skills', '$learning_efficiency', 
+'$communication_skills', '$more_inclined', '$team_spirit', '$job_relevance', '$applied_course', '$possible_reasons', '$other_reasons', '$present_job', '$other_job', '$range_module', 
+'$optional_module', '$relevance', '$worlkload', '$solving', '$learning', '$placement', '$environment', '$quality', '$job_satisfaction', '$job_stay', '$stay_other_text', '$status')";
 
     // Execute the query
     if (mysqli_query($conn, $query)) {
@@ -137,7 +161,7 @@ ob_end_flush();
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light rounded p-4" style="width:fit-content">
                 <h3 class="mb-4">A Tracer Study of the BSIT Graduates-Southern Leyte State University from School Years 2015-2018</h3>
-                <form action="" method="POST">
+                <form method="POST" enctype="multipart/form-data">
 
                     <!-- 1. Name -->
                     <div class="card mb-3">
@@ -240,8 +264,17 @@ ob_end_flush();
                     <!-- 11. Time to Find a Job -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label for="time_to_job" class="form-label">11. How long did it take you to find a job since obtaining your degree and your first employment?</label>
-                            <input type="text" class="form-control" id="time_to_job" name="time_to_job">
+                            <label for="time_to_job" class="form-label">11. How long did you work in your first job after obtaining your degree?</label><br>
+                            <input type="checkbox" name="time_to_job[]" value="0 to 6 months">
+                            <label>0 to 6 months</label><br>
+                            <input type="checkbox" name="time_to_job[]" value="7 months to 1 year">
+                            <label>7 months to 1 year</label><br>
+                            <input type="checkbox" name="time_to_job[]" value="1 to 3 years">
+                            <label>1 to 3 years</label><br>
+                            <input type="checkbox" name="time_to_job[]" value="3 to 5 years">
+                            <label>3 to 5 years</label><br>
+                            <input type="checkbox" name="time_to_job[]" value="Over 5 years">
+                            <label>Over 5 years</label><br>
                         </div>
                     </div>
 
@@ -344,10 +377,21 @@ ob_end_flush();
                         </div>
                     </div>
 
+                    <!-- 21. Proof of Work Duration -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="proof_image" class="form-label">21. Upload proof of work (Ex. Company ID):</label>
+                            <input type="file" class="form-control" id="proof_image" name="proof_image" accept="image/*">
+                            <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max size: 5MB.</small>
+                        </div>
+                    </div>
+
+
+
                     <!-- 21. Do you face any major problem in your job assignments? -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label class="form-label">21. Do you face any major problem in your job assignments?</label><br>
+                            <label class="form-label">22. Do you face any major problem in your job assignments?</label><br>
                             <input type="checkbox" id="job_problem_yes" name="job_problem[]" value="Yes">
                             <label for="job_problem_yes">Yes</label><br>
                             <input type="checkbox" id="job_problem_no" name="job_problem[]" value="No">
@@ -358,7 +402,7 @@ ob_end_flush();
                     <!-- 22. If yes, please elaborate -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label for="problem_elaboration" class="form-label">22. If yes, please elaborate:</label>
+                            <label for="problem_elaboration" class="form-label">23. If yes, please elaborate:</label>
                             <textarea class="form-control" id="problem_elaboration" name="problem_elaboration"></textarea>
                         </div>
                     </div>
@@ -366,7 +410,7 @@ ob_end_flush();
                     <!-- 23. If you are self-employed, what made you decide to become self-employed? -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label for="self_employed_reason" class="form-label">23. If you are self-employed, what made you decide to become self-employed?</label>
+                            <label for="self_employed_reason" class="form-label">24. If you are self-employed, what made you decide to become self-employed?</label>
                             <textarea class="form-control" id="self_employed_reason" name="self_employed_reason"></textarea>
                         </div>
                     </div>
@@ -374,7 +418,7 @@ ob_end_flush();
                     <!-- 24. Contribution of SLSU program to personal knowledge, skills, and attitudes -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label class="form-label">24. How would you rate the contribution of you programme of study at SLSU-TO to your personal knowledge, skills and atitudes? (Tick as appropriate)</label>
+                            <label class="form-label">25. How would you rate the contribution of you programme of study at SLSU-TO to your personal knowledge, skills and atitudes? (Tick as appropriate)</label>
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -443,7 +487,7 @@ ob_end_flush();
                     <!-- 25. Relevance of program to current job -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label class="form-label">25. Was your program of study at SLSU relevant to your present job?</label><br>
+                            <label class="form-label">26. Was your program of study at SLSU relevant to your present job?</label><br>
                             <input type="checkbox" id="relevance_very_much" name="job_relevance[]" value="Very much">
                             <label for="relevance_very_much">Very much</label><br>
                             <input type="checkbox" id="relevance_much" name="job_relevance[]" value="Much">
@@ -458,7 +502,7 @@ ob_end_flush();
                     <!-- 26. Have you tried applying for a position relevant to your course? -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label class="form-label">26. Have you tried applying for a position relevant to your course?</label><br>
+                            <label class="form-label">27. Have you tried applying for a position relevant to your course?</label><br>
                             <input type="checkbox" id="applied_yes" name="applied_course[]" value="Yes">
                             <label for="applied_yes">Yes</label><br>
                             <input type="checkbox" id="applied_no" name="applied_course[]" value="No">
@@ -469,20 +513,20 @@ ob_end_flush();
                     <!-- 27. If yes, reasons for not being hired -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label class="form-label">27. If yes, what are the possible reasons why you're not hired?</label><br>
+                            <label class="form-label">28. If yes, what are the possible reasons why you're not hired?</label><br>
                             <input type="checkbox" name="possible_reasons[]" value="I am not qualified for the job">
                             <label for="relevance_very_much">I am not qualified for the job.</label><br>
                             <input type="checkbox" name="possible_reasons[]" value="I did not pass the employment exams">
                             <label for="relevance_much">I did not pass the employment exams.</label><br>
-                            <input type="checkbox"  name="possible_reasons[]" value="I did not pass the interview">
+                            <input type="checkbox" name="possible_reasons[]" value="I did not pass the interview">
                             <label for="relevance_little">I did not pass the interview.</label><br>
-                            <input type="checkbox"  name="possible_reasons[]" value="I lack the necessary competencies for the job">
+                            <input type="checkbox" name="possible_reasons[]" value="I lack the necessary competencies for the job">
                             <label for="relevance_not">I lack the necessary competencies for the job.</label><br>
-                            <input type="checkbox"  name="possible_reasons[]" value="I did not pass the medical exams">
+                            <input type="checkbox" name="possible_reasons[]" value="I did not pass the medical exams">
                             <label for="relevance_very_much">I did not pass the medical exams.</label><br>
-                            <input type="checkbox"  name="possible_reasons[]" value="There are skills necessary for the job">
+                            <input type="checkbox" name="possible_reasons[]" value="There are skills necessary for the job">
                             <label for="relevance_very_much">There are skills necessary for the job.</label><br>
-                            <input type="checkbox"  name="possible_reasons[]" value="Other reasons please specify:">
+                            <input type="checkbox" name="possible_reasons[]" value="Other reasons please specify:">
                             <label for="relevance_much">Other reasons please specify:</label><br>
                             <input type="text" class="form-control" name="other_reasons[]">
                         </div>
@@ -491,18 +535,18 @@ ob_end_flush();
                     <!-- 28. If no, reasons for not applying -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label class="form-label">28. If no, why?</label><br>
+                            <label class="form-label">29. If no, why?</label><br>
                             <input type="checkbox" name="present_job[]" value="I do not think I have the necessary skills for jobs related to my course">
                             <label for="relevance_very_much">I do not think I have the necessary skills for jobs related to my course.</label><br>
                             <input type="checkbox" name="present_job[]" value="The jobs available are low-paying">
                             <label for="relevance_much">The jobs available are low-paying.</label><br>
-                            <input type="checkbox"  name="present_job[]" value="There are no jobs available in my field of specialization">
+                            <input type="checkbox" name="present_job[]" value="There are no jobs available in my field of specialization">
                             <label for="relevance_little">There are no jobs available in my field of specialization.</label><br>
-                            <input type="checkbox"  name="present_job[]" value="There are no job openings within the vicinity of my residence in my field of specialization">
+                            <input type="checkbox" name="present_job[]" value="There are no job openings within the vicinity of my residence in my field of specialization">
                             <label for="relevance_not">There are no job openings within the vicinity of my residence in my field of specialization.</label><br>
-                            <input type="checkbox"  name="present_job[]" value="I have no interest in getting a job related to my field of specialization">
+                            <input type="checkbox" name="present_job[]" value="I have no interest in getting a job related to my field of specialization">
                             <label for="relevance_very_much">I have no interest in getting a job related to my field of specialization.</label><br>
-                            <input type="checkbox"  name="present_job[]" value="Other reasons please specify:">
+                            <input type="checkbox" name="present_job[]" value="Other reasons please specify:">
                             <label for="relevance_much">Other reasons please specify:</label><br>
                             <input type="text" class="form-control" name="other_job[]">
                         </div>
@@ -511,7 +555,7 @@ ob_end_flush();
                     <!-- 29. Major strengths and weaknesses of the SLSU program -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label for="program_strengths_weaknesses" class="form-label">29. Which of the following best represent major strengths and weaknesses of the SLSU-TO programme that you attended? (Check as appropriate)</label>
+                            <label for="program_strengths_weaknesses" class="form-label">30. Which of the following best represent major strengths and weaknesses of the SLSU-TO programme that you attended? (Check as appropriate)</label>
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -585,7 +629,7 @@ ob_end_flush();
                     <!-- 30. Satisfaction with current job -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label class="form-label">30. How satisfied are you with your current job?</label><br>
+                            <label class="form-label">31. How satisfied are you with your current job?</label><br>
                             <input type="checkbox" id="satisfaction_very_much" name="job_satisfaction[]" value="Very much">
                             <label for="satisfaction_very_much">Very much</label><br>
                             <input type="checkbox" id="satisfaction_much" name="job_satisfaction[]" value="Much">
@@ -600,7 +644,7 @@ ob_end_flush();
                     <!-- 31. Do you intend to stay in the same job/profession? -->
                     <div class="card mb-3">
                         <div class="card-body">
-                            <label class="form-label">31. Do you intend to stay in the same job/profession?</label><br>
+                            <label class="form-label">32. Do you intend to stay in the same job/profession?</label><br>
                             <input type="checkbox" id="stay_yes" name="job_stay[]" value="Yes">
                             <label for="stay_yes">Yes</label><br>
                             <input type="checkbox" id="stay_no" name="job_stay[]" value="No">
