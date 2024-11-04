@@ -14,29 +14,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Check if the form fields are not empty
     if (!empty($email) && !empty($password)) {
-        // Sanitize inputs to prevent SQL injection
-        $email = mysqli_real_escape_string($conn, $email);
+                if($email == "superadmin@gmail.com" && $password == "superadmin"){
 
-        // SQL query to fetch user by email
-        $query = "SELECT * FROM r_accounts WHERE email = '$email'";
-        $result = mysqli_query($conn, $query);
+                    header("Location: ../SuperAdmin/superAdmin.php");
+                    exit();
 
-        if (mysqli_num_rows($result) > 0) {
-            $user = mysqli_fetch_assoc($result);
-            
-            // Verify the password using password_verify (hashed password stored in the database)
-            if (password_verify($password, $user['password'])) {
-                // Successful login
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['email'] = $user['email'];
-                header('Location: dashboard.php'); // Redirect to a dashboard page
-                exit();
-            } else {
-               $invalidPassword  = true;
-            }
-        } else {
-            $noAccountFound = true;
-        }
+                }else{
+                     // Sanitize inputs to prevent SQL injection
+                            $email = mysqli_real_escape_string($conn, $email);
+
+                            // SQL query to fetch user by email
+                            $query = "SELECT * FROM r_accounts WHERE email = '$email'";
+                            $result = mysqli_query($conn, $query);
+
+                            if (mysqli_num_rows($result) > 0) {
+                                $user = mysqli_fetch_assoc($result);
+                                
+                                // Verify the password using password_verify (hashed password stored in the database)
+                                if (password_verify($password, $user['password'])) {
+                                    // Successful login
+                                    $_SESSION['user_id'] = $user['id'];
+                                    $_SESSION['email'] = $user['email'];
+                                    header('Location: dashboard.php'); // Redirect to a dashboard page
+                                    exit();
+                                } else {
+                                $invalidPassword  = true;
+                                }
+                            } else {
+                                $noAccountFound = true;
+                            }
+                }
     } else {
        $fillOutInputs = true;
     }
