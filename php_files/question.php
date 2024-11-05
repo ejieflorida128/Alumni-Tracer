@@ -6,6 +6,7 @@ include('../include/User_sidebar.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input values to avoid SQL injection
+    $choose_school = isset($_POST['choose_school']) ? mysqli_real_escape_string($conn, $_POST['choose_school']) : '';
     $name = isset($_POST['name']) ? mysqli_real_escape_string($conn, $_POST['name']) : '';
     $sex = isset($_POST['sex']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['sex'])) : '';
     $age = isset($_POST['age']) ? mysqli_real_escape_string($conn, $_POST['age']) : '';
@@ -72,8 +73,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $proof_image_path = ''; // Initialize with empty path in case no file is uploaded
     if (isset($_FILES['proof_image']) && $_FILES['proof_image']['error'] === UPLOAD_ERR_OK) {
         // Define target directory and validate file
-        $target_dir = "../template/img/uploads/";
-        $file_name = basename($_FILES["proof_image"]["name"]);
+        $target_dir = "../alumni_pictures/";
+        $file_name = basename($_FILES["proof_image"]["name"]); 
         $target_file = $target_dir . $file_name;
         $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
@@ -92,12 +93,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // SQL query to insert the data
-    $query = "INSERT INTO l_study_response (name, sex, age, degree, year_awarded, current_study, if_no_jobs, if_yes_details, pursue_reasons, current_position, other_position, time_to_job, time_gap, 
+    $query = "INSERT INTO l_study_response (choose_school,name, sex, age, degree, year_awarded, current_study, if_no_jobs, if_yes_details, pursue_reasons, current_position, other_position, time_to_job, time_gap, 
      employment_history, job_info_source, other_job_info, job_qualifications, gross_salary, job_benefits, work_location, num_employees, work_nature, other_work_nature_text, proof_image, job_problem, 
      problem_elaboration, self_employed_reason, knowledge_enhance, problem_solving, research_skills, learning_efficiency, communication_skills, more_inclined, team_spirit, job_relevance, 
      applied_course, possible_reasons, other_reasons, present_job, other_job, range_module, optional_module, relevance, worlkload, solving, learning, placement, environment, quality, job_satisfaction, 
      job_stay, stay_other_text, status) 
-VALUES ('$name', '$sex', '$age', '$degree', '$year_awarded', '$current_study', '$if_no_jobs', '$if_yes_details', '$pursue_reasons', '$current_position', '$other_position', '$time_to_job', 
+VALUES ('$choose_school','$name', '$sex', '$age', '$degree', '$year_awarded', '$current_study', '$if_no_jobs', '$if_yes_details', '$pursue_reasons', '$current_position', '$other_position', '$time_to_job', 
 '$time_gap', '$employment_history', '$job_info_source', '$other_job_info', '$job_qualifications', '$gross_salary', '$job_benefits', '$work_location', '$num_employees', '$work_nature', 
 '$other_work_nature_text', '$proof_image_path', '$job_problem', '$problem_elaboration', '$self_employed_reason', '$knowledge_enhance', '$problem_solving', '$research_skills', '$learning_efficiency', 
 '$communication_skills', '$more_inclined', '$team_spirit', '$job_relevance', '$applied_course', '$possible_reasons', '$other_reasons', '$present_job', '$other_job', '$range_module', 
@@ -162,6 +163,30 @@ ob_end_flush();
             <div class="bg-light rounded p-4" style="width:fit-content">
                 <h3 class="mb-4">A Tracer Study of the BSIT Graduates-Southern Leyte State University from School Years 2015-2018</h3>
                 <form method="POST" enctype="multipart/form-data">
+                    
+
+                 <!-- 0. Choose School -->
+                 <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="choose_school" class="form-label">Choose School: </label>
+                            <select name="choose_school" id="choose_school" class = "form-control" required>  
+                                     <option selected disabled hidden>Choose a School for Submission</option>
+                                     <?php
+                                                $schoolsQuery = "SELECT * FROM e_schools WHERE confirm_status = 'Approved'";
+                                                $schoolsResult = mysqli_query($conn, $schoolsQuery);
+
+                                                if ($schoolsResult) {
+                                                    while ($schoolRow = mysqli_fetch_assoc($schoolsResult)) {
+                                                        echo '<option value="' . htmlspecialchars($schoolRow['school_name']) . '">' . htmlspecialchars($schoolRow['school_name']) . '</option>';
+                                                    }
+                                                } else {
+                                                    echo '<option disabled>No schools available</option>';
+                                                }
+                                     ?>
+                            </select>
+                        </div>
+                    </div>
+
 
                     <!-- 1. Name -->
                     <div class="card mb-3">
