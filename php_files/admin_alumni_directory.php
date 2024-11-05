@@ -65,14 +65,14 @@ include("../connection/conn.php");
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                <a href="admin_dashboard.php" class="nav-item nav-link "><i class="fa fa-home me-2"></i>Dashboard</a>
-                <a href="admin_profile.php" class="nav-item nav-link"><i class="fa fa-user me-2"></i>Profile</a>
-                <a href="admin_alumni_directory.php" class="nav-item nav-link active"><i class="fa fa-address-book me-2"></i>Alumni Directory</a>
-                <a href="admin_alumni_information.php" class="nav-item nav-link"><i class="fa fa-info-circle me-2"></i>Alumni Info</a>
-                <a href="admin_alumni_analysis.php" class="nav-item nav-link"><i class="fa fa-chart-line me-2"></i>Alumni Analysis</a>
+                    <a href="admin_dashboard.php" class="nav-item nav-link "><i class="fa fa-home me-2"></i>Dashboard</a>
+                    <a href="admin_profile.php" class="nav-item nav-link"><i class="fa fa-user me-2"></i>Profile</a>
+                    <a href="admin_alumni_directory.php" class="nav-item nav-link active"><i class="fa fa-address-book me-2"></i>Alumni Directory</a>
+                    <a href="admin_alumni_information.php" class="nav-item nav-link"><i class="fa fa-info-circle me-2"></i>Alumni Info</a>
+                    <a href="admin_alumni_analysis.php" class="nav-item nav-link"><i class="fa fa-chart-line me-2"></i>Alumni Analysis</a>
 
 
-                   
+
 
                 </div>
             </nav>
@@ -148,12 +148,32 @@ include("../connection/conn.php");
 
             <div class="container-fluid pt-4 px-4">
 
-                 <!-- start aria ug code -->
+                <div class="container mt-3">
+                    <div class="row">
+                        <?php
+                        $sql = "SELECT * FROM l_study_response ORDER BY name DESC";
+                        $query = mysqli_query($conn, $sql);
+                        while ($check = mysqli_fetch_assoc($query)) {
+                            $name = $check['name'];
+                            $sex = $check['sex'];
+                            $year = $check['year_awarded'];
+                            
+                        ?>
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                                <div class="card" width = "100%" height = "100%">
+                                    <img src="../file/img/filePic.jpg" class="card-img-top" alt="File Image">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Name: <?php echo $name; ?></h5>
+                                        <h5 class="card-title">Sex: <?php echo $sex; ?></h5>
+                                        <h5 class="card-title">Year Graduated: <?php echo $year; ?></h5>
+                                    
+                                        <a href='docs.php?id=<?php echo $id; ?>' class="btn btn-success">Rate</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
 
-
-                        <!-- end aria ug code -->
-                
-                                            
             </div>
 
 
