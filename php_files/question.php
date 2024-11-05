@@ -382,13 +382,13 @@ ob_end_flush();
                         <div class="card-body">
                             <label for="proof_image" class="form-label">21. Upload proof of work (Ex. Company ID):</label>
                             <input type="file" class="form-control" id="proof_image" name="proof_image" accept="image/*">
-                            <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max size: 5MB.</small>
+                            <small class="form-text text-muted">Accepted formats: JPG, JPEG, PNG, GIF. Max size: 5MB.</small>
                         </div>
                     </div>
 
 
 
-                    <!-- 21. Do you face any major problem in your job assignments? -->
+                    <!-- 22. Do you face any major problem in your job assignments? -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">22. Do you face any major problem in your job assignments?</label><br>
@@ -399,7 +399,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 22. If yes, please elaborate -->
+                    <!-- 23. If yes, please elaborate -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label for="problem_elaboration" class="form-label">23. If yes, please elaborate:</label>
@@ -407,7 +407,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 23. If you are self-employed, what made you decide to become self-employed? -->
+                    <!-- 24. If you are self-employed, what made you decide to become self-employed? -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label for="self_employed_reason" class="form-label">24. If you are self-employed, what made you decide to become self-employed?</label>
@@ -415,7 +415,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 24. Contribution of SLSU program to personal knowledge, skills, and attitudes -->
+                    <!-- 25. Contribution of SLSU program to personal knowledge, skills, and attitudes -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">25. How would you rate the contribution of you programme of study at SLSU-TO to your personal knowledge, skills and atitudes? (Tick as appropriate)</label>
@@ -484,7 +484,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 25. Relevance of program to current job -->
+                    <!-- 26. Relevance of program to current job -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">26. Was your program of study at SLSU relevant to your present job?</label><br>
@@ -499,7 +499,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 26. Have you tried applying for a position relevant to your course? -->
+                    <!-- 27. Have you tried applying for a position relevant to your course? -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">27. Have you tried applying for a position relevant to your course?</label><br>
@@ -510,7 +510,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 27. If yes, reasons for not being hired -->
+                    <!-- 28. If yes, reasons for not being hired -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">28. If yes, what are the possible reasons why you're not hired?</label><br>
@@ -532,7 +532,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 28. If no, reasons for not applying -->
+                    <!-- 29. If no, reasons for not applying -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">29. If no, why?</label><br>
@@ -552,7 +552,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 29. Major strengths and weaknesses of the SLSU program -->
+                    <!-- 30. Major strengths and weaknesses of the SLSU program -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label for="program_strengths_weaknesses" class="form-label">30. Which of the following best represent major strengths and weaknesses of the SLSU-TO programme that you attended? (Check as appropriate)</label>
@@ -626,7 +626,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 30. Satisfaction with current job -->
+                    <!-- 31. Satisfaction with current job -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">31. How satisfied are you with your current job?</label><br>
@@ -641,7 +641,7 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 31. Do you intend to stay in the same job/profession? -->
+                    <!-- 32. Do you intend to stay in the same job/profession? -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">32. Do you intend to stay in the same job/profession?</label><br>
