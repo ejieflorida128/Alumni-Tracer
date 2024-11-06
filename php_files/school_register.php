@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../connection/conn.php'; // Database connection
+include '../connection/conn.php'; 
 
 $success = false;
 $fail = false;
@@ -81,37 +81,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- Success Modal -->
-    <?php if ($success): ?>
+   <!-- Success Modal -->
+<?php if ($success): ?>
     <div class="modal fade" id="noAccountFoundModal" tabindex="-1" aria-labelledby="noAccountFoundLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content border border-success">
+                <div class="modal-header bg-success text-white">
                     <h5 class="modal-title" id="noAccountFoundLabel">Notification</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="alert alert-success" role="alert">
-                    Your school registration request has been submitted successfully and is awaiting admin approval.
+                <div class="modal-body">
+                    <div class="alert alert-success mb-0" role="alert">
+                        Your school registration request has been submitted successfully and is awaiting admin approval.
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="../index.php" class="btn btn-danger">HOME</a>
+                    <a href="../index.php" class="btn btn-success">HOME</a>
                 </div>
             </div>
         </div>
     </div>
-    <?php endif; ?>
+<?php endif; ?>
 
-    <!-- Failure Modal -->
-    <?php if ($fail): ?>
+<!-- Failure Modal -->
+<?php if ($fail): ?>
     <div class="modal fade" id="fillOutInputsModal" tabindex="-1" aria-labelledby="fillOutInputsLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content border border-danger">
+                <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title" id="fillOutInputsLabel">Error</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="alert alert-danger" role="alert">
-                    There was an issue submitting your school registration request. Please try again later.
+                <div class="modal-body">
+                    <div class="alert alert-danger mb-0" role="alert">
+                        There was an issue submitting your school registration request. Please try again later.
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="../index.php" class="btn btn-danger">HOME</a>
@@ -119,7 +123,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-    <?php endif; ?>
+<?php endif; ?>
+
 
     <!-- JavaScript to trigger modals based on success/fail -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

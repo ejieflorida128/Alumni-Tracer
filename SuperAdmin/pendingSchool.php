@@ -32,8 +32,6 @@
 
     <!-- Template Stylesheet -->
     <link href="../template/css/style.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
 </head>
 
 <body>
@@ -74,20 +72,18 @@
                 </div>
                 <div class="navbar-nav w-100">
                   
-                <a href="superAdmin.php" class="nav-item nav-link active">
+                    <a href="superAdmin.php" class="nav-item nav-link ">
                     <i class="fa fa-check-circle me-2"></i>Approve Schools
-                </a>
-                <a href="pendingSchool.php" class="nav-item nav-link">
-                    <i class="fa fa-clock me-2"></i>Pending Schools
-                </a>
-                <a href="approveAdmins.php" class="nav-item nav-link">
-                    <i class="fa fa-user-check me-2"></i>Approve Admins
-                </a>
-                <a href="pendingAdmins.php" class="nav-item nav-link">
-                    <i class="fa fa-user-clock me-2"></i>Pending Admins
-                </a>
-
-                   
+                    </a>
+                    <a href="pendingSchool.php" class="nav-item nav-link active">
+                        <i class="fa fa-clock me-2"></i>Pending Schools
+                    </a>
+                    <a href="approveAdmins.php" class="nav-item nav-link">
+                        <i class="fa fa-user-check me-2"></i>Approve Admins
+                    </a>
+                    <a href="pendingAdmins.php" class="nav-item nav-link">
+                        <i class="fa fa-user-clock me-2"></i>Pending Admins
+                    </a>
                    
                 </div>
             </nav>
@@ -107,10 +103,10 @@
                 <input id="searchInput" class="form-control border-0" type="search" placeholder="Search">
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
-                   
-                   
+                  
+                  
                     <div class="nav-item dropdown">
-                            <a href="../index.php" class = "btn btn-danger" style = "margin: 10px;">Logout</a>
+                        <a href="../index.php" class = "btn btn-danger" style = "margin: 10px;">Logout</a>
                     </div>
                 </div>
             </nav>
@@ -123,11 +119,11 @@
                 
                     <div class="col-12">
                         <div class="bg-light rounded h-100 p-4">
-                            <h6 class="mb-4">Approved Admins</h6>
+                            <h6 class="mb-4">Pending Admin</h6>
                             <div class="table-responsive">
-                           <table class="table">
+                            <table class="table">
                                     <thead>
-                                        <tr>
+                                        <tr class = "text-center">
                                             <th scope="col">No.</th>
                                             <th scope="col">Logo</th>
                                             <th scope="col">School Name</th>
@@ -135,56 +131,82 @@
                                         </tr>
                                     </thead>
                                     <tbody id="schoolTableBody">
-                                            <?php
-                                                $sqlGetSchool = "SELECT * FROM e_schools WHERE confirm_status = 'Approved'";
-                                                $queryGetSchool = mysqli_query($conn, $sqlGetSchool);
+                            <?php
+                                $sqlGetSchool = "SELECT * FROM e_schools WHERE confirm_status = 'Pending'";
+                                $queryGetSchool = mysqli_query($conn, $sqlGetSchool);
 
-                                                $number = 0;
+                                $number = 0;
 
-                                                while ($getData = mysqli_fetch_assoc($queryGetSchool)) {
-                                                    $number++;
-                                                    $uniqueModalId = "modal" . $getData['id']; // Create a unique modal ID
-                                            ?>
-                                            <tr class="school-row">
-                                                <th scope="row"><h6 style="color: grey; margin-top: 7px;"><?php echo $number; ?></h6></th>
-                                                <td><img src="<?php echo $getData['logo']; ?>" alt="school logo" style="width: 30px; height: 30px;"></td>
-                                                <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['school_name']; ?></h6></td>
-                                                <td>
-                                                    <div>                
-                                                        <!-- Button to open the modal -->
-                                                        <button type="button" class="btn" style="background-color: red; color: white; margin-left: 13px;" data-bs-toggle="modal" data-bs-target="#<?php echo $uniqueModalId; ?>">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
+                                while ($getData = mysqli_fetch_assoc($queryGetSchool)) {
+                                    $number++;
+                                    $uniqueCheckModalId = "checkModal" . $getData['id'];
+                                    $uniqueDeleteModalId = "deleteModal" . $getData['id'];
+                            ?>
+                            <tr class="school-row text-center">
+                                <th scope="row"><h6 style="color: grey; margin-top: 7px;"><?php echo $number; ?></h6></th>
+                                <td><img src="<?php echo $getData['logo']; ?>" alt="school logo" style="width: 30px; height: 30px;"></td>
+                                <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['school_name']; ?></h6></td>
+                                <td class = "text-center">
+                                    <div>                
+                                        <!-- Check Button to open the check modal -->
+                                        <button type="button" class="btn" style="background-color: green; color: white;" data-bs-toggle="modal" data-bs-target="#<?php echo $uniqueCheckModalId; ?>">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        
+                                        <!-- Delete Button to open the delete modal -->
+                                        <button type="button" class="btn" style="background-color: red; color: white; margin-left: 13px;" data-bs-toggle="modal" data-bs-target="#<?php echo $uniqueDeleteModalId; ?>">
+                                            <i class="fa fa-times"></i>
+                                        </button>
 
-                                                        <!-- Modal Structure -->
-                                                        <div class="modal fade" id="<?php echo $uniqueModalId; ?>" tabindex="-1" aria-labelledby="myModalLabel<?php echo $getData['id']; ?>" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="myModalLabel<?php echo $getData['id']; ?>">Delete Modal</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        Are you sure you want to delete this entry?
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                                                                        <a type="button" class="btn btn-success" href="action/deleteAccepted.php?id=<?php echo $getData['id']; ?>">Confirm Delete</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                        <!-- Check Modal Structure -->
+                                        <div class="modal fade" id="<?php echo $uniqueCheckModalId; ?>" tabindex="-1" aria-labelledby="checkModalLabel<?php echo $getData['id']; ?>" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="checkModalLabel<?php echo $getData['id']; ?>">Approve Confirmation</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                            <?php
-                                                }
-                                            ?>
-                                            <!-- Placeholder row for "No results found" -->
-                                            <tr id="noResultsRow" style="display: none;">
-                                                <td colspan="4" class="text-center" style="background-color: red; color: white; font-weight: bolder;">No results found</td>
-                                            </tr>
-                                        </tbody>
+                                                    <div class="modal-body" style="text-align: left;">
+                                                        Are you sure you want to approve this entry?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                                        <a type="button" class="btn btn-success" href="action/approveAccepted.php?id=<?php echo $getData['id']; ?>">Confirm Approve</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Delete Modal Structure -->
+                                        <div class="modal fade" id="<?php echo $uniqueDeleteModalId; ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?php echo $getData['id']; ?>" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteModalLabel<?php echo $getData['id']; ?>">Delete Confirmation</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body" style="text-align: left;">
+                                                        Are you sure you want to delete this entry?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                                        <a type="button" class="btn btn-success" href="action/deleteAcceptedV2.php?id=<?php echo $getData['id']; ?>">Confirm Delete</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <?php
+                        }
+                    ?>
+                    <!-- Placeholder row for "No results found" -->
+                    <tr id="noResultsRow" style="display: none;">
+                        <td colspan="4" class="text-center" style="background-color: red; color: white; font-weight: bolder;">No results found</td>
+                    </tr>
+                </tbody>
 
                                 </table>
 
@@ -260,7 +282,6 @@
 
     <!-- Template Javascript -->
     <script src="../template/js/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 
 </html>

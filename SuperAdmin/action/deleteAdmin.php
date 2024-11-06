@@ -3,10 +3,10 @@
 
     $id = $_GET['id'];
 
-    $sql = "DELETE FROM e_schools WHERE id = $id";
+    $sql = "DELETE FROM r_accounts WHERE id = $id";
     mysqli_query($conn,$sql);
 
 
-    header("Location: ../pendingSchool.php");
+    header("Location: ../approveAdmins.php");
     
 ?>

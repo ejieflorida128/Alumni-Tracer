@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 06, 2024 at 02:10 PM
+-- Generation Time: Nov 06, 2024 at 03:58 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,8 +41,7 @@ CREATE TABLE `e_schools` (
 INSERT INTO `e_schools` (`id`, `school_name`, `logo`, `confirm_status`) VALUES
 (3, 'Cebu Eastern College', 'logo/cec.png', 'Approved'),
 (8, 'Southern Leyte State University', 'logo/slsu_to.png', 'Approved'),
-(9, 'University of the Philippines', 'logo/up.png', 'Pending'),
-(10, 'Bempusa Elementary School', '../SuperAdmin/logo/672b69d60d64b.webp', 'Pending');
+(14, 'Bempusa Elementary School', '../SuperAdmin/logo/672b7a1a395cc.webp', 'Approved');
 
 -- --------------------------------------------------------
 
@@ -133,17 +132,16 @@ CREATE TABLE `r_accounts` (
   `date_registered` datetime NOT NULL DEFAULT current_timestamp(),
   `profile_img` varchar(255) NOT NULL,
   `contact` varchar(255) NOT NULL,
-  `bio` varchar(255) NOT NULL
+  `bio` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `r_accounts`
 --
 
-INSERT INTO `r_accounts` (`id`, `name`, `email`, `school_role`, `school`, `password`, `date_registered`, `profile_img`, `contact`, `bio`) VALUES
-(1, 'ralph miole', 'ralph@gmail.com', 'Principal', 'Sogod National Highschool', '$2y$10$Zz6xJc42yto8QU7X6lEnxO014goWxKFfHu6Yy/si8sRjMTWzE/qPO', '2024-10-16 09:51:43', '', '', ''),
-(2, 'Ejie C. Florida', 'ejieflorida128@gmail.com', 'Department Head', 'Cebu Eastern College', '$2y$10$AbbZO0ihIBBaNMKn82Sgn.btl1hkWSMjIOmvJSva6U6ba4ichyqOi', '2024-10-17 10:45:55', '', '', ''),
-(3, 'Ejie C. Florida', 'ejieflorida123@gmail.com', 'Teacher', 'Cebu Eastern College', '$2y$10$MIG6GVWst3puoakKq4hnOu4axDy0ucmPt1FVd6PTS/dA1uYATqivq', '2024-11-04 22:09:42', 'profilePicture/Default.png', '', '');
+INSERT INTO `r_accounts` (`id`, `name`, `email`, `school_role`, `school`, `password`, `date_registered`, `profile_img`, `contact`, `bio`, `status`) VALUES
+(9, 'Ejie C. Florida', 'ejieflorida128@gmail.com', 'Teacher', 'Southern Leyte State University', '$2y$10$I1MbDhZpahB4tsp.GHfkoeYExtWVaPAJ32x2ZM5sObOJUPRcnfeke', '2024-11-06 22:14:11', 'pictures/default.jpg', '', '', 'Approved');
 
 --
 -- Indexes for dumped tables
@@ -175,19 +173,19 @@ ALTER TABLE `r_accounts`
 -- AUTO_INCREMENT for table `e_schools`
 --
 ALTER TABLE `e_schools`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `l_study_response`
 --
 ALTER TABLE `l_study_response`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `r_accounts`
 --
 ALTER TABLE `r_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

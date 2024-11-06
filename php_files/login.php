@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     // Successful login
                                     $_SESSION['user_id'] = $user['id'];
                                     $_SESSION['email'] = $user['email'];
-                                    header('Location: dashboard.php'); // Redirect to a dashboard page
+                                    header('Location: admin_dashboard.php'); // Redirect to a dashboard page
                                     exit();
                                 } else {
                                 $invalidPassword  = true;

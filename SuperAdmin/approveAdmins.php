@@ -74,13 +74,13 @@
                 </div>
                 <div class="navbar-nav w-100">
                   
-                <a href="superAdmin.php" class="nav-item nav-link active">
+                <a href="superAdmin.php" class="nav-item nav-link ">
                     <i class="fa fa-check-circle me-2"></i>Approve Schools
                 </a>
                 <a href="pendingSchool.php" class="nav-item nav-link">
                     <i class="fa fa-clock me-2"></i>Pending Schools
                 </a>
-                <a href="approveAdmins.php" class="nav-item nav-link">
+                <a href="approveAdmins.php" class="nav-item nav-link active">
                     <i class="fa fa-user-check me-2"></i>Approve Admins
                 </a>
                 <a href="pendingAdmins.php" class="nav-item nav-link">
@@ -128,15 +128,17 @@
                            <table class="table">
                                     <thead>
                                         <tr>
-                                            <th scope="col">No.</th>
-                                            <th scope="col">Logo</th>
-                                            <th scope="col">School Name</th>
+                                        <th scope="col">No.</th>
+                                            <th scope="col">Profile Picture</th>
+                                            <th scope="col">Fullname</th>
+                                            <th scope="col">School Role</th>
+                                            <th scope="col">School</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody id="schoolTableBody">
                                             <?php
-                                                $sqlGetSchool = "SELECT * FROM e_schools WHERE confirm_status = 'Approved'";
+                                                 $sqlGetSchool = "SELECT * FROM r_accounts WHERE status = 'Approved'";
                                                 $queryGetSchool = mysqli_query($conn, $sqlGetSchool);
 
                                                 $number = 0;
@@ -146,9 +148,11 @@
                                                     $uniqueModalId = "modal" . $getData['id']; // Create a unique modal ID
                                             ?>
                                             <tr class="school-row">
-                                                <th scope="row"><h6 style="color: grey; margin-top: 7px;"><?php echo $number; ?></h6></th>
-                                                <td><img src="<?php echo $getData['logo']; ?>" alt="school logo" style="width: 30px; height: 30px;"></td>
-                                                <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['school_name']; ?></h6></td>
+                                            <th scope="row"><h6 style="color: grey; margin-top: 7px;"><?php echo $number; ?></h6></th>
+                                            <td><img src="<?php echo $getData['profile_img']; ?>" alt="admin picture" style="width: 30px; height: 30px;"></td>
+                                            <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['name']; ?></h6></td>
+                                            <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['school_role']; ?></h6></td>
+                                            <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['school']; ?></h6></td>
                                                 <td>
                                                     <div>                
                                                         <!-- Button to open the modal -->
@@ -169,7 +173,7 @@
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                                                                        <a type="button" class="btn btn-success" href="action/deleteAccepted.php?id=<?php echo $getData['id']; ?>">Confirm Delete</a>
+                                                                        <a type="button" class="btn btn-success" href="action/deleteAdmin.php?id=<?php echo $getData['id']; ?>">Confirm Delete</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -189,18 +193,18 @@
                                 </table>
 
                                 <script>
-                                    // Get search input, table rows, and the no-results row
+                                  
                                     const searchInput = document.getElementById('searchInput');
                                     const schoolRows = document.querySelectorAll('.school-row');
                                     const noResultsRow = document.getElementById('noResultsRow');
 
-                                    // Listen for input changes
+                                   
                                     searchInput.addEventListener('input', function() {
                                         const searchText = searchInput.value.toLowerCase();
                                         let matchFound = false;
 
                                         schoolRows.forEach(row => {
-                                            // Get the school name text
+                                           
                                             const schoolName = row.querySelector('.school-name').textContent.toLowerCase();
 
                                             // Show or hide row based on match
