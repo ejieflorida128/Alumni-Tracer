@@ -35,6 +35,14 @@ include("../connection/conn.php");
 
     <!-- Template Stylesheet -->
     <link href="../template/css/style.css" rel="stylesheet">
+    <style>
+        .card-title{
+            font-size: smaller;
+        }
+        .btn{
+            font-size: smaller;
+        }
+    </style>
 </head>
 
 <body>
@@ -149,25 +157,27 @@ include("../connection/conn.php");
             <div class="container-fluid pt-4 px-4">
 
                 <div class="container mt-3">
-                    <div class="row">
+                    <div class="row" >
                         <?php
                         $sql = "SELECT * FROM l_study_response ORDER BY name DESC";
                         $query = mysqli_query($conn, $sql);
                         while ($check = mysqli_fetch_assoc($query)) {
+                            $img = $check['proof_image'];
                             $name = $check['name'];
                             $sex = $check['sex'];
                             $year = $check['year_awarded'];
+                            $id = $check['id'];
                             
                         ?>
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-                                <div class="card" width = "100%" height = "100%">
-                                    <img src="../file/img/filePic.jpg" class="card-img-top" alt="File Image">
-                                    <div class="card-body">
+                                <div class="card" style="width: 100%; height: 60%;">
+                                    <img src="<?php echo $img; ?>" class="card-img-top" alt="File Image" style="width: 100%; height: 50%;">
+                                    <div class="card-body" >
                                         <h5 class="card-title">Name: <?php echo $name; ?></h5>
                                         <h5 class="card-title">Sex: <?php echo $sex; ?></h5>
                                         <h5 class="card-title">Year Graduated: <?php echo $year; ?></h5>
                                     
-                                        <a href='docs.php?id=<?php echo $id; ?>' class="btn btn-success">Rate</a>
+                                        <a href="viewing_alumni_details.php?id=<?php echo $id; ?>" class="btn btn-primary">View</a>
                                     </div>
                                 </div>
                             </div>
