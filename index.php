@@ -82,7 +82,10 @@
 									<a class="button button-primary button-block" href="php_files/login.php">Log in</a>
 								</div>
 								<div class="control">
-									<a class="button button-primary button-block" href="php_files/register.php">Register</a>
+									<a class="button button-primary button-block" href="php_files/register.php">Admin Register</a>
+								</div>
+								<div class="control">
+									<a class="button button-primary button-block" href="php_files/school_register.php">school Register</a>
 								</div>
 							</div>
 							<div class="div" style = "margin-top: 10px;">
