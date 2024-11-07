@@ -1,8 +1,74 @@
 <?php
 session_start();
-include("../connection/conn.php");
+include '../connection/conn.php'; // Database connection
+
+// Initialize the data structure for each label (Existing Data)
+$data = [
+    'Pending' => 0,
+    'Male' => 0,
+    'Female' => 0,
+    'Working' => 0,
+    'Studying' => 0,
+    'Principal' => 0,  // Added for the roles
+    'DeptHead' => 0,   // Added for the roles
+    'Teacher' => 0,    // Added for the roles
+    'TotalAdmins' => 0 // Added for the total admin count
+];
+
+
+// Fetch data and assign values as needed
+// For Pending (Existing query)
+$query = "SELECT COUNT(*) as count FROM l_study_response WHERE status = 'Pending'";
+$result = mysqli_query($conn, $query);
+$row = mysqli_fetch_assoc($result);
+$data['Pending'] = (int)$row['count'];
+
+// For Male and Female (Existing query)
+$query = "SELECT sex, COUNT(*) as count FROM l_study_response GROUP BY sex";
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
+    $data[$row['sex']] = (int)$row['count'];
+}
+
+// For Working (Existing query)
+$query = "SELECT COUNT(*) as count FROM l_study_response WHERE current_position IS NOT NULL AND current_position != ''";
+$result = mysqli_query($conn, $query);
+$row = mysqli_fetch_assoc($result);
+$data['Working'] = (int)$row['count'];
+
+// For Not Studying (Existing query)
+$query_no = "SELECT COUNT(*) as count FROM l_study_response WHERE current_study = 'No'";
+$result_no = mysqli_query($conn, $query_no);
+$row_no = mysqli_fetch_assoc($result_no);
+$data['Studying'] = (int)$row_no['count']; // For counting "No" responses
+
+// Fetching the counts for the roles (Principal, Dept. Head, Teacher)
+$query_roles = "
+    SELECT 
+        school_role, COUNT(*) as count
+    FROM r_accounts
+    WHERE school_role IN ('Principal', 'Dept. Head', 'Teacher')
+    GROUP BY school_role
+";
+$result_roles = mysqli_query($conn, $query_roles);
+
+// Populate the role data
+$totalAdmins = 0; // Initialize a variable to hold the total number of admins
+while ($row = mysqli_fetch_assoc($result_roles)) {
+    $role = $row['school_role'];
+    $count = (int)$row['count'];
+    $data[$role] = $count;
+    $totalAdmins += $count; // Add the count of each role to the total admins
+}
+
+// Add the total admins count to the data
+$data['TotalAdmins'] = $totalAdmins;
+
+// Encode the data for JavaScript (This includes both alumni and role data)
+$data_json = json_encode($data);
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +79,9 @@ include("../connection/conn.php");
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
@@ -35,6 +104,13 @@ include("../connection/conn.php");
 
     <!-- Template Stylesheet -->
     <link href="../template/css/style.css" rel="stylesheet">
+
+    <style>
+        #adminPieChart {
+            width: 100px;  /* Set width */
+            height: 100px; /* Set height */
+        }
+    </style>
 </head>
 
 <body>
@@ -65,14 +141,14 @@ include("../connection/conn.php");
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                <a href="admin_dashboard.php" class="nav-item nav-link "><i class="fa fa-home me-2"></i>Dashboard</a>
-                <a href="admin_profile.php" class="nav-item nav-link"><i class="fa fa-user me-2"></i>Profile</a>
-                <a href="admin_alumni_directory.php" class="nav-item nav-link "><i class="fa fa-address-book me-2"></i>Alumni Directory</a>
-                <a href="admin_alumni_information.php" class="nav-item nav-link"><i class="fa fa-info-circle me-2"></i>Alumni Info</a>
-                <a href="admin_alumni_analysis.php" class="nav-item nav-link active"><i class="fa fa-chart-line me-2"></i>Alumni Analysis</a>
+                    <a href="admin_dashboard.php" class="nav-item nav-link "><i class="fa fa-home me-2"></i>Dashboard</a>
+                    <a href="admin_profile.php" class="nav-item nav-link"><i class="fa fa-user me-2"></i>Profile</a>
+                    <a href="admin_alumni_directory.php" class="nav-item nav-link "><i class="fa fa-address-book me-2"></i>Alumni Directory</a>
+                    <a href="admin_alumni_information.php" class="nav-item nav-link"><i class="fa fa-info-circle me-2"></i>Alumni Info</a>
+                    <a href="admin_alumni_analysis.php" class="nav-item nav-link active"><i class="fa fa-chart-line me-2"></i>Alumni Analysis</a>
 
 
-                   
+
 
                 </div>
             </nav>
@@ -144,104 +220,225 @@ include("../connection/conn.php");
                 </div>
             </nav>
             <!-- Navbar End -->
-
-
             <div class="container-fluid pt-4 px-4">
-
-                        <!-- start aria ug code -->
-
-
-                        <!-- end aria ug code -->
-                                            
-            </div>
-
-
-
-            <!-- Footer Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Your Site Name</a>, All Right Reserved.
-                        </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                            </br>
-                            Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Footer End -->
+    <div class="card">
+        <div class="card-header" style="text-align: center;">
+            <h4>Alumni Status Distribution</h4>
         </div>
-        <!-- Content End -->
+        <div>
+            <!-- Bar Chart Canvas for Alumni Status -->
+            <canvas id="alumniChart"></canvas>
+        </div>
+
+        <div class="card-header" style="text-align: center;">
+            <h4>Admin Role Distribution</h4>
+        </div>
+        <div>
+            <!-- Pie Chart Canvas for Admin Roles with custom size -->
+            <canvas id="adminPieChart"></canvas>
+        </div>
 
 
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-    </div>
+        <!-- Display Total Admins -->
+        <div class="card-footer">
+            <h5>Total Number of Admins: <span id="totalAdmins"></span></h5>
+        </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../template/lib/chart/chart.min.js"></script>
-    <script src="../template/lib/easing/easing.min.js"></script>
-    <script src="../template/lib/waypoints/waypoints.min.js"></script>
-    <script src="../template/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="../template/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="../template/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="../template/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script>
+            // Parse JSON data from PHP
+            const data = JSON.parse('<?php echo $data_json; ?>');
 
-    <!-- Template Javascript -->
-    <script src="../template/js/main.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get the canvas element by ID
-            var ctx = document.getElementById("alumni-graph").getContext('2d');
+            // Display the total number of admins
+            document.getElementById('totalAdmins').textContent = data.TotalAdmins;
 
-            // Fetch the data from PHP (passed as JSON)
-            var labels = <?php echo $years_degrees_json; ?>; // Year and Degree labels
-            var data = <?php echo $student_counts_json; ?>; // Student counts
+            // Bar Chart Data (Alumni Status)
+            const barData = {
+                labels: ['Pending', 'Male', 'Female', 'Working', 'Studying'],
+                datasets: [{
+                        label: 'Pending',
+                        data: [data.Pending, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        barThickness: 20
+                    },
+                    {
+                        label: 'Male',
+                        data: [0, data.Male, 0, 0, 0],
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        barThickness: 20,
+                    },
+                    {
+                        label: 'Female',
+                        data: [0, 0, data.Female, 0, 0],
+                        backgroundColor: 'rgba(255, 205, 86, 0.6)',
+                        barThickness: 20
+                    },
+                    {
+                        label: 'Working',
+                        data: [0, 0, 0, data.Working, 0],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        barThickness: 20
+                    },
+                    {
+                        label: 'Studying',
+                        data: [0, 0, 0, 0, data.NotStudying],
+                        backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                        barThickness: 20
+                    }
+                ]
+            };
 
-            // Create a new bar chart
-            var studentsChart = new Chart(ctx, {
+            // Pie Chart Data (Admin Roles)
+            const pieData = {
+                labels: ['Principal', 'Dept. Head', 'Teacher'],
+                datasets: [{
+                    label: 'Admin Role Distribution',
+                    data: [data.Principal, data.DeptHead, data.Teacher],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)', // Blue for Principal
+                        'rgba(255, 99, 132, 0.6)', // Red for Dept. Head
+                        'rgba(75, 192, 192, 0.6)'  // Green for Teacher
+                    ]
+                }]
+            };
+
+            // Render the Bar Chart for Alumni Status
+            new Chart(document.getElementById('alumniChart'), {
                 type: 'bar',
-                data: {
-                    labels: labels, // Dynamic labels (Year - Degree)
-                    datasets: [{
-                        label: 'Number of Students',
-                        data: data, // Dynamic data (student counts)
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
+                data: barData,
                 options: {
                     responsive: true,
                     scales: {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Year'
+                                text: 'Category'
                             }
                         },
                         y: {
-                            ticks: {
-                                stepSize: 1, // Ensure step size is 1 to only show whole numbers
-                                callback: function(value) {
-                                    if (Number.isInteger(value)) {
-                                        return value; // Only return whole numbers
-                                    }
-                                }
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Count'
                             }
-                        },
-                        beginAtZero: true // Ensures the y-axis starts at 0
+                        }
                     }
                 }
             });
-        });
-    </script>
+
+            // Render the Pie Chart for Admin Roles
+            new Chart(document.getElementById('adminPieChart'), {
+                type: 'pie',
+                data: pieData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    let label = tooltipItem.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += tooltipItem.raw;
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
+</div>
+       
+                   
+                    <!-- Footer Start -->
+                    <div class="container-fluid pt-4 px-4">
+                        <div class="bg-light rounded-top p-4">
+                            <div class="row">
+                                <div class="col-12 col-sm-6 text-center text-sm-start">
+                                    &copy; <a href="#">Your Site Name</a>, All Right Reserved.
+                                </div>
+                                <div class="col-12 col-sm-6 text-center text-sm-end">
+                                    <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                                    Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+                                    </br>
+                                    Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Footer End -->
+                </div>
+                <!-- Content End -->
+
+
+                <!-- Back to Top -->
+                <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+            </div>
+
+            <!-- JavaScript Libraries -->
+
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="../template/lib/chart/chart.min.js"></script>
+            <script src="../template/lib/easing/easing.min.js"></script>
+            <script src="../template/lib/waypoints/waypoints.min.js"></script>
+            <script src="../template/lib/owlcarousel/owl.carousel.min.js"></script>
+            <script src="../template/lib/tempusdominus/js/moment.min.js"></script>
+            <script src="../template/lib/tempusdominus/js/moment-timezone.min.js"></script>
+            <script src="../template/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+            <!-- Template Javascript -->
+            <script src="../template/js/main.js"></script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Get the canvas element by ID
+                    var ctx = document.getElementById("alumni-graph").getContext('2d');
+
+                    // Fetch the data from PHP (passed as JSON)
+                    var labels = <?php echo $years_degrees_json; ?>; // Year and Degree labels
+                    var data = <?php echo $student_counts_json; ?>; // Student counts
+
+                    // Create a new bar chart
+                    var studentsChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels, // Dynamic labels (Year - Degree)
+                            datasets: [{
+                                label: 'Number of Students',
+                                data: data, // Dynamic data (student counts)
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Year'
+                                    }
+                                },
+                                y: {
+                                    ticks: {
+                                        stepSize: 1, // Ensure step size is 1 to only show whole numbers
+                                        callback: function(value) {
+                                            if (Number.isInteger(value)) {
+                                                return value; // Only return whole numbers
+                                            }
+                                        }
+                                    }
+                                },
+                                beginAtZero: true // Ensures the y-axis starts at 0
+                            }
+                        }
+                    });
+                });
+            </script>
+           
 
 </body>
 
