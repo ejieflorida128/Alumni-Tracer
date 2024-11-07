@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     // Successful login
                                     $_SESSION['user_id'] = $user['id'];
                                     $_SESSION['email'] = $user['email'];
-                                    header('Location: dashboard.php'); // Redirect to a dashboard page
+                                    header('Location: admin_dashboard.php'); // Redirect to a dashboard page
                                     exit();
                                 } else {
                                 $invalidPassword  = true;
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                             <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
                         </form>
-                        <p class="text-center mb-0">Don't have an Account? <a href="../php_files/register.php">Sign Up</a></p>
+                        <p class="text-center mb-0">Back to Home? <a href="../index.php">Click Here!</a></p>
                     </div>
                 </div>
             </div>

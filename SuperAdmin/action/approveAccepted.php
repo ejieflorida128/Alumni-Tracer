@@ -7,6 +7,6 @@
     mysqli_query($conn,$sql);
 
 
-    header("Location: ../pendingAdmin.php");
+    header("Location: ../pendingSchool.php");
     
 ?>

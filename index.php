@@ -10,6 +10,69 @@
 	<script src="https://unpkg.com/animejs@2.2.0/anime.min.js"></script>
     <script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
 </head>
+				<div id="preloader">
+					  <div class="loader" id="loader-1"></div>
+					</div>
+					
+					
+					<script>
+					 
+					  setTimeout(function() {
+					    document.getElementById("preloader").style.display = "none";
+					  }, 2000);
+					</script>
+
+
+				<style>
+						 #preloader {
+							position: fixed;
+							top: 0;
+							left: 0;
+							right: 0;
+							bottom: 0;
+							background-color: #fff;
+							z-index: 9999999; }
+							
+							.loader {
+							top: 50%;
+							width: 50px;
+							height: 50px;
+							border-radius: 100%;
+							position: relative;
+							margin: 0 auto; }
+							
+							#loader-1:before, #loader-1:after {
+							content: "";
+							position: absolute;
+							top: -10px;
+							left: -10px;
+							width: 100%;
+							height: 100%;
+							border-radius: 100%;
+							border: 7px solid transparent;
+							border-top-color: #3c9cfd; }
+							
+							#loader-1:before {
+							z-index: 100;
+							animation: spin 2s infinite; }
+							
+							#loader-1:after {
+							border: 7px solid #fafafa; }
+							
+							@keyframes spin {
+							0% {
+								-webkit-transform: rotate(0deg);
+								-ms-transform: rotate(0deg);
+								-o-transform: rotate(0deg);
+								transform: rotate(0deg); }
+							100% {
+								-webkit-transform: rotate(360deg);
+								-ms-transform: rotate(360deg);
+								-o-transform: rotate(360deg);
+								transform: rotate(360deg); } }
+
+				</style>
+
 <body class="is-boxed has-animations">
     <div class="body-wrap boxed-container">
         <header class="site-header">
@@ -82,7 +145,10 @@
 									<a class="button button-primary button-block" href="php_files/login.php">Log in</a>
 								</div>
 								<div class="control">
-									<a class="button button-primary button-block" href="php_files/register.php">Register</a>
+									<a class="button button-primary button-block" href="php_files/register.php">Admin Register</a>
+								</div>
+								<div class="control">
+									<a class="button button-primary button-block" href="php_files/school_register.php">school Register</a>
 								</div>
 							</div>
 							<div class="div" style = "margin-top: 10px;">
