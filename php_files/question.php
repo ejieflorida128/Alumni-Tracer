@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input values to avoid SQL injection
     $choose_school = isset($_POST['choose_school']) ? mysqli_real_escape_string($conn, $_POST['choose_school']) : '';
     $name = isset($_POST['name']) ? mysqli_real_escape_string($conn, $_POST['name']) : '';
-    $sex = isset($_POST['sex']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['sex'])) : '';
+    $sex = isset($_POST['sex']) ? mysqli_real_escape_string($conn, $_POST['sex']) : '';
     $age = isset($_POST['age']) ? mysqli_real_escape_string($conn, $_POST['age']) : '';
     $degree = isset($_POST['degree']) ? mysqli_real_escape_string($conn, $_POST['degree']) : '';
     $year_awarded = isset($_POST['year_awarded']) ? mysqli_real_escape_string($conn, $_POST['year_awarded']) : '';
@@ -196,16 +196,17 @@ ob_end_flush();
                         </div>
                     </div>
 
-                    <!-- 2. Sex -->
+                   <!-- 2. Sex -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">2. Sex:</label><br>
-                            <input type="checkbox" id="male" name="sex[]" value="Male">
+                            <input type="radio" id="male" name="sex" value="Male">
                             <label for="male">Male</label><br>
-                            <input type="checkbox" id="female" name="sex[]" value="Female">
+                            <input type="radio" id="female" name="sex" value="Female">
                             <label for="female">Female</label>
                         </div>
                     </div>
+
 
                     <!-- 3. Age -->
                     <div class="card mb-3">
@@ -235,9 +236,9 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">6. Are you currently taking studies? (e.g. Masters of Science in Information Technology)</label><br>
-                            <input type="checkbox" id="yes_study" name="current_study[]" value="Yes">
+                            <input type="radio" id="yes_study" name="current_study[]" value="Yes">
                             <label for="yes_study">Yes</label><br>
-                            <input type="checkbox" id="no_study" name="current_study[]" value="No">
+                            <input type="radio" id="no_study" name="current_study[]" value="No">
                             <label for="no_study">No</label>
                         </div>
                     </div>
@@ -270,17 +271,17 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">10. Which one of the following best describes your current position with regard to paid work?</label><br>
-                            <input type="checkbox" name="current_position[]" value="Working full-time">
+                            <input type="radio" name="current_position[]" value="Working full-time">
                             <label>Working full-time</label><br>
-                            <input type="checkbox" name="current_position[]" value="Working part-time but seeking full-time work">
+                            <input type="radio" name="current_position[]" value="Working part-time but seeking full-time work">
                             <label>Working part-time but seeking full-time work</label><br>
-                            <input type="checkbox" name="current_position[]" value="Self-employed">
+                            <input type="radio" name="current_position[]" value="Self-employed">
                             <label>Self-employed</label><br>
-                            <input type="checkbox" name="current_position[]" value="Not working and looking for a job">
+                            <input type="radio" name="current_position[]" value="Not working and looking for a job">
                             <label>Not working and looking for a job</label><br>
-                            <input type="checkbox" name="current_position[]" value="Not working and unavailable for paid work">
+                            <input type="radio" name="current_position[]" value="Not working and unavailable for paid work">
                             <label>Not working and unavailable for paid work</label><br>
-                            <input type="checkbox" name="current_position[]" value="Others:">
+                            <input type="radio" name="current_position[]" value="Others:">
                             <label>Others:</label>
                             <input type="text" class="form-control" name="other_position[]">
                         </div>
@@ -290,15 +291,15 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label for="time_to_job" class="form-label">11. How long did you work in your first job after obtaining your degree?</label><br>
-                            <input type="checkbox" name="time_to_job[]" value="0 to 6 months">
+                            <input type="radio" name="time_to_job[]" value="0 to 6 months">
                             <label>0 to 6 months</label><br>
-                            <input type="checkbox" name="time_to_job[]" value="7 months to 1 year">
+                            <input type="radio" name="time_to_job[]" value="7 months to 1 year">
                             <label>7 months to 1 year</label><br>
-                            <input type="checkbox" name="time_to_job[]" value="1 to 3 years">
+                            <input type="radio" name="time_to_job[]" value="1 to 3 years">
                             <label>1 to 3 years</label><br>
-                            <input type="checkbox" name="time_to_job[]" value="3 to 5 years">
+                            <input type="radio" name="time_to_job[]" value="3 to 5 years">
                             <label>3 to 5 years</label><br>
-                            <input type="checkbox" name="time_to_job[]" value="Over 5 years">
+                            <input type="radio" name="time_to_job[]" value="Over 5 years">
                             <label>Over 5 years</label><br>
                         </div>
                     </div>
@@ -323,15 +324,15 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">14. How did you come to know about your current job?</label><br>
-                            <input type="checkbox" name="job_info_source[]" value="Through friends">
+                            <input type="radio" name="job_info_source[]" value="Through friends">
                             <label>Through friends</label><br>
-                            <input type="checkbox" name="job_info_source[]" value="Through relatives">
+                            <input type="radio" name="job_info_source[]" value="Through relatives">
                             <label>Through relatives</label><br>
-                            <input type="checkbox" name="job_info_source[]" value="Through written enquiries">
+                            <input type="radio" name="job_info_source[]" value="Through written enquiries">
                             <label>Through written enquiries</label><br>
-                            <input type="checkbox" name="job_info_source[]" value="Press advertisement">
+                            <input type="radio" name="job_info_source[]" value="Press advertisement">
                             <label>Press advertisement</label><br>
-                            <input type="checkbox" name="job_info_source[]" value="Others:">
+                            <input type="radio" name="job_info_source[]" value="Others:">
                             <label>Others:</label>
                             <input type="text" class="form-control" name="other_job_info[]">
                         </div>
@@ -373,13 +374,13 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label for="num_employees" class="form-label">19. Number of employees (approximately):</label><br>
-                            <input type="checkbox" id="less_10" name="num_employees[]" value="Less than 10">
+                            <input type="radio" id="less_10" name="num_employees[]" value="Less than 10">
                             <label for="less_10">Less than 10</label><br>
-                            <input type="checkbox" id="11_50" name="num_employees[]" value="11 to 50">
+                            <input type="radio" id="11_50" name="num_employees[]" value="11 to 50">
                             <label for="11_50">11 to 50</label><br>
-                            <input type="checkbox" id="51_200" name="num_employees[]" value="51 to 200">
+                            <input type="radio" id="51_200" name="num_employees[]" value="51 to 200">
                             <label for="51_200">51 to 200</label><br>
-                            <input type="checkbox" id="over_200" name="num_employees[]" value="Over 200">
+                            <input type="radio" id="over_200" name="num_employees[]" value="Over 200">
                             <label for="over_200">Over 200</label>
                         </div>
                     </div>
@@ -388,15 +389,15 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label for="work_nature" class="form-label">20. Nature of work performed:</label><br>
-                            <input type="checkbox" id="managerial" name="work_nature[]" value="Managerial">
+                            <input type="radio" id="managerial" name="work_nature[]" value="Managerial">
                             <label for="managerial">Managerial</label><br>
-                            <input type="checkbox" id="clerical" name="work_nature[]" value="Clerical">
+                            <input type="radio" id="clerical" name="work_nature[]" value="Clerical">
                             <label for="clerical">Clerical</label><br>
-                            <input type="checkbox" id="supervisory" name="work_nature[]" value="Supervisory">
+                            <input type="radio" id="supervisory" name="work_nature[]" value="Supervisory">
                             <label for="supervisory">Supervisory</label><br>
-                            <input type="checkbox" id="support" name="work_nature[]" value="Support Service">
+                            <input type="radio" id="support" name="work_nature[]" value="Support Service">
                             <label for="support">Support Service</label><br>
-                            <input type="checkbox" id="other_work_nature" name="work_nature[]" value="Other:">
+                            <input type="radio" id="other_work_nature" name="work_nature[]" value="Other:">
                             <label for="other_work_nature">Other:</label>
                             <input type="text" class="form-control" id="other_work_nature_text" name="other_work_nature_text[]">
                         </div>
@@ -417,9 +418,9 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">22. Do you face any major problem in your job assignments?</label><br>
-                            <input type="checkbox" id="job_problem_yes" name="job_problem[]" value="Yes">
+                            <input type="radio" id="job_problem_yes" name="job_problem[]" value="Yes">
                             <label for="job_problem_yes">Yes</label><br>
-                            <input type="checkbox" id="job_problem_no" name="job_problem[]" value="No">
+                            <input type="radio" id="job_problem_no" name="job_problem[]" value="No">
                             <label for="job_problem_no">No</label>
                         </div>
                     </div>
@@ -457,52 +458,52 @@ ob_end_flush();
                                 <tbody>
                                     <tr>
                                         <td>Enhanced academic knowledge</td>
-                                        <td><input type="checkbox" name="knowledge_enhance" value="Very much"></td>
-                                        <td><input type="checkbox" name="knowledge_enhance" value="Much"></td>
-                                        <td><input type="checkbox" name="knowledge_enhance" value="A little"></td>
-                                        <td><input type="checkbox" name="knowledge_enhance" value="Not at all"></td>
+                                        <td><input type="radio" name="knowledge_enhance" value="Very much"></td>
+                                        <td><input type="radio" name="knowledge_enhance" value="Much"></td>
+                                        <td><input type="radio" name="knowledge_enhance" value="A little"></td>
+                                        <td><input type="radio" name="knowledge_enhance" value="Not at all"></td>
                                     </tr>
                                     <tr>
                                         <td>Improved problem-solving skills</td>
-                                        <td><input type="checkbox" name="problem_solving" value="Very much"></td>
-                                        <td><input type="checkbox" name="problem_solving" value="Much"></td>
-                                        <td><input type="checkbox" name="problem_solving" value="A little"></td>
-                                        <td><input type="checkbox" name="problem_solving" value="Not at all"></td>
+                                        <td><input type="radio" name="problem_solving" value="Very much"></td>
+                                        <td><input type="radio" name="problem_solving" value="Much"></td>
+                                        <td><input type="radio" name="problem_solving" value="A little"></td>
+                                        <td><input type="radio" name="problem_solving" value="Not at all"></td>
                                     </tr>
                                     <tr>
                                         <td>Improved research skills</td>
-                                        <td><input type="checkbox" name="research_skills" value="Very much"></td>
-                                        <td><input type="checkbox" name="research_skills" value="Much"></td>
-                                        <td><input type="checkbox" name="research_skills" value="A little"></td>
-                                        <td><input type="checkbox" name="research_skills" value="Not at all"></td>
+                                        <td><input type="radio" name="research_skills" value="Very much"></td>
+                                        <td><input type="radio" name="research_skills" value="Much"></td>
+                                        <td><input type="radio" name="research_skills" value="A little"></td>
+                                        <td><input type="radio" name="research_skills" value="Not at all"></td>
                                     </tr>
                                     <tr>
                                         <td>Improved learning efficiency</td>
-                                        <td><input type="checkbox" name="learning_efficiency" value="Very much"></td>
-                                        <td><input type="checkbox" name="learning_efficiency" value="Much"></td>
-                                        <td><input type="checkbox" name="learning_efficiency" value="A little"></td>
-                                        <td><input type="checkbox" name="learning_efficiency" value="Not at all"></td>
+                                        <td><input type="radio" name="learning_efficiency" value="Very much"></td>
+                                        <td><input type="radio" name="learning_efficiency" value="Much"></td>
+                                        <td><input type="radio" name="learning_efficiency" value="A little"></td>
+                                        <td><input type="radio" name="learning_efficiency" value="Not at all"></td>
                                     </tr>
                                     <tr>
                                         <td>Improved communication skills</td>
-                                        <td><input type="checkbox" name="communication_skills" value="Very much"></td>
-                                        <td><input type="checkbox" name="communication_skills" value="Much"></td>
-                                        <td><input type="checkbox" name="communication_skills" value="A little"></td>
-                                        <td><input type="checkbox" name="communication_skills" value="Not at all"></td>
+                                        <td><input type="radio" name="communication_skills" value="Very much"></td>
+                                        <td><input type="radio" name="communication_skills" value="Much"></td>
+                                        <td><input type="radio" name="communication_skills" value="A little"></td>
+                                        <td><input type="radio" name="communication_skills" value="Not at all"></td>
                                     </tr>
                                     <tr>
                                         <td>More inclined to put up own business</td>
-                                        <td><input type="checkbox" name="more_inclined" value="Very much"></td>
-                                        <td><input type="checkbox" name="more_inclined" value="Much"></td>
-                                        <td><input type="checkbox" name="more_inclined" value="A little"></td>
-                                        <td><input type="checkbox" name="more_inclined" value="Not at all"></td>
+                                        <td><input type="radio" name="more_inclined" value="Very much"></td>
+                                        <td><input type="radio" name="more_inclined" value="Much"></td>
+                                        <td><input type="radio" name="more_inclined" value="A little"></td>
+                                        <td><input type="radio" name="more_inclined" value="Not at all"></td>
                                     </tr>
                                     <tr>
                                         <td>Enhanced team spirit</td>
-                                        <td><input type="checkbox" name="team_spirit" value="Very much"></td>
-                                        <td><input type="checkbox" name="team_spirit" value="Much"></td>
-                                        <td><input type="checkbox" name="team_spirit" value="A little"></td>
-                                        <td><input type="checkbox" name="team_spirit" value="Not at all"></td>
+                                        <td><input type="radio" name="team_spirit" value="Very much"></td>
+                                        <td><input type="radio" name="team_spirit" value="Much"></td>
+                                        <td><input type="radio" name="team_spirit" value="A little"></td>
+                                        <td><input type="radio" name="team_spirit" value="Not at all"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -513,13 +514,13 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">26. Was your program of study at SLSU relevant to your present job?</label><br>
-                            <input type="checkbox" id="relevance_very_much" name="job_relevance[]" value="Very much">
+                            <input type="radio" id="relevance_very_much" name="job_relevance[]" value="Very much">
                             <label for="relevance_very_much">Very much</label><br>
-                            <input type="checkbox" id="relevance_much" name="job_relevance[]" value="Much">
+                            <input type="radio" id="relevance_much" name="job_relevance[]" value="Much">
                             <label for="relevance_much">Much</label><br>
-                            <input type="checkbox" id="relevance_little" name="job_relevance[]" value="A little">
+                            <input type="radio" id="relevance_little" name="job_relevance[]" value="A little">
                             <label for="relevance_little">A little</label><br>
-                            <input type="checkbox" id="relevance_not" name="job_relevance[]" value="Not at all">
+                            <input type="radio" id="relevance_not" name="job_relevance[]" value="Not at all">
                             <label for="relevance_not">Not at all</label>
                         </div>
                     </div>
@@ -528,9 +529,9 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">27. Have you tried applying for a position relevant to your course?</label><br>
-                            <input type="checkbox" id="applied_yes" name="applied_course[]" value="Yes">
+                            <input type="radio" id="applied_yes" name="applied_course[]" value="Yes">
                             <label for="applied_yes">Yes</label><br>
-                            <input type="checkbox" id="applied_no" name="applied_course[]" value="No">
+                            <input type="radio" id="applied_no" name="applied_course[]" value="No">
                             <label for="applied_no">No</label>
                         </div>
                     </div>
@@ -539,19 +540,19 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">28. If yes, what are the possible reasons why you're not hired?</label><br>
-                            <input type="checkbox" name="possible_reasons[]" value="I am not qualified for the job">
+                            <input type="radio" name="possible_reasons[]" value="I am not qualified for the job">
                             <label for="relevance_very_much">I am not qualified for the job.</label><br>
-                            <input type="checkbox" name="possible_reasons[]" value="I did not pass the employment exams">
+                            <input type="radio" name="possible_reasons[]" value="I did not pass the employment exams">
                             <label for="relevance_much">I did not pass the employment exams.</label><br>
-                            <input type="checkbox" name="possible_reasons[]" value="I did not pass the interview">
+                            <input type="radio" name="possible_reasons[]" value="I did not pass the interview">
                             <label for="relevance_little">I did not pass the interview.</label><br>
-                            <input type="checkbox" name="possible_reasons[]" value="I lack the necessary competencies for the job">
+                            <input type="radio" name="possible_reasons[]" value="I lack the necessary competencies for the job">
                             <label for="relevance_not">I lack the necessary competencies for the job.</label><br>
-                            <input type="checkbox" name="possible_reasons[]" value="I did not pass the medical exams">
+                            <input type="radio" name="possible_reasons[]" value="I did not pass the medical exams">
                             <label for="relevance_very_much">I did not pass the medical exams.</label><br>
-                            <input type="checkbox" name="possible_reasons[]" value="There are skills necessary for the job">
+                            <input type="radio" name="possible_reasons[]" value="There are skills necessary for the job">
                             <label for="relevance_very_much">There are skills necessary for the job.</label><br>
-                            <input type="checkbox" name="possible_reasons[]" value="Other reasons please specify:">
+                            <input type="radio" name="possible_reasons[]" value="Other reasons please specify:">
                             <label for="relevance_much">Other reasons please specify:</label><br>
                             <input type="text" class="form-control" name="other_reasons[]">
                         </div>
@@ -561,17 +562,17 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">29. If no, why?</label><br>
-                            <input type="checkbox" name="present_job[]" value="I do not think I have the necessary skills for jobs related to my course">
+                            <input type="radio" name="present_job[]" value="I do not think I have the necessary skills for jobs related to my course">
                             <label for="relevance_very_much">I do not think I have the necessary skills for jobs related to my course.</label><br>
-                            <input type="checkbox" name="present_job[]" value="The jobs available are low-paying">
+                            <input type="radio" name="present_job[]" value="The jobs available are low-paying">
                             <label for="relevance_much">The jobs available are low-paying.</label><br>
-                            <input type="checkbox" name="present_job[]" value="There are no jobs available in my field of specialization">
+                            <input type="radio" name="present_job[]" value="There are no jobs available in my field of specialization">
                             <label for="relevance_little">There are no jobs available in my field of specialization.</label><br>
-                            <input type="checkbox" name="present_job[]" value="There are no job openings within the vicinity of my residence in my field of specialization">
+                            <input type="radio" name="present_job[]" value="There are no job openings within the vicinity of my residence in my field of specialization">
                             <label for="relevance_not">There are no job openings within the vicinity of my residence in my field of specialization.</label><br>
-                            <input type="checkbox" name="present_job[]" value="I have no interest in getting a job related to my field of specialization">
+                            <input type="radio" name="present_job[]" value="I have no interest in getting a job related to my field of specialization">
                             <label for="relevance_very_much">I have no interest in getting a job related to my field of specialization.</label><br>
-                            <input type="checkbox" name="present_job[]" value="Other reasons please specify:">
+                            <input type="radio" name="present_job[]" value="Other reasons please specify:">
                             <label for="relevance_much">Other reasons please specify:</label><br>
                             <input type="text" class="form-control" name="other_job[]">
                         </div>
@@ -593,57 +594,57 @@ ob_end_flush();
                                 <tbody>
                                     <tr>
                                         <td>Range of modules offered</td>
-                                        <td><input type="checkbox" name="range_module" value="Strength"></td>
-                                        <td><input type="checkbox" name="range_module" value="Weakness"></td>
-                                        <td><input type="checkbox" name="range_module" value="Does not apply"></td>
+                                        <td><input type="radio" name="range_module" value="Strength"></td>
+                                        <td><input type="radio" name="range_module" value="Weakness"></td>
+                                        <td><input type="radio" name="range_module" value="Does not apply"></td>
                                     </tr>
                                     <tr>
                                         <td>Number of optional modules in relation to the number of compulsory (core) modules</td>
-                                        <td><input type="checkbox" name="optional_module" value="Strength"></td>
-                                        <td><input type="checkbox" name="optional_module" value="Weakness"></td>
-                                        <td><input type="checkbox" name="optional_module" value="Does not apply"></td>
+                                        <td><input type="radio" name="optional_module" value="Strength"></td>
+                                        <td><input type="radio" name="optional_module" value="Weakness"></td>
+                                        <td><input type="radio" name="optional_module" value="Does not apply"></td>
                                     </tr>
                                     <tr>
                                         <td>Relevance of the programme to your professional requirements</td>
-                                        <td><input type="checkbox" name="relevance" value="Strength"></td>
-                                        <td><input type="checkbox" name="relevance" value="Weakness"></td>
-                                        <td><input type="checkbox" name="relevance" value="Does not apply"></td>
+                                        <td><input type="radio" name="relevance" value="Strength"></td>
+                                        <td><input type="radio" name="relevance" value="Weakness"></td>
+                                        <td><input type="radio" name="relevance" value="Does not apply"></td>
                                     </tr>
                                     <tr>
                                         <td>Student workload</td>
-                                        <td><input type="checkbox" name="worlkload" value="Strength"></td>
-                                        <td><input type="checkbox" name="worlkload" value="Weakness"></td>
-                                        <td><input type="checkbox" name="worlkload" value="Does not apply"></td>
+                                        <td><input type="radio" name="worlkload" value="Strength"></td>
+                                        <td><input type="radio" name="worlkload" value="Weakness"></td>
+                                        <td><input type="radio" name="worlkload" value="Does not apply"></td>
                                     </tr>
                                     <tr>
                                         <td>Problem solving</td>
-                                        <td><input type="checkbox" name="solving" value="Strength"></td>
-                                        <td><input type="checkbox" name="solving" value="Weakness"></td>
-                                        <td><input type="checkbox" name="solving" value="Does not apply"></td>
+                                        <td><input type="radio" name="solving" value="Strength"></td>
+                                        <td><input type="radio" name="solving" value="Weakness"></td>
+                                        <td><input type="radio" name="solving" value="Does not apply"></td>
                                     </tr>
                                     <tr>
                                         <td>Inter-disciplinary learning</td>
-                                        <td><input type="checkbox" name="learning" value="Strength"></td>
-                                        <td><input type="checkbox" name="learning" value="Weakness"></td>
-                                        <td><input type="checkbox" name="learning" value="Does not apply"></td>
+                                        <td><input type="radio" name="learning" value="Strength"></td>
+                                        <td><input type="radio" name="learning" value="Weakness"></td>
+                                        <td><input type="radio" name="learning" value="Does not apply"></td>
                                     </tr>
                                     <tr>
                                         <td>Work placement/attachment</td>
-                                        <td><input type="checkbox" name="placement" value="Strength"></td>
-                                        <td><input type="checkbox" name="placement" value="Weakness"></td>
-                                        <td><input type="checkbox" name="placement" value="Does not apply"></td>
+                                        <td><input type="radio" name="placement" value="Strength"></td>
+                                        <td><input type="radio" name="placement" value="Weakness"></td>
+                                        <td><input type="radio" name="placement" value="Does not apply"></td>
                                     </tr>
                                     <tr>
                                         <td>Teaching/Learning environment</td>
-                                        <td><input type="checkbox" name="environment" value="Strength"></td>
-                                        <td><input type="checkbox" name="environment" value="Weakness"></td>
-                                        <td><input type="checkbox" name="environment" value="Does not apply"></td>
+                                        <td><input type="radio" name="environment" value="Strength"></td>
+                                        <td><input type="radio" name="environment" value="Weakness"></td>
+                                        <td><input type="radio" name="environment" value="Does not apply"></td>
                                     </tr>
                                     <tr>
                                         <td>Quality of delivery</td>
-                                        <td><input type="checkbox" name="quality" value="Strength"></td>
-                                        <td><input type="checkbox" name="quality" value="Weakness"></td>
-                                        <td><input type="checkbox" name="quality" value="Does not apply"></td>
+                                        <td><input type="radio" name="quality" value="Strength"></td>
+                                        <td><input type="radio" name="quality" value="Weakness"></td>
+                                        <td><input type="radio" name="quality" value="Does not apply"></td>
                                     </tr>
                                     <!-- Continue for other strengths and weaknesses... -->
                                 </tbody>
@@ -655,13 +656,13 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">31. How satisfied are you with your current job?</label><br>
-                            <input type="checkbox" id="satisfaction_very_much" name="job_satisfaction[]" value="Very much">
+                            <input type="radio" id="satisfaction_very_much" name="job_satisfaction[]" value="Very much">
                             <label for="satisfaction_very_much">Very much</label><br>
-                            <input type="checkbox" id="satisfaction_much" name="job_satisfaction[]" value="Much">
+                            <input type="radio" id="satisfaction_much" name="job_satisfaction[]" value="Much">
                             <label for="satisfaction_much">Much</label><br>
-                            <input type="checkbox" id="satisfaction_little" name="job_satisfaction[]" value="A little">
+                            <input type="radio" id="satisfaction_little" name="job_satisfaction[]" value="A little">
                             <label for="satisfaction_little">A little</label><br>
-                            <input type="checkbox" id="satisfaction_not" name="job_satisfaction[]" value="Not at all">
+                            <input type="radio" id="satisfaction_not" name="job_satisfaction[]" value="Not at all">
                             <label for="satisfaction_not">Not at all</label>
                         </div>
                     </div>
@@ -670,11 +671,11 @@ ob_end_flush();
                     <div class="card mb-3">
                         <div class="card-body">
                             <label class="form-label">32. Do you intend to stay in the same job/profession?</label><br>
-                            <input type="checkbox" id="stay_yes" name="job_stay[]" value="Yes">
+                            <input type="radio" id="stay_yes" name="job_stay[]" value="Yes">
                             <label for="stay_yes">Yes</label><br>
-                            <input type="checkbox" id="stay_no" name="job_stay[]" value="No">
+                            <input type="radio" id="stay_no" name="job_stay[]" value="No">
                             <label for="stay_no">No</label><br>
-                            <input type="checkbox" id="stay_other" name="job_stay[]" value="Other:">
+                            <input type="radio" id="stay_other" name="job_stay[]" value="Other:">
                             <label for="stay_other">Others:</label>
                             <input type="text" class="form-control" id="stay_other_text" name="stay_other_text[]">
                         </div>
