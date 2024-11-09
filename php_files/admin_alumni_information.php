@@ -705,6 +705,7 @@ $select_info = mysqli_query($conn, "SELECT * FROM l_study_response");
             modal.find('#updateWorlkload').val(worlkload);
             modal.find('#updateSolving').val(solving);
             modal.find('#updateLearning').val(learning);
+            
             modal.find('#updatePlacement').val(placement);
             modal.find('#updateEnvironment').val(environment);
             modal.find('#updateQuality').val(quality);
