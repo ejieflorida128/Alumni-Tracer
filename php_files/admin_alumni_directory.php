@@ -172,7 +172,7 @@ include("../connection/conn.php");
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                                 <div class="card" style="width: 100%; height: 60%;">
                                     <img src="<?php echo $img; ?>" class="card-img-top" alt="File Image" style="width: 100%; height: 50%;">
-                                    <div class="card-body" >
+                                    <div class="card-body" style="background-color: #A0DEFF;">
                                         <h5 class="card-title">Name: <?php echo $name; ?></h5>
                                         <h5 class="card-title">Sex: <?php echo $sex; ?></h5>
                                         <h5 class="card-title">Year Graduated: <?php echo $year; ?></h5>
