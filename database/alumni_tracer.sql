@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 06, 2024 at 03:58 PM
+-- Generation Time: Nov 09, 2024 at 12:25 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -133,15 +133,17 @@ CREATE TABLE `r_accounts` (
   `profile_img` varchar(255) NOT NULL,
   `contact` varchar(255) NOT NULL,
   `bio` varchar(255) NOT NULL,
-  `status` varchar(255) NOT NULL
+  `status` varchar(255) NOT NULL,
+  `face_data` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `r_accounts`
 --
 
-INSERT INTO `r_accounts` (`id`, `name`, `email`, `school_role`, `school`, `password`, `date_registered`, `profile_img`, `contact`, `bio`, `status`) VALUES
-(9, 'Ejie C. Florida', 'ejieflorida128@gmail.com', 'Teacher', 'Southern Leyte State University', '$2y$10$I1MbDhZpahB4tsp.GHfkoeYExtWVaPAJ32x2ZM5sObOJUPRcnfeke', '2024-11-06 22:14:11', 'pictures/default.jpg', '', '', 'Approved');
+INSERT INTO `r_accounts` (`id`, `name`, `email`, `school_role`, `school`, `password`, `date_registered`, `profile_img`, `contact`, `bio`, `status`, `face_data`) VALUES
+(32, 'Ejie C. Florida', 'ejieflorida128@gmail.com', 'Principal', 'Cebu Eastern College', '$2y$10$nvxv6xdDTio.mNDhhosh2eyFR8pyQ9QPlI2qx/HXHfD6wIFNR6May', '2024-11-09 19:14:53', 'pictures/default.jpg', '', '', 'Pending', '../uploads/faces/face_672f442d8141c1.50925280.png'),
+(33, 'Ejie C. Florida', 'ejieflorida1adsad28@gmail.com', 'Principal', 'Southern Leyte State University', '$2y$10$M3i7sJ0ptYOuLqmzHqi6nuM3PfxuSy/ghr9DWL.tuyHYohqj34QXm', '2024-11-09 19:21:02', 'pictures/default.jpg', '', '', 'Pending', '../uploads/faces/face_672f459ea53b73.66285771.png');
 
 --
 -- Indexes for dumped tables
@@ -185,7 +187,7 @@ ALTER TABLE `l_study_response`
 -- AUTO_INCREMENT for table `r_accounts`
 --
 ALTER TABLE `r_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
