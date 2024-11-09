@@ -14,11 +14,10 @@ $data = [
     'Teacher' => 0,     // For roles
     'TotalAdmins' => 0, // Total admins
     'SurveysCreated' => 0, // Total number of surveys created
-        // New data for the school chart
-        'schoolNames' => [],
-        'schoolPending' => [],
-        'schoolApproved' => []
-    
+    'surveyResponsesByMonth' => [], // Monthly survey data with date and time
+    'schoolNames' => [], // For school chart
+    'schoolPending' => [], // For school chart
+    'schoolApproved' => [] // For school chart
 ];
 
 // Fetch alumni data
@@ -82,12 +81,39 @@ $query_schools = "
 ";
 $result_schools = mysqli_query($conn, $query_schools);
 
+$totalSchools = 0;
 while ($row = mysqli_fetch_assoc($result_schools)) {
+    // Store school data
     $data['schoolNames'][] = $row['school_name'];
     $data['schoolPending'][] = (int)$row['pending_count'];
     $data['schoolApproved'][] = (int)$row['approved_count'];
+
+    // Accumulate the total number of schools (if needed)
+    $totalSchools++;
 }
 
+// Store the total number of schools in the data array
+$data['totalSchools'] = $totalSchools;
+
+
+// Fetch survey responses by full date and time
+$query_monthly_surveys = "
+    SELECT 
+        DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS date_time, 
+        COUNT(*) AS count 
+    FROM l_study_response
+    WHERE created_at IS NOT NULL
+    GROUP BY date_time
+    ORDER BY date_time
+";
+$result_monthly_surveys = mysqli_query($conn, $query_monthly_surveys);
+
+while ($row = mysqli_fetch_assoc($result_monthly_surveys)) {
+    $data['surveyResponsesByMonth'][] = [
+        'date' => $row['date_time'], // Full date with time
+        'count' => (int)$row['count']
+    ];
+}
 
 // Encode data for JavaScript
 $data_json = json_encode($data);
@@ -279,19 +305,19 @@ $data_json = json_encode($data);
                 <!-- School Registration and Approval Chart Card -->
                 <div class="container">
 
-                 <!-- New School Registration and Approval Chart Card -->
-    <div class="card chart-card">
-        <div class="card-header text-center">
-            <h4>School Registration and Approval Status</h4>
-        </div>
-        <div class="card-body">
-            <canvas id="schoolChart" width="400" height="300"></canvas>
-        </div>
-    </div>
+                    <!-- Survey Responses Line Chart Card -->
+                    <div class="card chart-card">
+                        <div class="card-header text-center" style="background-color: #009CFF;">
+                            <h4>Survey Responses Date and Time</h4>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="surveyLineChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
 
                     <!-- Alumni Status Distribution Chart Card -->
                     <div class="card chart-card">
-                        <div class="card-header text-center">
+                        <div class="card-header text-center" style="background-color: #009CFF;">
                             <h4>Alumni Status Distribution</h4>
                         </div>
                         <div class="card-body">
@@ -301,17 +327,29 @@ $data_json = json_encode($data);
 
                     <!-- Admin Role Distribution Chart Card -->
                     <div class="card chart-card">
-                        <div class="card-header text-center">
+                        <div class="card-header text-center" style="background-color: #009CFF;">
                             <h4>Admin Role Distribution</h4>
                         </div>
                         <div class="card-body">
-                            <canvas id="adminPieChart" width="400" height="300"></canvas>
+                            <canvas id="adminPieChart" width="400" height="200"></canvas>
                         </div>
-                        <div class="card-footer text-center">
+                        <div class="card-footer text-center" style="background-color: #009CFF;">
                             <h5>Total Number of Admins: <span id="totalAdmins"></span></h5>
                         </div>
                     </div>
 
+                    <!-- New School Registration and Approval Chart Card -->
+                    <div class="card chart-card">
+                        <div class="card-header text-center" style="background-color: #009CFF;">
+                            <h4>School Registration and Approval Status</h4>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="schoolChart" width="400" height="300"></canvas>
+                        </div>
+                        <div class="card-footer text-center" style="background-color: #009CFF;">
+                            <h5>Total Number of Schools: <span id="totalSchools"></span></h5>
+                        </div>
+                    </div>
 
                     <script>
                         // Parse JSON data from PHP
@@ -319,6 +357,9 @@ $data_json = json_encode($data);
 
                         // Display the total number of admins
                         document.getElementById('totalAdmins').textContent = data.TotalAdmins;
+
+                        // Display the total number of admins
+                        document.getElementById('totalSchools').textContent = data.totalSchools;
 
                         // Bar Chart Data (Alumni Status with Centered Colors)
                         const barData = {
@@ -376,55 +417,53 @@ $data_json = json_encode($data);
                             }]
                         };
 
+                        // New School Registration and Approval Bar Chart Data
+                        const schoolBarData = {
+                            labels: data.schoolNames, // Array of school names
+                            datasets: [{
+                                    label: 'Pending',
+                                    data: data.schoolPending, // Array of pending counts per school
+                                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                                    barThickness: 20
+                                },
+                                {
+                                    label: 'Approved',
+                                    data: data.schoolApproved, // Array of approved counts per school
+                                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                    barThickness: 20
+                                }
+                            ]
+                        };
 
-        // New School Registration and Approval Bar Chart Data
-        const schoolBarData = {
-            labels: data.schoolNames, // Array of school names
-            datasets: [
-                {
-                    label: 'Pending',
-                    data: data.schoolPending, // Array of pending counts per school
-                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                    barThickness: 20
-                },
-                {
-                    label: 'Approved',
-                    data: data.schoolApproved, // Array of approved counts per school
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    barThickness: 20
-                }
-            ]
-        };
-
-        // Render the School Registration and Approval Bar Chart
-        new Chart(document.getElementById('schoolChart'), {
-            type: 'bar',
-            data: schoolBarData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Schools'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Count'
-                        },
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+                        // Render the School Registration and Approval Bar Chart
+                        new Chart(document.getElementById('schoolChart'), {
+                            type: 'bar',
+                            data: schoolBarData,
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top'
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Schools'
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Count'
+                                        },
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
 
                         // Render the Bar Chart with Centered Colors
                         new Chart(document.getElementById('alumniChart'), {
@@ -479,7 +518,66 @@ $data_json = json_encode($data);
                                 }
                             }
                         });
+
+                        // Line Chart Data for Survey Responses by Date and Time
+                        const surveyData = {
+                            labels: data.surveyResponsesByMonth.map(item => item.date), // Get full date and time
+                            datasets: [{
+                                label: 'Surveys Created',
+                                data: data.surveyResponsesByMonth.map(item => item.count), // Get survey count per date and time
+                                borderColor: 'rgba(255, 159, 64, 1)', // Line color
+                                backgroundColor: 'rgba(255, 159, 64, 0.2)', // Fill color under the line
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: 'rgba(255, 159, 64, 1)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                            }]
+                        };
+
+                        // Render the Line Chart for Survey Responses by Date and Time
+                        new Chart(document.getElementById('surveyLineChart'), {
+                            type: 'line',
+                            data: surveyData,
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top'
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(tooltipItem) {
+                                                return tooltipItem.label + ': ' + tooltipItem.raw + ' surveys';
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Date and Time'
+                                        },
+                                        ticks: {
+                                            maxRotation: 90, // Rotate the labels if needed
+                                            autoSkip: true
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Number of Surveys'
+                                        },
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
                     </script>
+
                 </div>
 
 
