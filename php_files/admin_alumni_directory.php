@@ -60,7 +60,7 @@ include("../connection/conn.php");
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
+                    <h3 class="text-primary">Alumni Tracer</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -92,9 +92,7 @@ include("../connection/conn.php");
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
+              
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
@@ -169,15 +167,15 @@ include("../connection/conn.php");
                             $id = $check['id'];
                             
                         ?>
-                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-                                <div class="card" style="width: 100%; height: 60%;">
-                                    <img src="<?php echo $img; ?>" class="card-img-top" alt="File Image" style="width: 100%; height: 50%;">
-                                    <div class="card-body" style="background-color: #A0DEFF;">
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-3" >
+                                <div class="card" style="width: 100%; height: 60%; border-radius: 30px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); ">
+                                    <img src="<?php echo $img; ?>" class="card-img-top" alt="File Image" style="width: 100%; height: 150px;">
+                                    <div class="card-body" style="background-color: #A0DEFF; border-bottom-left-radius:5px; border-bottom-right-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); ">
                                         <h5 class="card-title">Name: <?php echo $name; ?></h5>
                                         <h5 class="card-title">Sex: <?php echo $sex; ?></h5>
                                         <h5 class="card-title">Year Graduated: <?php echo $year; ?></h5>
                                     
-                                        <a href="viewing_alumni_details.php?id=<?php echo $id; ?>" class="btn btn-primary">View</a>
+                                        <a href="viewing_alumni_details.php?id=<?php echo $id; ?>" class="btn btn-primary" style = "width: 100%;">View</a>
                                     </div>
                                 </div>
                             </div>
@@ -193,14 +191,9 @@ include("../connection/conn.php");
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Your Site Name</a>, All Right Reserved.
+                            &copy; <a href="#">Alumni Tracer</a>, All Right Reserved.
                         </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                            </br>
-                            Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                        </div>
+                      
                     </div>
                 </div>
             </div>
