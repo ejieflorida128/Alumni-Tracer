@@ -293,9 +293,9 @@ $data_json = json_encode($data);
                             <span class="d-none d-lg-inline-flex">John Doe</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
-                            <a href="#" class="dropdown-item">Log Out</a>
+                            <a href="admin_profile.php" class="dropdown-item">My Profile</a>
+                            <!-- <a href="#" class="dropdown-item">Settings</a> -->
+                            <a href="../index.php" class="dropdown-item">Log Out</a>
                         </div>
                     </div>
                 </div>
@@ -363,7 +363,7 @@ $data_json = json_encode($data);
 
                         // Bar Chart Data (Alumni Status with Centered Colors)
                         const barData = {
-                            labels: ['Pending', 'Male', 'Female', 'Working', 'NotStudying', 'Surveys Created'],
+                            labels: ['Pending', 'Male', 'Female', 'Working', 'Studying', 'Surveys Created'],
                             datasets: [{
                                     label: 'Pending',
                                     data: [data.Pending, null, null, null, null, null],
