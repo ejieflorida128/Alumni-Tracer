@@ -1,6 +1,30 @@
 <?php
 session_start();
 include '../connection/conn.php'; // Database connection
+define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
+
+
+function decryptData($encryptedData)
+{
+    $key = ENCRYPTION_KEY;
+    $data = base64_decode($encryptedData);
+    $ivLength = openssl_cipher_iv_length('aes-256-cbc');
+    $iv = substr($data, 0, $ivLength); // Extract the IV
+    $encrypted = substr($data, $ivLength); // Extract the encrypted data
+    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+}
+
+
+function encryptData($data)
+{
+    $key = ENCRYPTION_KEY;
+    $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Generate a random IV
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($iv . $encrypted); // Store IV and encrypted data together
+}
+
+
+
 
 // Initialize variables for error handling
 $invalidPassword = false;
@@ -20,12 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     exit();
 
                 }else{
-                     // Sanitize inputs to prevent SQL injection
-                            $email = mysqli_real_escape_string($conn, $email);
+                 
 
-                            // SQL query to fetch user by email
-                            $query = "SELECT * FROM r_accounts WHERE email = '$email'";
-                            $result = mysqli_query($conn, $query);
+                    // Sanitize the encrypted email to prevent SQL injection
+                    $email = mysqli_real_escape_string($conn, $email);
+
+                   
+                          
+                    $query = "SELECT * FROM r_accounts WHERE email = '$email'";
+                    $result = mysqli_query($conn, $query);
 
                             if (mysqli_num_rows($result) > 0) {
                                 $user = mysqli_fetch_assoc($result);

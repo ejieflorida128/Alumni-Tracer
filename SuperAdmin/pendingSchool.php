@@ -1,5 +1,27 @@
 <?php
     include("../connection/conn.php");
+    
+define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
+
+
+function decryptData($encryptedData)
+{
+    $key = ENCRYPTION_KEY;
+    $data = base64_decode($encryptedData);
+    $ivLength = openssl_cipher_iv_length('aes-256-cbc');
+    $iv = substr($data, 0, $ivLength); // Extract the IV
+    $encrypted = substr($data, $ivLength); // Extract the encrypted data
+    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+}
+
+
+function encryptData($data)
+{
+    $key = ENCRYPTION_KEY;
+    $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Generate a random IV
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($iv . $encrypted); // Store IV and encrypted data together
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -145,7 +167,7 @@
                             <tr class="school-row text-center">
                                 <th scope="row"><h6 style="color: grey; margin-top: 7px;"><?php echo $number; ?></h6></th>
                                 <td><img src="<?php echo $getData['logo']; ?>" alt="school logo" style="width: 30px; height: 30px;"></td>
-                                <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['school_name']; ?></h6></td>
+                                <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo decryptData($getData['school_name']); ?></h6></td>
                                 <td class = "text-center">
                                     <div>                
                                         <!-- Check Button to open the check modal -->

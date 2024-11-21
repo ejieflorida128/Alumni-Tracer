@@ -1,18 +1,42 @@
 <?php
 include("../connection/conn.php");
 
+define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
+
+
+function decryptData($encryptedData)
+{
+    $key = ENCRYPTION_KEY;
+    $data = base64_decode($encryptedData);
+    $ivLength = openssl_cipher_iv_length('aes-256-cbc');
+    $iv = substr($data, 0, $ivLength); // Extract the IV
+    $encrypted = substr($data, $ivLength); // Extract the encrypted data
+    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+}
+
+
+function encryptData($data)
+{
+    $key = ENCRYPTION_KEY;
+    $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Generate a random IV
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($iv . $encrypted); // Store IV and encrypted data together
+}
+
+
 $emailExisted = false;
 $passwordNotMatchModal = false;
 $success = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = htmlspecialchars(trim($_POST["full-name"]));
+
+    $name = encryptData(htmlspecialchars(trim($_POST["full-name"])));
     $email = htmlspecialchars(trim($_POST["email"]));
-    $role = htmlspecialchars(trim($_POST["role"]));
-    $school = htmlspecialchars(trim($_POST["school"]));
+    $role = encryptData(htmlspecialchars(trim($_POST["role"])));
+    $school = encryptData(htmlspecialchars(trim($_POST["school"])));
     $password = $_POST["password"];
     $confirmPassword = $_POST["confirm-password"];
-    $faceImageData = $_POST["faceImageData"]; // Base64 encoded image data
+    $faceImageData = encryptData($_POST["faceImageData"]);
 
     // Decode the base64 string and save the image in the uploads folder
     if (isset($faceImageData) && !empty($faceImageData)) {
@@ -33,9 +57,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         file_put_contents($imagePath, $imageData);
     }
 
+    // $decryptPassword = decryptData($_POST["password"]);
+    // $decryptCPassword = decryptData($_POST["confirm-password"]);
+
     // Check if the passwords match
     if ($password === $confirmPassword) {
         // Check if email already exists
+
         $checkEmail = "SELECT * FROM `r_accounts` WHERE `email` = ?";
         $stmt = mysqli_prepare($conn, $checkEmail);
         mysqli_stmt_bind_param($stmt, 's', $email);
@@ -47,8 +75,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $defaultProfileImg = 'pictures/default.jpg'; // Default profile image
+           
             $pending = "Pending";
 
+         
             // Insert data into the database, including the path to the face image
             $register = "INSERT INTO `r_accounts`(`profile_img`, `name`, `email`, `school_role`, `school`, `password`, `date_registered`, `status`, `face_data`) 
                          VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
@@ -214,7 +244,7 @@ mysqli_close($conn);
                                             <?php 
                                                 if ($schoolsResult) {
                                                     while ($school = mysqli_fetch_assoc($schoolsResult)) {
-                                                        echo "<option value='" . $school['school_name'] . "'>" . $school['school_name'] . "</option>";
+                                                        echo "<option value='" . decryptData($school['school_name']) . "'>" . decryptData($school['school_name']) . "</option>";
                                                     }
                                                 }
                                             ?>

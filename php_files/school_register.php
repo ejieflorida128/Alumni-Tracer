@@ -2,11 +2,33 @@
 session_start();
 include '../connection/conn.php'; 
 
+define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
+
+
+function decryptData($encryptedData)
+{
+    $key = ENCRYPTION_KEY;
+    $data = base64_decode($encryptedData);
+    $ivLength = openssl_cipher_iv_length('aes-256-cbc');
+    $iv = substr($data, 0, $ivLength); // Extract the IV
+    $encrypted = substr($data, $ivLength); // Extract the encrypted data
+    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+}
+
+
+function encryptData($data)
+{
+    $key = ENCRYPTION_KEY;
+    $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Generate a random IV
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($iv . $encrypted); // Store IV and encrypted data together
+}
+
 $success = false;
 $fail = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $school_name = htmlspecialchars(trim($_POST["school_name"]));
+    $school_name = encryptData(htmlspecialchars(trim($_POST["school_name"])));
 
     if (isset($_FILES["school_logo"]) && $_FILES["school_logo"]["error"] == 0) {
        

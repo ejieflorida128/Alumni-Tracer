@@ -2,6 +2,28 @@
 session_start();
 include("../connection/conn.php");
 
+define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
+
+
+function decryptData($encryptedData)
+{
+    $key = ENCRYPTION_KEY;
+    $data = base64_decode($encryptedData);
+    $ivLength = openssl_cipher_iv_length('aes-256-cbc');
+    $iv = substr($data, 0, $ivLength); // Extract the IV
+    $encrypted = substr($data, $ivLength); // Extract the encrypted data
+    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+}
+
+
+function encryptData($data)
+{
+    $key = ENCRYPTION_KEY;
+    $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Generate a random IV
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($iv . $encrypted); // Store IV and encrypted data together
+}
+
 // Check if form is submitted for information update
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
@@ -121,7 +143,7 @@ $call = mysqli_fetch_assoc($query);
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
+                    <h3 class="text-primary">Alumni Tracer</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -129,7 +151,7 @@ $call = mysqli_fetch_assoc($query);
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0"><?php echo $call["name"] ?? 'N/A'; ?></h6>
+                        <h6 class="mb-0"><?php echo decryptData($call["name"] ) ?? 'N/A'; ?></h6>
                         <span>Admin</span>
                     </div>
                 </div>
@@ -152,15 +174,11 @@ $call = mysqli_fetch_assoc($query);
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
+               
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
-                </form>
+              
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -201,7 +219,7 @@ $call = mysqli_fetch_assoc($query);
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img class="rounded-circle me-lg-2" src="../template/img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">John Doe</span>
+                            <span class="d-none d-lg-inline-flex"><?php echo decryptData($call["name"] ) ?? 'N/A'; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="#" class="dropdown-item">My Profile</a>
@@ -242,7 +260,7 @@ $call = mysqli_fetch_assoc($query);
                 <form action="admin_profile.php" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" name="name" required placeholder="Enter your name" value="<?php echo $call['name'] ?? ''; ?>">
+                        <input type="text" class="form-control" name="name" required placeholder="Enter your name" value="<?php echo decryptData($call['name']) ?? ''; ?>">
                     </div>
                     
                     <div class="mb-3">
@@ -252,22 +270,22 @@ $call = mysqli_fetch_assoc($query);
                     
                     <div class="mb-3">
                         <label for="contact" class="form-label">Contact</label>
-                        <input type="text" class="form-control" name="contact" placeholder="Enter your contact number" value="<?php echo $call['contact'] ?? ''; ?>">
+                        <input type="text" class="form-control" name="contact" placeholder="Enter your contact number" value="<?php echo decryptData($call['contact']) ?? ''; ?>">
                     </div>
                     
                     <div class="mb-3">
                         <label for="schoolRole" class="form-label">School Role</label>
-                        <input type="text" class="form-control" name="school_role" placeholder="Enter your school role" value="<?php echo $call['school_role'] ?? ''; ?>">
+                        <input type="text" class="form-control" name="school_role" placeholder="Enter your school role" value="<?php echo decryptData($call['school_role']) ?? ''; ?>">
                     </div>
                     
                     <div class="mb-3">
                         <label for="school" class="form-label">School</label>
-                        <input type="text" class="form-control" name="school" placeholder="Enter your school" value="<?php echo $call['school'] ?? ''; ?>">
+                        <input type="text" class="form-control" name="school" placeholder="Enter your school" value="<?php echo decryptData($call['school']) ?? ''; ?>">
                     </div>
                     
                     <div class="mb-3">
                         <label for="bio" class="form-label">Bio</label>
-                        <textarea class="form-control" name="bio" rows="3" placeholder="Tell something about yourself"><?php echo $call['bio'] ?? ''; ?></textarea>
+                        <textarea class="form-control" name="bio" rows="3" placeholder="Tell something about yourself"><?php echo decryptData($call['bio']) ?? ''; ?></textarea>
                     </div>
                     
                     <div class="mb-3">
@@ -291,12 +309,12 @@ $call = mysqli_fetch_assoc($query);
                 <form action="adminprofile.php" method="post" enctype="multipart/form-data"> -->
 
                 <div class="col-lg-8">
-                    <p class="h6 text-secondary"><strong>Name:</strong> <?php echo $call['name'] ?? 'N/A'; ?></p>
+                    <p class="h6 text-secondary"><strong>Name:</strong> <?php echo decryptData($call['name']) ?? 'N/A'; ?></p>
                     <p class="h6 text-secondary"><strong>Email:</strong> <?php echo $call['email'] ?? 'N/A'; ?></p>
-                    <p class="h6 text-secondary"><strong>Contact:</strong> <?php echo $call['contact'] ?? 'N/A'; ?></p>
-                    <p class="h6 text-secondary"><strong>School Role:</strong> <?php echo $call['school_role'] ?? 'N/A'; ?></p>
-                    <p class="h6 text-secondary"><strong>School:</strong> <?php echo $call['school'] ?? 'N/A'; ?></p>
-                    <p class="h6 text-secondary"><strong>Bio:</strong> <?php echo $call['bio'] ?? 'N/A'; ?></p>
+                    <p class="h6 text-secondary"><strong>Contact:</strong> <?php echo decryptData($call['contact']) ?? '000-0000-000'; ?></p>
+                    <p class="h6 text-secondary"><strong>School Role:</strong> <?php echo decryptData($call['school_role']) ?? 'N/A'; ?></p>
+                    <p class="h6 text-secondary"><strong>School:</strong> <?php echo decryptData($call['school']) ?? 'N/A'; ?></p>
+                    <p class="h6 text-secondary"><strong>Bio:</strong> <?php echo decryptData($call['bio']) ?? 'N/A'; ?></p>
                 </div>
 
                    
@@ -327,14 +345,9 @@ $call = mysqli_fetch_assoc($query);
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Your Site Name</a>, All Right Reserved.
+                            &copy; <a href="#">Alumni Tracer</a>, All Right Reserved.
                         </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                            </br>
-                            Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                        </div>
+                      
                     </div>
                 </div>
             </div>

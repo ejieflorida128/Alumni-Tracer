@@ -1,5 +1,27 @@
 <?php
     include("../connection/conn.php");
+
+    define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
+
+
+    function decryptData($encryptedData)
+    {
+        $key = ENCRYPTION_KEY;
+        $data = base64_decode($encryptedData);
+        $ivLength = openssl_cipher_iv_length('aes-256-cbc');
+        $iv = substr($data, 0, $ivLength); // Extract the IV
+        $encrypted = substr($data, $ivLength); // Extract the encrypted data
+        return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+    }
+
+
+    function encryptData($data)
+    {
+        $key = ENCRYPTION_KEY;
+        $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Generate a random IV
+        $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+        return base64_encode($iv . $encrypted); // Store IV and encrypted data together
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,9 +172,9 @@
                                             <tr class="school-row">
                                             <th scope="row"><h6 style="color: grey; margin-top: 7px;"><?php echo $number; ?></h6></th>
                                             <td><img src="<?php echo $getData['profile_img']; ?>" alt="admin picture" style="width: 30px; height: 30px;"></td>
-                                            <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['name']; ?></h6></td>
-                                            <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['school_role']; ?></h6></td>
-                                            <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo $getData['school']; ?></h6></td>
+                                            <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo decryptData($getData['name']); ?></h6></td>
+                                            <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo decryptData($getData['school_role']); ?></h6></td>
+                                            <td class="school-name"><h6 style="color: grey; margin-top: 7px;"><?php echo decryptData($getData['school']); ?></h6></td>
                                                 <td>
                                                     <div>                
                                                         <!-- Button to open the modal -->
@@ -186,7 +208,7 @@
                                             ?>
                                             <!-- Placeholder row for "No results found" -->
                                             <tr id="noResultsRow" style="display: none;">
-                                                <td colspan="4" class="text-center" style="background-color: red; color: white; font-weight: bolder;">No results found</td>
+                                                <td colspan="6" class="text-center" style="background-color: red; color: white; font-weight: bolder;">No results found</td>
                                             </tr>
                                         </tbody>
 
