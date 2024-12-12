@@ -1,6 +1,6 @@
 <?php
 // Include the PHPMailer library
-require 'vendor/autoload.php'; // Make sure PHPMailer is installed using Composer
+// require 'vendor/autoload.php'; // Make sure PHPMailer is installed using Composer
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -29,41 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
-    $email = $_POST['email'];
 
-    // Create PHPMailer instance
-    $mail = new PHPMailer(true);
-    try {
-        // Set up Yahoo SMTP configuration
-        $mail->isSMTP();
-        $mail->Host       = 'smtp.mail.yahoo.com';  // Yahoo SMTP server
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'lovelyguzmana@myyahoo.com';  // Your Yahoo email address
-        $mail->Password   = 'your-app-password';  // Your Yahoo App Password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;  // Use TLS encryption
-        $mail->Port       = 587;  // Use port 587 for TLS
-
-        // Sender and recipient
-        $mail->setFrom('your-email@yahoo.com', 'Alumni Tracer');
-        $mail->addAddress($email);  // Recipient's email
-
-        // Email content
-        $mail->isHTML(true);
-        $mail->Subject = 'Email Confirmation';
-        $mail->Body    = 'Please confirm your email by clicking <a href="http://localhost/verify?token=xyz">here</a>.';
-
-        // Send email
-        if($mail->send()) {
-            echo "A confirmation email has been sent to $email.";
-        } else {
-            echo "Error: Could not send the email.";
-        }
-    } catch (Exception $e) {
-        echo "Mailer Error: {$mail->ErrorInfo}";
-    }
-}
-$conn->close();
 ?>
 
 <!DOCTYPE html>
