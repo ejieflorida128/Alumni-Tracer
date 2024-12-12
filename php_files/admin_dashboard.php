@@ -98,11 +98,11 @@ $student_counts_json = json_encode($student_counts);
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
-        </div>
+        </div> -->
         <!-- Spinner End -->
 
 
@@ -216,7 +216,7 @@ $student_counts_json = json_encode($student_counts);
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                             <i class="fa fa-chart-bar fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Approved Alumni</p>
+                                <p class="mb-2">Alumni</p>
                                 <h6 class="mb-0"><?php echo $approvedAlumni["approved_alumni_count"]; ?></h6>
                             </div>
                         </div>
@@ -250,8 +250,8 @@ $student_counts_json = json_encode($student_counts);
                                 ?>
                                         <tr>
                                             <td><input class="form-check-input" type="checkbox"></td>
-                                            <td> <?php echo $response["name"]; ?> </td>
-                                            <td> <?php echo $response["degree"]; ?> </td>
+                                            <td> <?php echo decryptData($response["name"]); ?> </td>
+                                            <td> <?php echo decryptData($response["degree"]); ?> </td>
                                             <td> <?php echo $response["year_awarded"]; ?> </td>
                                             <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
                                         </tr>

@@ -2,6 +2,26 @@
 session_start();
 include("../connection/conn.php");
 
+define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
+function decryptData($encryptedData)
+{
+    $key = ENCRYPTION_KEY;
+    $data = base64_decode($encryptedData);
+    $ivLength = openssl_cipher_iv_length('aes-256-cbc');
+    $iv = substr($data, 0, $ivLength); // Extract the IV
+    $encrypted = substr($data, $ivLength); // Extract the encrypted data
+    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+}
+
+
+function encryptData($data)
+{
+    $key = ENCRYPTION_KEY;
+    $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Generate a random IV
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($iv . $encrypted); // Store IV and encrypted data together
+}
+
 // Assuming $conn is your database connection and $user_id is defined
 $user_id = $_GET['id'];  // Or use a different way to get the user_id
 
@@ -162,299 +182,375 @@ if ($userResult && mysqli_num_rows($userResult) > 0) {
                     <form method="POST" enctype="multipart/form-data">
 
 
-                        <!-- 0. Choose School -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="choose_school" class="form-label">Choose School: </label>
-                                <select name="choose_school" id="choose_school" class="form-control" required>
-                                    <option selected disabled hidden>Choose a School for Submission</option>
-                                    <?php
-                                    $schoolsQuery = "SELECT * FROM e_schools WHERE confirm_status = 'Approved'";
-                                    $schoolsResult = mysqli_query($conn, $schoolsQuery);
-
-                                    if ($schoolsResult) {
-                                        while ($schoolRow = mysqli_fetch_assoc($schoolsResult)) {
-                                            $selected = ($schoolRow['school_name'] == $userData['choose_school']) ? 'selected' : '';
-                                            echo '<option value="' . htmlspecialchars($schoolRow['school_name']) . '" ' . $selected . '>' . htmlspecialchars($schoolRow['school_name']) . '</option>';
-                                        }
-                                    } else {
-                                        echo '<option disabled>No schools available</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
+                          <!-- 1. Name -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="name" class="form-label">1. Name:</label>
+                            <input type="text" class="form-control" id="name" name="name" value = "<?php echo decryptData($userData['name']) ?>" required>
                         </div>
+                    </div>
 
-                        <!-- 1. Name -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="name" class="form-label">1. Name:</label>
-                                <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($userData['name']); ?>" required>
-                            </div>
+                   <!-- 2. Sex -->
+                   <div class="card mb-3">
+                        <div class="card-body">
+                            <label class="form-label">2. Sex:</label><br>
+                            <?php 
+                                // Decrypt the stored sex value from the database
+                                $selectedSex = decryptData($userData['sex']); 
+                            ?>
+                            <input type="radio" id="male" name="sex" value="Male" <?php echo ($selectedSex === 'Male') ? 'checked' : ''; ?>>
+                            <label for="male">Male</label><br>
+
+                            <input type="radio" id="female" name="sex" value="Female" <?php echo ($selectedSex === 'Female') ? 'checked' : ''; ?>>
+                            <label for="female">Female</label>
                         </div>
+                    </div>
 
-                        <!-- 2. Sex -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label class="form-label">2. Sex:</label><br>
-                                <input type="checkbox" id="male" name="sex[]" value="Male" <?php if ($userData['sex'] == 'Male') echo 'checked'; ?>>
-                                <label for="male">Male</label><br>
-                                <input type="checkbox" id="female" name="sex[]" value="Female" <?php if ($userData['sex'] == 'Female') echo 'checked'; ?>>
-                                <label for="female">Female</label>
-                            </div>
+
+
+
+                    <!-- 3. Age -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="age" class="form-label">3. Age:</label>
+                            <input type="number" class="form-control" id="age" name="age" value = "<?php echo $userData['age'] ?>" required>
                         </div>
+                    </div>
 
-                        <!-- 3. Age -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="age" class="form-label">3. Age:</label>
-                                <input type="number" class="form-control" id="age" name="age" value="<?php echo htmlspecialchars($userData['age']); ?>" required>
-                            </div>
+                    <!-- 4. Degree Title -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="degree" class="form-label">4. Title (with major) of degree received at SLSU-TO:</label>
+                            <input type="text" class="form-control" id="degree" name="degree" value = "<?php echo decryptData($userData['degree']) ?>" required>
                         </div>
+                    </div>
 
-                        <!-- 4. Degree Title -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="degree" class="form-label">4. Title (with major) of degree received at SLSU-TO:</label>
-                                <input type="text" class="form-control" id="degree" name="degree" value="<?php echo htmlspecialchars($userData['degree']); ?>" required>
-                            </div>
+                    <!-- 5. Year Awarded Degree -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="year_awarded" class="form-label">5. Year awarded degree:</label>
+                            <input type="text" class="form-control" id="year_awarded" name="year_awarded" value = "<?php echo $userData['year_awarded'] ?>" required>
                         </div>
+                    </div>
 
-                        <!-- 5. Year Awarded Degree -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="year_awarded" class="form-label">5. Year awarded degree:</label>
-                                <input type="text" class="form-control" id="year_awarded" name="year_awarded" value="<?php echo htmlspecialchars($userData['year_awarded']); ?>" required>
-                            </div>
+                    <!-- 6. Are you currently taking studies? -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label class="form-label">6. Are you currently taking studies? (e.g. Masters of Science in Information Technology)</label><br>
+                            <?php 
+                                $selectedStudy = decryptData($userData['current_study']); // Assuming the value is stored in $userData['current_study']
+                            ?>
+                            <input type="radio" id="yes_study" name="current_study" value="Yes" <?php echo ($selectedStudy === 'Yes') ? 'checked' : ''; ?>>
+                            <label for="yes_study">Yes</label><br>
+                            
+                            <input type="radio" id="no_study" name="current_study" value="No" <?php echo ($selectedStudy === 'No') ? 'checked' : ''; ?>>
+                            <label for="no_study">No</label>
                         </div>
+                    </div>
 
-                        <!-- 6. Are you currently taking studies? -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label class="form-label">6. Are you currently taking studies? (e.g. Masters of Science in Information Technology)</label><br>
-                                <input type="checkbox" id="yes_study" name="current_study[]" value="Yes" <?php if ($userData['current_study'] == 'Yes') echo 'checked'; ?>>
-                                <label for="yes_study">Yes</label><br>
-                                <input type="checkbox" id="no_study" name="current_study[]" value="No" <?php if ($userData['current_study'] == 'No') echo 'checked'; ?>>
-                                <label for="no_study">No</label>
-                            </div>
+
+                    <!-- 7. If No, Job Contemplation -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="if_no_jobs" class="form-label">7. If No, What type of jobs were you contemplating by choosing your degree from SLSU-TO?</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="if_no_jobs" 
+                                name="if_no_jobs" 
+                                value="<?php echo isset($userData['if_no_jobs']) ? htmlspecialchars(decryptData($userData['if_no_jobs'])) : ''; ?>"
+                            >
                         </div>
-                        <!-- 7. If No, Job Contemplation -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="if_no_jobs" class="form-label">7. If No, What type of jobs were you contemplating by choosing your degree from SLSU-TO?</label>
-                                <input type="text" class="form-control" id="if_no_jobs" name="if_no_jobs" value="<?php echo htmlspecialchars($userData['if_no_jobs']); ?>">
-                            </div>
+                    </div>
+
+
+                    <!-- 8. If YES, Details -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="if_yes_details" class="form-label">8. If YES, please give details as follows: Title of Programme (in full), Institution(s), Period Enrolled (from-to), Attendance Full Time/Part Time/Correspondence and Distance Education, Source of Funding</label>
+                            <textarea 
+                                class="form-control" 
+                                id="if_yes_details" 
+                                name="if_yes_details"
+                            ><?php echo isset($userData['if_yes_details']) ? htmlspecialchars(decryptData($userData['if_yes_details'])) : ''; ?></textarea>
                         </div>
+                    </div>
 
-                       <!-- 8. If YES, Details -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="if_yes_details" class="form-label">8. If YES, please give details as follows: Title of Programme (in full), Institution(s), Period Enrolled (from-to), Attendance Full Time/Part Time/Correspondence and Distance Education, Source of Funding</label>
-                                <textarea class="form-control" id="if_yes_details" name="if_yes_details"><?php echo htmlspecialchars($userData['if_yes_details'] ?? 'None'); ?></textarea>
-                            </div>
+                    <!-- 9. Reasons for Pursuing Further Studies -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="pursue_reasons" class="form-label">9. Main reasons for pursuing further studies:</label>
+                            <textarea 
+                                class="form-control" 
+                                id="pursue_reasons" 
+                                name="pursue_reasons"
+                            ><?php echo isset($userData['pursue_reasons']) ? htmlspecialchars(decryptData($userData['pursue_reasons'])) : ''; ?></textarea>
                         </div>
+                    </div>
 
 
-                        <!-- 9. Reasons for Pursuing Further Studies -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="pursue_reasons" class="form-label">9. Main reasons for pursuing further studies:</label>
-                                <textarea class="form-control" id="pursue_reasons" name="pursue_reasons"><?php echo htmlspecialchars($userData['pursue_reasons']); ?></textarea>
-                            </div>
+                    <!-- 10. Current Paid Work Position -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label class="form-label">10. Which one of the following best describes your current position with regard to paid work?</label><br>
+                            
+                            <input type="radio" name="current_position[]" value="Working full-time" 
+                                <?php echo (isset($userData['current_position']) && decryptData($userData['current_position']) == 'Working full-time') ? 'checked' : ''; ?>>
+                            <label>Working full-time</label><br>
+
+                            <input type="radio" name="current_position[]" value="Working part-time but seeking full-time work" 
+                                <?php echo (isset($userData['current_position']) && decryptData($userData['current_position']) == 'Working part-time but seeking full-time work') ? 'checked' : ''; ?>>
+                            <label>Working part-time but seeking full-time work</label><br>
+
+                            <input type="radio" name="current_position[]" value="Self-employed" 
+                                <?php echo (isset($userData['current_position']) && decryptData($userData['current_position']) == 'Self-employed') ? 'checked' : ''; ?>>
+                            <label>Self-employed</label><br>
+
+                            <input type="radio" name="current_position[]" value="Not working and looking for a job" 
+                                <?php echo (isset($userData['current_position']) && decryptData($userData['current_position']) == 'Not working and looking for a job') ? 'checked' : ''; ?>>
+                            <label>Not working and looking for a job</label><br>
+
+                            <input type="radio" name="current_position[]" value="Not working and unavailable for paid work" 
+                                <?php echo (isset($userData['current_position']) && decryptData($userData['current_position']) == 'Not working and unavailable for paid work') ? 'checked' : ''; ?>>
+                            <label>Not working and unavailable for paid work</label><br>
+
+                            <input type="radio" name="current_position[]" value="Others:" 
+                                <?php echo (isset($userData['current_position']) && decryptData($userData['current_position']) == 'Others:') ? 'checked' : ''; ?>>
+                            <label>Others:</label>
+                            <input type="text" class="form-control" name="other_position[]" 
+                                value="<?php echo isset($userData['other_position']) ? htmlspecialchars(decryptData($userData['other_position'])) : ''; ?>">
                         </div>
+                    </div>
 
-                        <!-- 10. Current Paid Work Position -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label class="form-label">10. Which one of the following best describes your current position with regard to paid work?</label><br>
-                                <?php
-                                $current_positions = explode(',', $userData['current_position']);
-                                ?>
-                                <input type="checkbox" name="current_position[]" value="Working full-time" <?php if (in_array('Working full-time', $current_positions)) echo 'checked'; ?>>
-                                <label>Working full-time</label><br>
-                                <input type="checkbox" name="current_position[]" value="Working part-time but seeking full-time work" <?php if (in_array('Working part-time but seeking full-time work', $current_positions)) echo 'checked'; ?>>
-                                <label>Working part-time but seeking full-time work</label><br>
-                                <input type="checkbox" name="current_position[]" value="Self-employed" <?php if (in_array('Self-employed', $current_positions)) echo 'checked'; ?>>
-                                <label>Self-employed</label><br>
-                                <input type="checkbox" name="current_position[]" value="Not working and looking for a job" <?php if (in_array('Not working and looking for a job', $current_positions)) echo 'checked'; ?>>
-                                <label>Not working and looking for a job</label><br>
-                                <input type="checkbox" name="current_position[]" value="Not working and unavailable for paid work" <?php if (in_array('Not working and unavailable for paid work', $current_positions)) echo 'checked'; ?>>
-                                <label>Not working and unavailable for paid work</label><br>
-                                <input type="checkbox" name="current_position[]" value="Others:" <?php if (in_array('Others:', $current_positions)) echo 'checked'; ?>>
-                                <label>Others:</label>
-                                <input type="text" class="form-control" name="other_position[]" value="<?php echo htmlspecialchars($userData['other_position']); ?>">
-                            </div>
-                        </div>
 
-                        <!-- 11. Time to Find a Job -->
-                        <div class="card mb-3">
+
+                    <!-- 11. Time to Find a Job -->
+                    <div class="card mb-3">
                             <div class="card-body">
                                 <label for="time_to_job" class="form-label">11. How long did you work in your first job after obtaining your degree?</label><br>
-                                <?php
-                                $time_to_job = explode(',', $userData['time_to_job']);
-                                ?>
-                                <input type="checkbox" name="time_to_job[]" value="0 to 6 months" <?php if (in_array('0 to 6 months', $time_to_job)) echo 'checked'; ?>>
+                                
+                                <input type="radio" name="time_to_job[]" value="0 to 6 months" 
+                                    <?php echo (isset($userData['time_to_job']) && decryptData($userData['time_to_job']) == '0 to 6 months') ? 'checked' : ''; ?>>
                                 <label>0 to 6 months</label><br>
-                                <input type="checkbox" name="time_to_job[]" value="7 months to 1 year" <?php if (in_array('7 months to 1 year', $time_to_job)) echo 'checked'; ?>>
+                                
+                                <input type="radio" name="time_to_job[]" value="7 months to 1 year" 
+                                    <?php echo (isset($userData['time_to_job']) && decryptData($userData['time_to_job']) == '7 months to 1 year') ? 'checked' : ''; ?>>
                                 <label>7 months to 1 year</label><br>
-                                <input type="checkbox" name="time_to_job[]" value="1 to 3 years" <?php if (in_array('1 to 3 years', $time_to_job)) echo 'checked'; ?>>
+                                
+                                <input type="radio" name="time_to_job[]" value="1 to 3 years" 
+                                    <?php echo (isset($userData['time_to_job']) && decryptData($userData['time_to_job']) == '1 to 3 years') ? 'checked' : ''; ?>>
                                 <label>1 to 3 years</label><br>
-                                <input type="checkbox" name="time_to_job[]" value="3 to 5 years" <?php if (in_array('3 to 5 years', $time_to_job)) echo 'checked'; ?>>
+                                
+                                <input type="radio" name="time_to_job[]" value="3 to 5 years" 
+                                    <?php echo (isset($userData['time_to_job']) && decryptData($userData['time_to_job']) == '3 to 5 years') ? 'checked' : ''; ?>>
                                 <label>3 to 5 years</label><br>
-                                <input type="checkbox" name="time_to_job[]" value="Over 5 years" <?php if (in_array('Over 5 years', $time_to_job)) echo 'checked'; ?>>
+                                
+                                <input type="radio" name="time_to_job[]" value="Over 5 years" 
+                                    <?php echo (isset($userData['time_to_job']) && decryptData($userData['time_to_job']) == 'Over 5 years') ? 'checked' : ''; ?>>
                                 <label>Over 5 years</label><br>
                             </div>
                         </div>
 
-                        <!-- 12. Time Gap Between Degree and Employment -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="time_gap" class="form-label">12. Please give reasons for any time gap between obtaining your degree and your first employment:</label>
-                                <textarea class="form-control" id="time_gap" name="time_gap"><?php echo htmlspecialchars($userData['time_gap']); ?></textarea>
-                            </div>
-                        </div>
 
-                        <!-- 13. Employment History -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="employment_history" class="form-label">13. Employment history (since obtaining first degree up to present employment): (Name of Employer, If self-employed, please state area of activity, Period employed (From-To), Post held, Reasons for leaving job (where applicable)</label>
-                                <textarea class="form-control" id="employment_history" name="employment_history"><?php echo htmlspecialchars($userData['employment_history']); ?></textarea>
-                            </div>
+                    <!-- 12. Time Gap Between Degree and Employment -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="time_gap" class="form-label">12. Please give reasons for any time gap between obtaining your degree and your first employment:</label>
+                            <textarea class="form-control" id="time_gap" name="time_gap"><?php echo isset($userData['time_gap']) ? htmlspecialchars(decryptData($userData['time_gap'])) : ''; ?></textarea>
                         </div>
+                    </div>
 
-                        <!-- 14. How did you come to know about your current job? -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label class="form-label">14. How did you come to know about your current job?</label><br>
-                                <?php
-                                $job_info_source = explode(',', $userData['job_info_source']);
-                                ?>
-                                <input type="checkbox" name="job_info_source[]" value="Through friends" <?php if (in_array('Through friends', $job_info_source)) echo 'checked'; ?>>
-                                <label>Through friends</label><br>
-                                <input type="checkbox" name="job_info_source[]" value="Through relatives" <?php if (in_array('Through relatives', $job_info_source)) echo 'checked'; ?>>
-                                <label>Through relatives</label><br>
-                                <input type="checkbox" name="job_info_source[]" value="Through written enquiries" <?php if (in_array('Through written enquiries', $job_info_source)) echo 'checked'; ?>>
-                                <label>Through written enquiries</label><br>
-                                <input type="checkbox" name="job_info_source[]" value="Press advertisement" <?php if (in_array('Press advertisement', $job_info_source)) echo 'checked'; ?>>
-                                <label>Press advertisement</label><br>
-                                <input type="checkbox" name="job_info_source[]" value="Others:" <?php if (in_array('Others:', $job_info_source)) echo 'checked'; ?>>
-                                <label>Others:</label>
-                                <input type="text" class="form-control" name="other_job_info[]" value="<?php echo htmlspecialchars($userData['other_job_info']); ?>">
-                            </div>
+
+                    <!-- 13. Employment History -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="employment_history" class="form-label">13. Employment history (since obtaining first degree up to present employment): (Name of Employer, If self-employed, please state area of activity, Period employed (From-To), Post held, Reasons for leaving job (where applicable)</label>
+                            <textarea class="form-control" id="employment_history" name="employment_history"><?php echo isset($userData['employment_history']) ? htmlspecialchars(decryptData($userData['employment_history'])) : ''; ?></textarea>
                         </div>
+                    </div>
 
-                        <!-- 15. Qualifications and other attributes required for the job -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="job_qualifications" class="form-label">15. Qualifications and other attributes required for the job:</label>
-                                <textarea class="form-control" id="job_qualifications" name="job_qualifications"><?php echo htmlspecialchars($userData['job_qualifications']); ?></textarea>
-                            </div>
+
+                    <!-- 14. How did you come to know about your current job? -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label class="form-label">14. How did you come to know about your current job?</label><br>
+
+                            <!-- Through friends -->
+                            <input type="radio" name="job_info_source[]" value="Through friends" 
+                                <?php echo (isset($userData['job_info_source']) && decryptData($userData['job_info_source']) == 'Through friends') ? 'checked' : ''; ?>>
+                            <label>Through friends</label><br>
+
+                            <!-- Through relatives -->
+                            <input type="radio" name="job_info_source[]" value="Through relatives" 
+                                <?php echo (isset($userData['job_info_source']) && decryptData($userData['job_info_source']) == 'Through relatives') ? 'checked' : ''; ?>>
+                            <label>Through relatives</label><br>
+
+                            <!-- Through written enquiries -->
+                            <input type="radio" name="job_info_source[]" value="Through written enquiries" 
+                                <?php echo (isset($userData['job_info_source']) && decryptData($userData['job_info_source']) == 'Through written enquiries') ? 'checked' : ''; ?>>
+                            <label>Through written enquiries</label><br>
+
+                            <!-- Press advertisement -->
+                            <input type="radio" name="job_info_source[]" value="Press advertisement" 
+                                <?php echo (isset($userData['job_info_source']) && decryptData($userData['job_info_source']) == 'Press advertisement') ? 'checked' : ''; ?>>
+                            <label>Press advertisement</label><br>
+
+                            <!-- Others -->
+                            <input type="radio" name="job_info_source[]" value="Others:" 
+                                <?php echo (isset($userData['job_info_source']) && decryptData($userData['job_info_source']) == 'Others:') ? 'checked' : ''; ?>>
+                            <label>Others:</label>
+                            <input type="text" class="form-control" name="other_job_info[]" value="<?php echo (isset($userData['other_job_info']) ? decryptData($userData['other_job_info']) : ''); ?>">
                         </div>
+                    </div>
 
-                        <!-- 16. Gross monthly salary -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="gross_salary" class="form-label">16. Gross monthly salary:</label>
-                                <input type="text" class="form-control" id="gross_salary" name="gross_salary" value="<?php echo htmlspecialchars($userData['gross_salary']); ?>">
-                            </div>
+
+                    <!-- 15. Qualifications and other attributes required for the job -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="job_qualifications" class="form-label">15. Qualifications and other attributes required for the job:</label>
+                            <textarea class="form-control" id="job_qualifications" name="job_qualifications"><?php echo (isset($userData['job_qualifications']) ? decryptData($userData['job_qualifications']) : ''); ?></textarea>
                         </div>
+                    </div>
 
-                        <!-- 17. Other benefits attached to the job -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="job_benefits" class="form-label">17. Please list any other benefits attached to the job:</label>
-                                <textarea class="form-control" id="job_benefits" name="job_benefits"><?php echo htmlspecialchars($userData['job_benefits']); ?></textarea>
-                            </div>
+
+                    <!-- 16. Gross monthly salary -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="gross_salary" class="form-label">16. Gross monthly salary:</label>
+                            <input type="text" class="form-control" id="gross_salary" name="gross_salary" 
+                            value="<?php echo isset($userData['gross_salary']) ? $userData['gross_salary'] : ''; ?>">
                         </div>
+                    </div>
 
-                        <!-- 18. Location of place of work -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="work_location" class="form-label">18. Location of place of work:</label>
-                                <input type="text" class="form-control" id="work_location" name="work_location" value="<?php echo htmlspecialchars($userData['work_location']); ?>">
-                            </div>
+
+                    <!-- 17. Other benefits attached to the job -->
+                  <div class="card mb-3">
+                    <div class="card-body">
+                        <label for="job_benefits" class="form-label">17. Please list any other benefits attached to the job:</label>
+                        <textarea class="form-control" id="job_benefits" name="job_benefits"><?php echo (isset($userData['job_benefits']) ? decryptData($userData['job_benefits']) : ''); ?></textarea>
+                    </div>
+                </div>
+
+
+                    <!-- 18. Location of place of work -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="work_location" class="form-label">18. Location of place of work:</label>
+                            <input type="text" class="form-control" id="work_location" name="work_location" 
+                                value="<?php echo (isset($userData['work_location']) ? decryptData($userData['work_location']) : ''); ?>">
                         </div>
+                    </div>
 
-                        <!-- 19. Number of employees -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label class="form-label">19. Number of employees (approximately):</label><br>
-                                <?php
-                                $num_employees = explode(',', $userData['num_employees']);
-                                ?>
-                                <input type="checkbox" name="num_employees[]" value="Less than 10" <?php if (in_array('Less than 10', $num_employees)) echo 'checked'; ?>>
-                                <label>Less than 10</label><br>
-                                <input type="checkbox" name="num_employees[]" value="11 to 50" <?php if (in_array('11 to 50', $num_employees)) echo 'checked'; ?>>
-                                <label>11 to 50</label><br>
-                                <input type="checkbox" name="num_employees[]" value="51 to 200" <?php if (in_array('51 to 200', $num_employees)) echo 'checked'; ?>>
-                                <label>51 to 200</label><br>
-                                <input type="checkbox" name="num_employees[]" value="Over 200" <?php if (in_array('Over 200', $num_employees)) echo 'checked'; ?>>
-                                <label>Over 200</label>
-                            </div>
+
+                    <!-- 19. Number of employees -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="num_employees" class="form-label">19. Number of employees (approximately):</label><br>
+                            <input type="radio" id="less_10" name="num_employees[]" value="Less than 10" 
+                                <?php echo (isset($userData['num_employees']) && decryptData($userData['num_employees']) == 'Less than 10') ? 'checked' : ''; ?>>
+                            <label for="less_10">Less than 10</label><br>
+
+                            <input type="radio" id="11_50" name="num_employees[]" value="11 to 50" 
+                                <?php echo (isset($userData['num_employees']) && decryptData($userData['num_employees']) == '11 to 50') ? 'checked' : ''; ?>>
+                            <label for="11_50">11 to 50</label><br>
+
+                            <input type="radio" id="51_200" name="num_employees[]" value="51 to 200" 
+                                <?php echo (isset($userData['num_employees']) && decryptData($userData['num_employees']) == '51 to 200') ? 'checked' : ''; ?>>
+                            <label for="51_200">51 to 200</label><br>
+
+                            <input type="radio" id="over_200" name="num_employees[]" value="Over 200" 
+                                <?php echo (isset($userData['num_employees']) && decryptData($userData['num_employees']) == 'Over 200') ? 'checked' : ''; ?>>
+                            <label for="over_200">Over 200</label>
                         </div>
+                    </div>
 
-                        <!-- 20. Nature of work performed -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="work_nature" class="form-label">20. Nature of work performed:</label><br>
-                                <?php
-                                $work_nature = explode(',', $userData['work_nature']);
-                                ?>
-                                <input type="checkbox" id="managerial" name="work_nature[]" value="Managerial" <?php if (in_array('Managerial', $work_nature)) echo 'checked'; ?>>
-                                <label for="managerial">Managerial</label><br>
-                                <input type="checkbox" id="clerical" name="work_nature[]" value="Clerical" <?php if (in_array('Clerical', $work_nature)) echo 'checked'; ?>>
-                                <label for="clerical">Clerical</label><br>
-                                <input type="checkbox" id="supervisory" name="work_nature[]" value="Supervisory" <?php if (in_array('Supervisory', $work_nature)) echo 'checked'; ?>>
-                                <label for="supervisory">Supervisory</label><br>
-                                <input type="checkbox" id="support" name="work_nature[]" value="Support Service" <?php if (in_array('Support Service', $work_nature)) echo 'checked'; ?>>
-                                <label for="support">Support Service</label><br>
-                                <input type="checkbox" id="other_work_nature" name="work_nature[]" value="Other:" <?php if (in_array('Other:', $work_nature)) echo 'checked'; ?>>
-                                <label for="other_work_nature">Other:</label>
-                                <input type="text" class="form-control" id="other_work_nature_text" name="other_work_nature_text[]" value="<?php echo htmlspecialchars($userData['other_work_nature_text']); ?>">
-                            </div>
+
+                    <!-- 20. Nature of work performed -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="work_nature" class="form-label">20. Nature of work performed:</label><br>
+
+                            <input type="radio" id="managerial" name="work_nature[]" value="Managerial" 
+                                <?php echo (isset($userData['work_nature']) && decryptData($userData['work_nature']) == 'Managerial') ? 'checked' : ''; ?>>
+                            <label for="managerial">Managerial</label><br>
+
+                            <input type="radio" id="clerical" name="work_nature[]" value="Clerical" 
+                                <?php echo (isset($userData['work_nature']) && decryptData($userData['work_nature']) == 'Clerical') ? 'checked' : ''; ?>>
+                            <label for="clerical">Clerical</label><br>
+
+                            <input type="radio" id="supervisory" name="work_nature[]" value="Supervisory" 
+                                <?php echo (isset($userData['work_nature']) && decryptData($userData['work_nature']) == 'Supervisory') ? 'checked' : ''; ?>>
+                            <label for="supervisory">Supervisory</label><br>
+
+                            <input type="radio" id="support" name="work_nature[]" value="Support Service" 
+                                <?php echo (isset($userData['work_nature']) && decryptData($userData['work_nature']) == 'Support Service') ? 'checked' : ''; ?>>
+                            <label for="support">Support Service</label><br>
+
+                            <input type="radio" id="other_work_nature" name="work_nature[]" value="Other:" 
+                                <?php echo (isset($userData['work_nature']) && decryptData($userData['work_nature']) == 'Other:') ? 'checked' : ''; ?>>
+                            <label for="other_work_nature">Other:</label>
+                            <input type="text" class="form-control" id="other_work_nature_text" name="other_work_nature_text[]"
+                                <?php echo (isset($userData['other_work_nature_text'])) ? 'value="' . decryptData($userData['other_work_nature_text']) . '"' : ''; ?>>
                         </div>
+                    </div>
 
-                        <!-- 21. Proof of Work Duration -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="proof_image" class="form-label">21. Upload proof of work (Ex. Company ID):</label>
-                                <input type="file" class="form-control" id="proof_image" name="proof_image" accept="image/*">
-                                <small class="form-text text-muted">Accepted formats: JPG, JPEG, PNG, GIF. Max size: 5MB.</small>
-                            </div>
+
+                    <!-- 21. Proof of Work Duration -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label for="proof_image" class="form-label">21. Upload proof of work (Ex. Company ID):</label>
+                            <!-- <input type="file" class="form-control" id="proof_image" name="proof_image" accept="image/*">
+                            <small class="form-text text-muted">Accepted formats: JPG, JPEG, PNG, GIF. Max size: 5MB.</small> -->
+                            
+                            <!-- Display the uploaded image if available -->
+                            <?php if (isset($userData['proof_image']) && !empty($userData['proof_image'])): ?>
+                                <div class="mt-3">
+                                    <label>Uploaded Proof Image:</label><br>
+                                    <img src="<?php echo $userData['proof_image']; ?>" alt="Proof Image" style="max-width: 200px; height: auto;">
+                                </div>
+                            <?php endif; ?>
                         </div>
+                    </div>
 
-                        <!-- 22. Do you face any major problem in your job assignments? -->
-                        <div class="card mb-3">
+
+
+
+                    <!-- 22. Do you face any major problem in your job assignments? -->
+                    <div class="card mb-3">
                             <div class="card-body">
                                 <label class="form-label">22. Do you face any major problem in your job assignments?</label><br>
-                                <?php
-                                $job_problems = explode(',', $userData['job_problem']);
-                                ?>
-                                <input type="checkbox" id="job_problem_yes" name="job_problem[]" value="Yes" <?php if (in_array('Yes', $job_problems)) echo 'checked'; ?>>
+                                
+                                <input type="radio" id="job_problem_yes" name="job_problem[]" value="Yes" 
+                                    <?php echo (isset($userData['job_problem']) && decryptData($userData['job_problem']) == 'Yes') ? 'checked' : ''; ?>>
                                 <label for="job_problem_yes">Yes</label><br>
-                                <input type="checkbox" id="job_problem_no" name="job_problem[]" value="No" <?php if (in_array('No', $job_problems)) echo 'checked'; ?>>
+
+                                <input type="radio" id="job_problem_no" name="job_problem[]" value="No" 
+                                    <?php echo (isset($userData['job_problem']) && decryptData($userData['job_problem']) == 'No') ? 'checked' : ''; ?>>
                                 <label for="job_problem_no">No</label>
                             </div>
                         </div>
 
-                        <!-- 23. If yes, please elaborate -->
-                        <div class="card mb-3">
+
+                    <!-- 23. If yes, please elaborate -->
+                    <div class="card mb-3">
                             <div class="card-body">
                                 <label for="problem_elaboration" class="form-label">23. If yes, please elaborate:</label>
-                                <textarea class="form-control" id="problem_elaboration" name="problem_elaboration"><?php echo htmlspecialchars($userData['problem_elaboration']); ?></textarea>
+                                <textarea class="form-control" id="problem_elaboration" name="problem_elaboration"><?php echo isset($userData['problem_elaboration']) ? htmlspecialchars(decryptData($userData['problem_elaboration'])) : ''; ?></textarea>
                             </div>
                         </div>
 
-                        <!-- 24. If you are self-employed, what made you decide to become self-employed? -->
-                        <div class="card mb-3">
+
+                    <!-- 24. If you are self-employed, what made you decide to become self-employed? -->
+                    <div class="card mb-3">
                             <div class="card-body">
                                 <label for="self_employed_reason" class="form-label">24. If you are self-employed, what made you decide to become self-employed?</label>
-                                <textarea class="form-control" id="self_employed_reason" name="self_employed_reason"><?php echo htmlspecialchars($userData['self_employed_reason']); ?></textarea>
+                                <textarea class="form-control" id="self_employed_reason" name="self_employed_reason"><?php echo isset($userData['self_employed_reason']) ? htmlspecialchars(decryptData($userData['self_employed_reason'])) : ''; ?></textarea>
                             </div>
                         </div>
 
-                        <!-- 25. Contribution of SLSU program to personal knowledge, skills, and attitudes -->
-                        <div class="card mb-3">
+
+                    <!-- 25. Contribution of SLSU program to personal knowledge, skills, and attitudes -->
+                    <div class="card mb-3">
                             <div class="card-body">
                                 <label class="form-label">25. How would you rate the contribution of your programme of study at SLSU-TO to your personal knowledge, skills and attitudes? (Tick as appropriate)</label>
                                 <table class="table table-bordered">
@@ -468,190 +564,294 @@ if ($userResult && mysqli_num_rows($userResult) > 0) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php
-                                        $attributes = [
-                                            'knowledge_enhance',
-                                            'problem_solving',
-                                            'research_skills',
-                                            'learning_efficiency',
-                                            'communication_skills',
-                                            'more_inclined',
-                                            'team_spirit'
-                                        ];
-
-                                        foreach ($attributes as $attribute) {
-                                            $rating = explode(',', $userData[strtolower(str_replace(' ', '_', $attribute))]);
-                                            echo "<tr>
-                        <td>$attribute</td>
-                        <td><input type='checkbox' name='" . strtolower(str_replace(' ', '_', $attribute)) . "' value='Very much' " . (in_array('Very much', $rating) ? 'checked' : '') . "></td>
-                        <td><input type='checkbox' name='" . strtolower(str_replace(' ', '_', $attribute)) . "' value='Much' " . (in_array('Much', $rating) ? 'checked' : '') . "></td>
-                        <td><input type='checkbox' name='" . strtolower(str_replace(' ', '_', $attribute)) . "' value='A little' " . (in_array('A little', $rating) ? 'checked' : '') . "></td>
-                        <td><input type='checkbox' name='" . strtolower(str_replace(' ', '_', $attribute)) . "' value='Not at all' " . (in_array('Not at all', $rating) ? 'checked' : '') . "></td>
-                    </tr>";
-                                        }
-                                        ?>
+                                        <tr>
+                                            <td>Enhanced academic knowledge</td>
+                                            <td><input type="radio" name="knowledge_enhance" value="Very much" <?php echo (decryptData($userData['knowledge_enhance']) == 'Very much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="knowledge_enhance" value="Much" <?php echo (decryptData($userData['knowledge_enhance']) == 'Much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="knowledge_enhance" value="A little" <?php echo (decryptData($userData['knowledge_enhance']) == 'A little') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="knowledge_enhance" value="Not at all" <?php echo (decryptData($userData['knowledge_enhance']) == 'Not at all') ? 'checked' : ''; ?>></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Improved problem-solving skills</td>
+                                            <td><input type="radio" name="problem_solving" value="Very much" <?php echo (decryptData($userData['problem_solving']) == 'Very much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="problem_solving" value="Much" <?php echo (decryptData($userData['problem_solving']) == 'Much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="problem_solving" value="A little" <?php echo (decryptData($userData['problem_solving']) == 'A little') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="problem_solving" value="Not at all" <?php echo (decryptData($userData['problem_solving']) == 'Not at all') ? 'checked' : ''; ?>></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Improved research skills</td>
+                                            <td><input type="radio" name="research_skills" value="Very much" <?php echo (decryptData($userData['research_skills']) == 'Very much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="research_skills" value="Much" <?php echo (decryptData($userData['research_skills']) == 'Much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="research_skills" value="A little" <?php echo (decryptData($userData['research_skills']) == 'A little') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="research_skills" value="Not at all" <?php echo (decryptData($userData['research_skills']) == 'Not at all') ? 'checked' : ''; ?>></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Improved learning efficiency</td>
+                                            <td><input type="radio" name="learning_efficiency" value="Very much" <?php echo (decryptData($userData['learning_efficiency']) == 'Very much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="learning_efficiency" value="Much" <?php echo (decryptData($userData['learning_efficiency']) == 'Much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="learning_efficiency" value="A little" <?php echo (decryptData($userData['learning_efficiency']) == 'A little') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="learning_efficiency" value="Not at all" <?php echo (decryptData($userData['learning_efficiency']) == 'Not at all') ? 'checked' : ''; ?>></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Improved communication skills</td>
+                                            <td><input type="radio" name="communication_skills" value="Very much" <?php echo (decryptData($userData['communication_skills']) == 'Very much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="communication_skills" value="Much" <?php echo (decryptData($userData['communication_skills']) == 'Much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="communication_skills" value="A little" <?php echo (decryptData($userData['communication_skills']) == 'A little') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="communication_skills" value="Not at all" <?php echo (decryptData($userData['communication_skills']) == 'Not at all') ? 'checked' : ''; ?>></td>
+                                        </tr>
+                                        <tr>
+                                            <td>More inclined to put up own business</td>
+                                            <td><input type="radio" name="more_inclined" value="Very much" <?php echo (decryptData($userData['more_inclined']) == 'Very much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="more_inclined" value="Much" <?php echo (decryptData($userData['more_inclined']) == 'Much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="more_inclined" value="A little" <?php echo (decryptData($userData['more_inclined']) == 'A little') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="more_inclined" value="Not at all" <?php echo (decryptData($userData['more_inclined']) == 'Not at all') ? 'checked' : ''; ?>></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Enhanced team spirit</td>
+                                            <td><input type="radio" name="team_spirit" value="Very much" <?php echo (decryptData($userData['team_spirit']) == 'Very much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="team_spirit" value="Much" <?php echo (decryptData($userData['team_spirit']) == 'Much') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="team_spirit" value="A little" <?php echo (decryptData($userData['team_spirit']) == 'A little') ? 'checked' : ''; ?>></td>
+                                            <td><input type="radio" name="team_spirit" value="Not at all" <?php echo (decryptData($userData['team_spirit']) == 'Not at all') ? 'checked' : ''; ?>></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <!-- 26. Relevance of program to current job -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label class="form-label">26. Was your program of study at SLSU relevant to your present job?</label><br>
-                                <?php
-                                $job_relevance = explode(',', $userData['job_relevance']);
-                                ?>
-                                <input type="checkbox" id="relevance_very_much" name="job_relevance[]" value="Very much" <?php if (in_array('Very much', $job_relevance)) echo 'checked'; ?>>
-                                <label for="relevance_very_much">Very much</label><br>
-                                <input type="checkbox" id="relevance_much" name="job_relevance[]" value="Much" <?php if (in_array('Much', $job_relevance)) echo 'checked'; ?>>
-                                <label for="relevance_much">Much</label><br>
-                                <input type="checkbox" id="relevance_little" name="job_relevance[]" value="A little" <?php if (in_array('A little', $job_relevance)) echo 'checked'; ?>>
-                                <label for="relevance_little">A little</label><br>
-                                <input type="checkbox" id="relevance_not" name="job_relevance[]" value="Not at all" <?php if (in_array('Not at all', $job_relevance)) echo 'checked'; ?>>
-                                <label for="relevance_not">Not at all</label>
-                            </div>
-                        </div>
 
-                        <!-- 27. Have you tried applying for a position relevant to your course? -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label class="form-label">27. Have you tried applying for a position relevant to your course?</label><br>
-                                <?php
-                                $applied_course = explode(',', $userData['applied_course']);
-                                ?>
-                                <input type="checkbox" id="applied_yes" name="applied_course[]" value="Yes" <?php if (in_array('Yes', $applied_course)) echo 'checked'; ?>>
-                                <label for="applied_yes">Yes</label><br>
-                                <input type="checkbox" id="applied_no" name="applied_course[]" value="No" <?php if (in_array('No', $applied_course)) echo 'checked'; ?>>
-                                <label for="applied_no">No</label>
-                            </div>
-                        </div>
+                    <!-- 26. Relevance of program to current job -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label class="form-label">26. Was your program of study at SLSU relevant to your present job?</label><br>
+                            
+                            <input type="radio" id="relevance_very_much" name="job_relevance[]" value="Very much" 
+                            <?php echo (decryptData($userData['job_relevance']) == 'Very much') ? 'checked' : ''; ?>>
+                            <label for="relevance_very_much">Very much</label><br>
 
-                        <!-- 28. If yes, reasons for not being hired -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label class="form-label">28. If yes, what are the possible reasons why you're not hired?</label><br>
-                                <?php
-                                $possible_reasons = explode(',', $userData['possible_reasons']);
-                                ?>
-                                <input type="checkbox" name="possible_reasons[]" value="I am not qualified for the job" <?php if (in_array('I am not qualified for the job', $possible_reasons)) echo 'checked'; ?>>
-                                <label>I am not qualified for the job.</label><br>
-                                <input type="checkbox" name="possible_reasons[]" value="I did not pass the employment exams" <?php if (in_array('I did not pass the employment exams', $possible_reasons)) echo 'checked'; ?>>
-                                <label>I did not pass the employment exams.</label><br>
-                                <input type="checkbox" name="possible_reasons[]" value="I did not pass the interview" <?php if (in_array('I did not pass the interview', $possible_reasons)) echo 'checked'; ?>>
-                                <label>I did not pass the interview.</label><br>
-                                <input type="checkbox" name="possible_reasons[]" value="I lack the necessary competencies for the job" <?php if (in_array('I lack the necessary competencies for the job', $possible_reasons)) echo 'checked'; ?>>
-                                <label>I lack the necessary competencies for the job.</label><br>
-                                <input type="checkbox" name="possible_reasons[]" value="I did not pass the medical exams" <?php if (in_array('I did not pass the medical exams', $possible_reasons)) echo 'checked'; ?>>
-                                <label>I did not pass the medical exams.</label><br>
-                                <input type="checkbox" name="possible_reasons[]" value="There are skills necessary for the job" <?php if (in_array('There are skills necessary for the job', $possible_reasons)) echo 'checked'; ?>>
-                                <label>There are skills necessary for the job.</label><br>
-                                <input type="checkbox" name="possible_reasons[]" value="Other reasons please specify:" <?php if (in_array('Other reasons please specify:', $possible_reasons)) echo 'checked'; ?>>
-                                <label>Other reasons please specify:</label><br>
-                                <input type="text" class="form-control" name="other_reasons[]" value="<?php echo htmlspecialchars($userData['other_reasons']); ?>">
-                            </div>
-                        </div>
+                            <input type="radio" id="relevance_much" name="job_relevance[]" value="Much" 
+                            <?php echo (decryptData($userData['job_relevance']) == 'Much') ? 'checked' : ''; ?>>
+                            <label for="relevance_much">Much</label><br>
 
-                        <!-- 29. If no, reasons for not applying -->
-                        <div class="card mb-3">
+                            <input type="radio" id="relevance_little" name="job_relevance[]" value="A little" 
+                            <?php echo (decryptData($userData['job_relevance']) == 'A little') ? 'checked' : ''; ?>>
+                            <label for="relevance_little">A little</label><br>
+
+                            <input type="radio" id="relevance_not" name="job_relevance[]" value="Not at all" 
+                            <?php echo (decryptData($userData['job_relevance']) == 'Not at all') ? 'checked' : ''; ?>>
+                            <label for="relevance_not">Not at all</label>
+                        </div>
+                    </div>
+
+                    <!-- 27. Have you tried applying for a position relevant to your course? -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label class="form-label">27. Have you tried applying for a position relevant to your course?</label><br>
+
+                            <input type="radio" id="applied_yes" name="applied_course[]" value="Yes" 
+                            <?php echo (decryptData($userData['applied_course']) == 'Yes') ? 'checked' : ''; ?>>
+                            <label for="applied_yes">Yes</label><br>
+
+                            <input type="radio" id="applied_no" name="applied_course[]" value="No" 
+                            <?php echo (decryptData($userData['applied_course']) == 'No') ? 'checked' : ''; ?>>
+                            <label for="applied_no">No</label>
+                        </div>
+                    </div>
+
+
+                    <!-- 28. If yes, reasons for not being hired -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label class="form-label">28. If yes, what are the possible reasons why you're not hired?</label><br>
+                            
+                            <input type="radio" name="possible_reasons[]" value="I am not qualified for the job"
+                            <?php echo (decryptData($userData['possible_reasons']) == 'I am not qualified for the job') ? 'checked' : ''; ?>>
+                            <label for="relevance_very_much">I am not qualified for the job.</label><br>
+
+                            <input type="radio" name="possible_reasons[]" value="I did not pass the employment exams"
+                            <?php echo (decryptData($userData['possible_reasons']) == 'I did not pass the employment exams') ? 'checked' : ''; ?>>
+                            <label for="relevance_much">I did not pass the employment exams.</label><br>
+
+                            <input type="radio" name="possible_reasons[]" value="I did not pass the interview"
+                            <?php echo (decryptData($userData['possible_reasons']) == 'I did not pass the interview') ? 'checked' : ''; ?>>
+                            <label for="relevance_little">I did not pass the interview.</label><br>
+
+                            <input type="radio" name="possible_reasons[]" value="I lack the necessary competencies for the job"
+                            <?php echo (decryptData($userData['possible_reasons']) == 'I lack the necessary competencies for the job') ? 'checked' : ''; ?>>
+                            <label for="relevance_not">I lack the necessary competencies for the job.</label><br>
+
+                            <input type="radio" name="possible_reasons[]" value="I did not pass the medical exams"
+                            <?php echo (decryptData($userData['possible_reasons']) == 'I did not pass the medical exams') ? 'checked' : ''; ?>>
+                            <label for="relevance_very_much">I did not pass the medical exams.</label><br>
+
+                            <input type="radio" name="possible_reasons[]" value="There are skills necessary for the job"
+                            <?php echo (decryptData($userData['possible_reasons']) == 'There are skills necessary for the job') ? 'checked' : ''; ?>>
+                            <label for="relevance_very_much">There are skills necessary for the job.</label><br>
+
+                            <input type="radio" name="possible_reasons[]" value="Other reasons please specify:"
+                            <?php echo (decryptData($userData['possible_reasons']) == 'Other reasons please specify:') ? 'checked' : ''; ?>>
+                            <label for="relevance_much">Other reasons please specify:</label><br>
+                            
+                            <input type="text" class="form-control" name="other_reasons[]" 
+                            value="<?php echo (isset($userData['other_reasons']) ? decryptData($userData['other_reasons']) : ''); ?>">
+                        </div>
+                    </div>
+
+
+                    <!-- 29. If no, reasons for not applying -->
+                    <div class="card mb-3">
                             <div class="card-body">
                                 <label class="form-label">29. If no, why?</label><br>
-                                <?php
-                                $not_applying_reasons = explode(',', $userData['present_job']);
-                                ?>
-                                <input type="checkbox" name="present_job[]" value="I do not think I have the necessary skills for jobs related to my course" <?php if (in_array('I do not think I have the necessary skills for jobs related to my course', $not_applying_reasons)) echo 'checked'; ?>>
-                                <label>I do not think I have the necessary skills for jobs related to my course.</label><br>
-                                <input type="checkbox" name="present_job[]" value="The jobs available are low-paying" <?php if (in_array('The jobs available are low-paying', $not_applying_reasons)) echo 'checked'; ?>>
-                                <label>The jobs available are low-paying.</label><br>
-                                <input type="checkbox" name="present_job[]" value="There are no jobs available in my field of specialization" <?php if (in_array('There are no jobs available in my field of specialization', $not_applying_reasons)) echo 'checked'; ?>>
-                                <label>There are no jobs available in my field of specialization.</label><br>
-                                <input type="checkbox" name="present_job[]" value="There are no job openings within the vicinity of my residence in my field of specialization" <?php if (in_array('There are no job openings within the vicinity of my residence in my field of specialization', $not_applying_reasons)) echo 'checked'; ?>>
-                                <label>There are no job openings within the vicinity of my residence in my field of specialization.</label><br>
-                                <input type="checkbox" name="present_job[]" value="I have no interest in getting a job related to my field of specialization" <?php if (in_array('I have no interest in getting a job related to my field of specialization', $not_applying_reasons)) echo 'checked'; ?>>
-                                <label>I have no interest in getting a job related to my field of specialization.</label><br>
-                                <input type="checkbox" name="present_job[]" value="Other reasons please specify:" <?php if (in_array('Other reasons please specify:', $not_applying_reasons)) echo 'checked'; ?>>
-                                <label>Other reasons please specify:</label><br>
-                                <input type="text" class="form-control" name="other_job" value="<?php echo htmlspecialchars($userData['other_job']); ?>">
+                                
+                                <input type="radio" name="present_job[]" value="I do not think I have the necessary skills for jobs related to my course"
+                                <?php echo (decryptData($userData['present_job']) == 'I do not think I have the necessary skills for jobs related to my course') ? 'checked' : ''; ?>>
+                                <label for="relevance_very_much">I do not think I have the necessary skills for jobs related to my course.</label><br>
+                                
+                                <input type="radio" name="present_job[]" value="The jobs available are low-paying"
+                                <?php echo (decryptData($userData['present_job']) == 'The jobs available are low-paying') ? 'checked' : ''; ?>>
+                                <label for="relevance_much">The jobs available are low-paying.</label><br>
+                                
+                                <input type="radio" name="present_job[]" value="There are no jobs available in my field of specialization"
+                                <?php echo (decryptData($userData['present_job']) == 'There are no jobs available in my field of specialization') ? 'checked' : ''; ?>>
+                                <label for="relevance_little">There are no jobs available in my field of specialization.</label><br>
+                                
+                                <input type="radio" name="present_job[]" value="There are no job openings within the vicinity of my residence in my field of specialization"
+                                <?php echo (decryptData($userData['present_job']) == 'There are no job openings within the vicinity of my residence in my field of specialization') ? 'checked' : ''; ?>>
+                                <label for="relevance_not">There are no job openings within the vicinity of my residence in my field of specialization.</label><br>
+                                
+                                <input type="radio" name="present_job[]" value="I have no interest in getting a job related to my field of specialization"
+                                <?php echo (decryptData($userData['present_job']) == 'I have no interest in getting a job related to my field of specialization') ? 'checked' : ''; ?>>
+                                <label for="relevance_very_much">I have no interest in getting a job related to my field of specialization.</label><br>
+                                
+                                <input type="radio" name="present_job[]" value="Other reasons please specify:"
+                                <?php echo (decryptData($userData['present_job']) == 'Other reasons please specify:') ? 'checked' : ''; ?>>
+                                <label for="relevance_much">Other reasons please specify:</label><br>
+                                
+                                <input type="text" class="form-control" name="other_job[]" 
+                                value="<?php echo (isset($userData['other_job']) ? decryptData($userData['other_job']) : ''); ?>">
                             </div>
                         </div>
 
-                        <!-- 30. Major strengths and weaknesses of the SLSU program -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label for="program_strengths_weaknesses" class="form-label">30. Which of the following best represent major strengths and weaknesses of the SLSU-TO programme that you attended? (Check as appropriate)</label>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Attribute</th>
-                                            <th>Strength</th>
-                                            <th>Weakness</th>
-                                            <th>Does not apply</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $attributes = [
-                                            'range_module',
-                                            'optional_module',
-                                            'relevance',
-                                            'worlkload',
-                                            'solving',
-                                            'learning',
-                                            'placement',
-                                            'environment',
-                                            'quality'
-                                        ];
 
-                                        foreach ($attributes as $attribute) {
-                                            $attribute_key = strtolower(str_replace(' ', '_', $attribute));
-                                            $strengths_weaknesses = explode(',', $userData[$attribute_key]);
-                                            echo "<tr>
-                        <td>$attribute</td>
-                        <td><input type='checkbox' name='{$attribute_key}[]' value='Strength' " . (in_array('Strength', $strengths_weaknesses) ? 'checked' : '') . "></td>
-                        <td><input type='checkbox' name='{$attribute_key}[]' value='Weakness' " . (in_array('Weakness', $strengths_weaknesses) ? 'checked' : '') . "></td>
-                        <td><input type='checkbox' name='{$attribute_key}[]' value='Does not apply' " . (in_array('Does not apply', $strengths_weaknesses) ? 'checked' : '') . "></td>
-                    </tr>";
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
+                    <!-- 30. Major strengths and weaknesses of the SLSU program -->
+                    <div class="card mb-3">
+                                <div class="card-body">
+                                    <label class="form-label">30. Which of the following best represent major strengths and weaknesses of the SLSU-TO programme that you attended? (Check as appropriate)</label>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Attribute</th>
+                                                <th>Strength</th>
+                                                <th>Weakness</th>
+                                                <th>Does not apply</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Range of modules offered</td>
+                                                <td><input type="radio" name="range_module" value="Strength" <?php echo (decryptData($userData['range_module']) == 'Strength') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="range_module" value="Weakness" <?php echo (decryptData($userData['range_module']) == 'Weakness') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="range_module" value="Does not apply" <?php echo (decryptData($userData['range_module']) == 'Does not apply') ? 'checked' : ''; ?>></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Number of optional modules in relation to the number of compulsory (core) modules</td>
+                                                <td><input type="radio" name="optional_module" value="Strength" <?php echo (decryptData($userData['optional_module']) == 'Strength') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="optional_module" value="Weakness" <?php echo (decryptData($userData['optional_module']) == 'Weakness') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="optional_module" value="Does not apply" <?php echo (decryptData($userData['optional_module']) == 'Does not apply') ? 'checked' : ''; ?>></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Relevance of the programme to your professional requirements</td>
+                                                <td><input type="radio" name="relevance" value="Strength" <?php echo (decryptData($userData['relevance']) == 'Strength') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="relevance" value="Weakness" <?php echo (decryptData($userData['relevance']) == 'Weakness') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="relevance" value="Does not apply" <?php echo (decryptData($userData['relevance']) == 'Does not apply') ? 'checked' : ''; ?>></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Student workload</td>
+                                                <td><input type="radio" name="worlkload" value="Strength" <?php echo (decryptData($userData['worlkload']) == 'Strength') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="worlkload" value="Weakness" <?php echo (decryptData($userData['worlkload']) == 'Weakness') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="worlkload" value="Does not apply" <?php echo (decryptData($userData['worlkload']) == 'Does not apply') ? 'checked' : ''; ?>></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Problem solving</td>
+                                                <td><input type="radio" name="solving" value="Strength" <?php echo (decryptData($userData['solving']) == 'Strength') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="solving" value="Weakness" <?php echo (decryptData($userData['solving']) == 'Weakness') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="solving" value="Does not apply" <?php echo (decryptData($userData['solving']) == 'Does not apply') ? 'checked' : ''; ?>></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Inter-disciplinary learning</td>
+                                                <td><input type="radio" name="learning" value="Strength" <?php echo (decryptData($userData['learning']) == 'Strength') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="learning" value="Weakness" <?php echo (decryptData($userData['learning']) == 'Weakness') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="learning" value="Does not apply" <?php echo (decryptData($userData['learning']) == 'Does not apply') ? 'checked' : ''; ?>></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Work placement/attachment</td>
+                                                <td><input type="radio" name="placement" value="Strength" <?php echo (decryptData($userData['placement']) == 'Strength') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="placement" value="Weakness" <?php echo (decryptData($userData['placement']) == 'Weakness') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="placement" value="Does not apply" <?php echo (decryptData($userData['placement']) == 'Does not apply') ? 'checked' : ''; ?>></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Teaching/Learning environment</td>
+                                                <td><input type="radio" name="environment" value="Strength" <?php echo (decryptData($userData['environment']) == 'Strength') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="environment" value="Weakness" <?php echo (decryptData($userData['environment']) == 'Weakness') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="environment" value="Does not apply" <?php echo (decryptData($userData['environment']) == 'Does not apply') ? 'checked' : ''; ?>></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Quality of delivery</td>
+                                                <td><input type="radio" name="quality" value="Strength" <?php echo (decryptData($userData['quality']) == 'Strength') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="quality" value="Weakness" <?php echo (decryptData($userData['quality']) == 'Weakness') ? 'checked' : ''; ?>></td>
+                                                <td><input type="radio" name="quality" value="Does not apply" <?php echo (decryptData($userData['quality']) == 'Does not apply') ? 'checked' : ''; ?>></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- 31. Satisfaction with current job -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <label class="form-label">31. How satisfied are you with your current job?</label><br>
-                                <?php
-                                $job_satisfaction = explode(',', $userData['job_satisfaction']);
-                                ?>
-                                <input type="checkbox" id="satisfaction_very_much" name="job_satisfaction[]" value="Very much" <?php if (in_array('Very much', $job_satisfaction)) echo 'checked'; ?>>
-                                <label for="satisfaction_very_much">Very much</label><br>
-                                <input type="checkbox" id="satisfaction_much" name="job_satisfaction[]" value="Much" <?php if (in_array('Much', $job_satisfaction)) echo 'checked'; ?>>
-                                <label for="satisfaction_much">Much</label><br>
-                                <input type="checkbox" id="satisfaction_little" name="job_satisfaction[]" value="A little" <?php if (in_array('A little', $job_satisfaction)) echo 'checked'; ?>>
-                                <label for="satisfaction_little">A little</label><br>
-                                <input type="checkbox" id="satisfaction_not" name="job_satisfaction[]" value="Not at all" <?php if (in_array('Not at all', $job_satisfaction)) echo 'checked'; ?>>
-                                <label for="satisfaction_not">Not at all</label>
-                            </div>
-                        </div>
 
-                        <!-- 32. Do you intend to stay in the same job/profession? -->
-                        <div class="card mb-3">
+                    <!-- 31. Satisfaction with current job -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <label class="form-label">31. How satisfied are you with your current job?</label><br>
+
+                            <input type="radio" id="satisfaction_very_much" name="job_satisfaction" value="Very much"
+                            <?php echo (decryptData($userData['job_satisfaction']) == 'Very much') ? 'checked' : ''; ?>>
+                            <label for="satisfaction_very_much">Very much</label><br>
+
+                            <input type="radio" id="satisfaction_much" name="job_satisfaction" value="Much"
+                            <?php echo (decryptData($userData['job_satisfaction']) == 'Much') ? 'checked' : ''; ?>>
+                            <label for="satisfaction_much">Much</label><br>
+
+                            <input type="radio" id="satisfaction_little" name="job_satisfaction" value="A little"
+                            <?php echo (decryptData($userData['job_satisfaction']) == 'A little') ? 'checked' : ''; ?>>
+                            <label for="satisfaction_little">A little</label><br>
+
+                            <input type="radio" id="satisfaction_not" name="job_satisfaction" value="Not at all"
+                            <?php echo (decryptData($userData['job_satisfaction']) == 'Not at all') ? 'checked' : ''; ?>>
+                            <label for="satisfaction_not">Not at all</label>
+                        </div>
+                    </div>
+
+
+                    <!-- 32. Do you intend to stay in the same job/profession? -->
+                    <div class="card mb-3">
                             <div class="card-body">
                                 <label class="form-label">32. Do you intend to stay in the same job/profession?</label><br>
-                                <?php
-                                $job_stay = explode(',', $userData['job_stay']);
-                                ?>
-                                <input type="checkbox" id="stay_yes" name="job_stay[]" value="Yes" <?php if (in_array('Yes', $job_stay)) echo 'checked'; ?>>
+
+                                <input type="radio" id="stay_yes" name="job_stay" value="Yes"
+                                <?php echo (decryptData($userData['job_stay']) == 'Yes') ? 'checked' : ''; ?>>
                                 <label for="stay_yes">Yes</label><br>
-                                <input type="checkbox" id="stay_no" name="job_stay[]" value="No" <?php if (in_array('No', $job_stay)) echo 'checked'; ?>>
+
+                                <input type="radio" id="stay_no" name="job_stay" value="No"
+                                <?php echo (decryptData($userData['job_stay']) == 'No') ? 'checked' : ''; ?>>
                                 <label for="stay_no">No</label><br>
-                                <input type="checkbox" id="stay_other" name="job_stay[]" value="Other:" <?php if (in_array('Other:', $job_stay)) echo 'checked'; ?>>
+
+                                <input type="radio" id="stay_other" name="job_stay" value="Other"
+                                <?php echo (decryptData($userData['job_stay']) == 'Other') ? 'checked' : ''; ?>>
                                 <label for="stay_other">Others:</label>
-                                <input type="text" class="form-control" id="stay_other_text" name="stay_other_text" value="<?php echo htmlspecialchars($userData['stay_other_text']); ?>">
+                                <input type="text" class="form-control mt-2" id="stay_other_text" name="stay_other_text"
+                                value="<?php echo (decryptData($userData['job_stay']) == 'Other') ? decryptData($userData['stay_other_text']) : ''; ?>"
+                                <?php echo (decryptData($userData['job_stay']) == 'Other') ? '' : 'disabled'; ?>>
                             </div>
                         </div>
+
 
 
                         <!-- status -->

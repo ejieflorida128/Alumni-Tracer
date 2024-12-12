@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2024 at 04:47 AM
+-- Generation Time: Dec 12, 2024 at 10:21 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -49,9 +49,10 @@ INSERT INTO `e_schools` (`id`, `school_name`, `logo`, `confirm_status`) VALUES
 
 CREATE TABLE `l_study_response` (
   `id` int(11) NOT NULL,
+  `gmail` varchar(255) NOT NULL,
   `choose_school` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `sex` varchar(10) DEFAULT NULL,
+  `sex` varchar(255) DEFAULT NULL,
   `age` int(3) DEFAULT NULL,
   `degree` varchar(255) DEFAULT NULL,
   `year_awarded` year(4) DEFAULT NULL,
@@ -70,7 +71,7 @@ CREATE TABLE `l_study_response` (
   `gross_salary` varchar(50) DEFAULT NULL,
   `job_benefits` text DEFAULT NULL,
   `work_location` varchar(255) DEFAULT NULL,
-  `num_employees` varchar(50) DEFAULT NULL,
+  `num_employees` varchar(255) DEFAULT NULL,
   `work_nature` varchar(255) DEFAULT NULL,
   `other_work_nature_text` text DEFAULT NULL,
   `proof_image` varchar(255) DEFAULT NULL,
@@ -110,9 +111,8 @@ CREATE TABLE `l_study_response` (
 -- Dumping data for table `l_study_response`
 --
 
-INSERT INTO `l_study_response` (`id`, `choose_school`, `name`, `sex`, `age`, `degree`, `year_awarded`, `current_study`, `if_no_jobs`, `if_yes_details`, `pursue_reasons`, `current_position`, `other_position`, `time_to_job`, `time_gap`, `employment_history`, `job_info_source`, `other_job_info`, `job_qualifications`, `gross_salary`, `job_benefits`, `work_location`, `num_employees`, `work_nature`, `other_work_nature_text`, `proof_image`, `job_problem`, `problem_elaboration`, `self_employed_reason`, `knowledge_enhance`, `problem_solving`, `research_skills`, `learning_efficiency`, `communication_skills`, `more_inclined`, `team_spirit`, `job_relevance`, `applied_course`, `possible_reasons`, `other_reasons`, `present_job`, `other_job`, `range_module`, `optional_module`, `relevance`, `worlkload`, `solving`, `learning`, `placement`, `environment`, `quality`, `job_satisfaction`, `job_stay`, `stay_other_text`, `status`, `created_at`) VALUES
-(14, 'Cebu Eastern College', 'Ejie C. Florida', 'Male', 20, 'Cum Laude', '2023', 'No', 'Programmer in Cebu City', '', 'To level up my current knowledge about technologies', 'Working full-time', '', '7 months to 1 year', 'refreshing my knowledge', 'Steve Newton , I work at England', 'Through written enquiries', '', 'Advance Programming Knowledge', '100000', '13th month pay and bonus', 'England', 'Over 200', 'Managerial', '', '../alumni_pictures/fd65e864-f10f-4b4e-9918-f630c87184a1.jpeg', 'No', '', '', 'Very much', 'Very much', 'Very much', 'Very much', 'Very much', 'Very much', 'Very much', 'Very much', 'Yes', 'I lack the necessary competencies for the job', '', 'The jobs available are low-paying', '', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Very much', 'Yes', '', 'pending', '2024-11-05 10:21:58'),
-(15, 'Southern Leyte State University', 'Lovely A. Guzmana', 'Male', 25, 'Comlaude Programming', '2022', 'No', 'Visiting Instructor', '', 'To enhance my skills', 'Self-employed', '', '7 months to 1 year', 'lack of money', 'NBI', 'Through friends', '', 'BSIT graduate', '15,000.00', 'Bonus and sick leave', 'Metro Manila', '11 to 50', 'Supervisory', '', '../alumni_pictures/fd65e864-f10f-4b4e-9918-f630c87184a1.jpeg', 'Yes', 'Time management', '', 'Much', 'Much', 'Much', 'Much', 'Much', 'Much', 'Much', 'Much', 'Yes', 'I did not pass the interview', '', 'I do not think I have the necessary skills for jobs related to my course', '', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Strength', 'Much', 'Yes', '', 'pending', '2024-11-05 14:51:56');
+INSERT INTO `l_study_response` (`id`, `gmail`, `choose_school`, `name`, `sex`, `age`, `degree`, `year_awarded`, `current_study`, `if_no_jobs`, `if_yes_details`, `pursue_reasons`, `current_position`, `other_position`, `time_to_job`, `time_gap`, `employment_history`, `job_info_source`, `other_job_info`, `job_qualifications`, `gross_salary`, `job_benefits`, `work_location`, `num_employees`, `work_nature`, `other_work_nature_text`, `proof_image`, `job_problem`, `problem_elaboration`, `self_employed_reason`, `knowledge_enhance`, `problem_solving`, `research_skills`, `learning_efficiency`, `communication_skills`, `more_inclined`, `team_spirit`, `job_relevance`, `applied_course`, `possible_reasons`, `other_reasons`, `present_job`, `other_job`, `range_module`, `optional_module`, `relevance`, `worlkload`, `solving`, `learning`, `placement`, `environment`, `quality`, `job_satisfaction`, `job_stay`, `stay_other_text`, `status`, `created_at`) VALUES
+(19, 'ejieflorida128@gmail.com', '8KY6zCUsPDc/JMjm9CVANVRkYlVIcDBYQUlWdWUvcFZ4MzRBSlR2akVtYTFTb2M0Vnl3R3BhUGdRUm89', 'OdF6vR8M8Tzriq9Ocih33URQRlBUWFVBK09KN1hzRlVpUnBCbUE9PQ==', 'fC0c6LGH4mkJSmMXMVThZGpLWkRkR3pVYlFtMnIrcXVnY1I1Zmc9PQ==', 20, 'CUVrro5HwpSb1JqER55K8lMwNS9HZGdUOTc3VUlSYW9zOU5maEdrL1Awa2NudEZNaS81WnNjWTFQbFU9', '2024', 'DFE15IQqbzv0FfZH1LqCyjlLd0RJNmdoNmU3SVk0L0VtSmRHZlE9PQ==', 'vsoyBpHC0TBvXuiqQ+9eM3ptMnk3dUFjN2dxdStvbDc5ZnhWcFE9PQ==', '7merqTOZTcrv1CQrPukW8U9Hd0x5ZzJ6bWQwR28xcjE4Z1d6Q3c9PQ==', 'ilWd88NCuGpXXZmMQm+quklCdU5nMk1VS01ZT1pMcW9JSEUyb1E9PQ==', 'RzG12Fx7POIUgBQUQ5XZkFd5T1RzSGVYVXpkcm1MQ1dpemhmTW5jVnppWDJ3U0s0T2REaHhpUHFTWkE9', 'PROBvDkapcbtU/GHn8AwjURUZWJteDFWeXZBMnBUL3NmUnJQZFE9PQ==', 'a0LNw4KIXNzoqIofRdfbvk5uMjgzN280aU00QjgwWWpEcTVtVEE9PQ==', '8ci5KTlzGZeFV8jFStATg1RCNUNaSzRiSXQ1MlFsU0pKd2d2SWc9PQ==', 'eoyzvWFvJ1cBeCNxBpUImlhwcXJMcloyZStJdmNMWktwZTR5K2c9PQ==', 'vrDzxtHqIvK+kczmgUZ7H2VvMGJwQStBR2NmRTJQb2s1Nk5IZ2c9PQ==', 'sKbCE88YcrWUi9jYPrIHg2EzdmE3eVNQVUt6UVVRbmpJMDNzcmc9PQ==', '2RLemcP2PUQfbUc5hCoYC0tBNGxaaEZqZ1lxeG1vcWMvVithc1E9PQ==', '1000', '2t/A8GuH92GSpdSWYHZe2zRUYXpRenozRktGd0VwWU5NR1FZTUE9PQ==', 'IJPcHu3givyC4XvORtS9rEN1Z0N1VC9nR293UlpPeXhZRWJ0bFE9PQ==', 'JlKjEWO7KcrW5ka2DxzEglA4UTA3cXNQQnV3NzE0alFWQkJmV3c9PQ==', 'T9QHKRminiEH6nYcPmlFHC9QdVZCVFV6cW5jclNXMjExMVNMRkE9PQ==', 'PqEiAk3e33GIPCMyckpgkWp6UjVHaURrVzJuVG9YTERWTFR3bmc9PQ==', '', 'w5cqIxvXzYqaVp1RdEd3PTN1WGZ6TTFaVGxtSHkyb1luSmJ6S3c9PQ==', 'DBhBDzhBlmH8vaBvqQELkEZIUXRoN0hpTEFPNHR3UFowZEhQUnc9PQ==', 'p/e5O/tqQA0yaqvZwYyUP2FZb3NTRjJjVzJPdjJaL2U4M1ZiU0E9PQ==', 'yPq53RE/ceygWXR4AQ2JD01uMDF3ZFBMY3d4VnJtUzlqZkl1K1E9PQ==', 'aGCY06x+NLZFFulfAPX6xG55SWlQQ2xWdHJ4b3NGM0Z1WmVWU2c9PQ==', 'v7fCcOZHXx9tDYu0oPBDqkU4bVRpQUZYaitPK1hZc0gwVDJ1L3c9PQ==', 'zlEutGPL6sm0BLyNF2HTz0pTbFcyRTJ1OG5SdVh5S3hEOVhPaWc9PQ==', 'is2UjB1crSoAT0ALUP1sF0gxWGwwKzFjVThQL2VNVDBYd2pMMmc9PQ==', 'f5XUGR8JQ/HyMLoz/cLpWCthWjl1eVhwYzlNK082SlVRblFCSFE9PQ==', 'g68fSWiFiLi6ujyOTXq2hlNlQ0NpQkJpbG9FZ2JxazhBWVpVbGc9PQ==', 'T+matikdZVgFxt7A21DczkVLbXUzaVZOd1p1NWJLNmFBQVJrWWc9PQ==', 'ZPXPHJf/DySWru1JlwIaClE4RlJjYUJVVmN4YjAyZXFTSGFqV0E9PQ==', 'jp2onuipjfIQLJdc/GaEaG80RzA3czRpWlM0azM5dlZVRlFRZjdPWFFaSUdxS3NqdUpOT29taG9Ld0k9', '26+vzLk7NfP4lrnnqLdL2TgvQWl5bStwQjZvVW45Vk9Fd1ppQ0E9PQ==', '7lfOuzUfoH4clVFnRjJIe2k5SXVwL2w5dVFHb1dnZWZmb2V4VGdENm14bTFWOTRTZHI4allmYkVYc2pOWEt2aGFRaytFTk10ZHNNMlRFbFhUMnlqQmFQTTg5V1g4SVNJQTFOTkJnPT0=', 'Fpr1Lqi9VAjFJm5AhtxTYzNhNllFM2Mvb2xlSUR6bHNKZi9OVEE9PQ==', 'T9L/aWK706A7lizhDzaKhkNENVdqd1NNRW5VMitQaTdwcnc2dkE9PQ==', 'NR57yl+oe58VKhBm3GoHMG5nRmwwTTVpYlp6U0c4NUl6SWwrY1E9PQ==', 'yL7jz6IM7gQq4u4BJ/34uEhvZWhkOE5tVHJEMTZtUFBwTnRvT2c9PQ==', 'EwVaSLkK5i2yxs54UxV3hCs1eXhWYmtCVmdFT2xNZ2UvRzNRQ3c9PQ==', 'FD1hm+3LGxi/mxuKbLT3MHBHR1hqNmVTTStCQldFR0ZYdE1kT0E9PQ==', 'uGEcNIfSUSIc2Qc2LrIEgFQ1TjBOOEU3SzNnZXFaaUJITit6Qmc9PQ==', 'tXclrejz+PGmgnGD540SWlN4K2tIQUpKaVBIWHZmdWFYb3RoWXc9PQ==', '/bLEt5Wx3aBhcDS7DQdcHi9YSDR4RGNKOFJsa1hkZ0dzYXArTVE9PQ==', 'IGLAiRUGr63LkX10mfKX2HpEWDlFbDdNTkt3QWtvd2d0RVQvS2c9PQ==', 'RXadzzB2O8eF2XwmQnS2PlVsK01xcis2bFdaMTc4MUhPZXYrZEE9PQ==', 'U3YPPEkoRC33HLVjh4lihTZQQzJkSDE5MExadFp0Z3VHaW04M2c9PQ==', 'fZFKWIlgdBmyLJ+WYWBTPUVYWHZyZHlPSnlXK0JaQ3FmRndPbUE9PQ==', 'pending', '2024-12-12 05:35:22');
 
 -- --------------------------------------------------------
 
@@ -178,7 +178,7 @@ ALTER TABLE `e_schools`
 -- AUTO_INCREMENT for table `l_study_response`
 --
 ALTER TABLE `l_study_response`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `r_accounts`

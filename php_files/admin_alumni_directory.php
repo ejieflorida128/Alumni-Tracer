@@ -2,6 +2,26 @@
 session_start();
 include("../connection/conn.php");
 
+define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
+function decryptData($encryptedData)
+{
+    $key = ENCRYPTION_KEY;
+    $data = base64_decode($encryptedData);
+    $ivLength = openssl_cipher_iv_length('aes-256-cbc');
+    $iv = substr($data, 0, $ivLength); // Extract the IV
+    $encrypted = substr($data, $ivLength); // Extract the encrypted data
+    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+}
+
+
+function encryptData($data)
+{
+    $key = ENCRYPTION_KEY;
+    $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Generate a random IV
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($iv . $encrypted); // Store IV and encrypted data together
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -48,11 +68,11 @@ include("../connection/conn.php");
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
-        </div>
+        </div> -->
         <!-- Spinner End -->
 
 
@@ -171,8 +191,8 @@ include("../connection/conn.php");
                                 <div class="card" style="width: 100%; height: 60%; border-radius: 30px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); ">
                                     <img src="<?php echo $img; ?>" class="card-img-top" alt="File Image" style="width: 100%; height: 150px;">
                                     <div class="card-body" style="background-color: #A0DEFF; border-bottom-left-radius:5px; border-bottom-right-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8); ">
-                                        <h5 class="card-title">Name: <?php echo $name; ?></h5>
-                                        <h5 class="card-title">Sex: <?php echo $sex; ?></h5>
+                                        <h5 class="card-title">Name: <?php echo decryptData($name); ?></h5>
+                                        <h5 class="card-title">Sex: <?php echo decryptData($sex); ?></h5>
                                         <h5 class="card-title">Year Graduated: <?php echo $year; ?></h5>
                                     
                                         <a href="viewing_alumni_details.php?id=<?php echo $id; ?>" class="btn btn-primary" style = "width: 100%;">View</a>
