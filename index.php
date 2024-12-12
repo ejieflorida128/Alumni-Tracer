@@ -1,3 +1,71 @@
+<?php
+// Include the PHPMailer library
+require 'vendor/autoload.php'; // Make sure PHPMailer is installed using Composer
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Database connection (customize with your database credentials)
+include 'connection/conn.php'; // Database connection
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
+    $email = $_POST['email'];
+
+    // Check if the email is already registered
+    $sql = "SELECT * FROM l_gmail_confirmation WHERE gmail = '$email'";
+    $result = $conn->query($sql);
+
+    if ($result && $result->num_rows > 0) {
+        // Email is registered, redirect to question.php
+        header("Location: php_files/question.php");
+        exit();
+    } else {
+        // Email not registered, set session variable
+        $_SESSION['unregistered_email'] = $email;
+    }
+
+    if ($result) {
+        $result->free();
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
+    $email = $_POST['email'];
+
+    // Create PHPMailer instance
+    $mail = new PHPMailer(true);
+    try {
+        // Set up Yahoo SMTP configuration
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.mail.yahoo.com';  // Yahoo SMTP server
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'lovelyguzmana@myyahoo.com';  // Your Yahoo email address
+        $mail->Password   = 'your-app-password';  // Your Yahoo App Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;  // Use TLS encryption
+        $mail->Port       = 587;  // Use port 587 for TLS
+
+        // Sender and recipient
+        $mail->setFrom('your-email@yahoo.com', 'Alumni Tracer');
+        $mail->addAddress($email);  // Recipient's email
+
+        // Email content
+        $mail->isHTML(true);
+        $mail->Subject = 'Email Confirmation';
+        $mail->Body    = 'Please confirm your email by clicking <a href="http://localhost/verify?token=xyz">here</a>.';
+
+        // Send email
+        if($mail->send()) {
+            echo "A confirmation email has been sent to $email.";
+        } else {
+            echo "Error: Could not send the email.";
+        }
+    } catch (Exception $e) {
+        echo "Mailer Error: {$mail->ErrorInfo}";
+    }
+}
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -151,10 +219,17 @@
 									<a class="button button-primary button-block" href="php_files/school_register.php">school Register</a>
 								</div>
 							</div>
-							<div class="div" style = "margin-top: 10px;">
-								- are you an alumni? <span><a href="php_files/question.php" style = "color: orange; font-weight: bolder;">Click Here!</a></span>
-							</div>
+	
+							<div class="div" style="margin-top: 10px;">
+    - Are you an alumni?
+    <span>
+        <a href="#" onclick="openEmailModal()" style="color: orange; font-weight: bolder;">Click Here!</a>
+    </span>
+</div>
 						</div>
+
+						
+
 						<div class="hero-illustration">
 							<div class="hero-shape hero-shape-1">
 								<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
@@ -173,6 +248,57 @@
                     </div>
                 </div>
             </section>
+
+
+<!-- Email Input Modal -->
+<div id="emailModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; padding: 20px; background-color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+        <h3>Enter Your Email</h3>
+        <form action="index.php" method="POST" onsubmit="return validateEmail()">
+            <input type="email" name="email" id="emailInput" placeholder="Enter your email address" required style="width: 100%; padding: 8px; margin: 10px 0;">
+            <button type="submit" style="width: 100%; padding: 8px; background-color: orange; color: white; font-weight: bold;">Check Email</button>
+        </form>
+        <button onclick="closeModal('emailModal')" style="width: 100%; padding: 8px; margin-top: 10px;">Cancel</button>
+    </div>
+
+    <!-- Not Registered Modal -->
+    <div id="notRegisteredModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; padding: 20px; background-color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+        <h3>Your email is not registered.</h3>
+        <p>Please register by clicking the button below.</p>
+        <form action="index.php" method="POST">
+            <input type="hidden" name="email" id="unregisteredEmail" value="<?php echo isset($_SESSION['unregistered_email']) ? $_SESSION['unregistered_email'] : ''; ?>">
+            <button type="submit" name="sendConfirmation" style="width: 100%; padding: 8px; background-color: orange; color: white; font-weight: bold;">Send Confirmation Email</button>
+        </form>
+        <button onclick="closeModal('notRegisteredModal')" style="width: 100%; padding: 8px; margin-top: 10px;">Cancel</button>
+    </div>
+
+    <script>
+        function openEmailModal() {
+            document.getElementById('emailModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function validateEmail() {
+            const email = document.getElementById('emailInput').value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return false;
+            }
+            return true;
+        }
+
+        // Check if email is not registered and open modal
+        <?php if (isset($_SESSION['unregistered_email'])): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('notRegisteredModal').style.display = 'block';
+            });
+            <?php unset($_SESSION['unregistered_email']); ?>
+        <?php endif; ?>
+    </script>
 
             <section class="features section">
                 <div class="container">
