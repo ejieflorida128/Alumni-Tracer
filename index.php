@@ -1,32 +1,33 @@
 <?php
-// Include the PHPMailer library
-// require 'vendor/autoload.php'; // Make sure PHPMailer is installed using Composer
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-// Database connection (customize with your database credentials)
-include 'connection/conn.php'; // Database connection
+session_start();
+include 'connection/conn.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
     $email = $_POST['email'];
 
-    // Check if the email is already registered
-    $sql = "SELECT * FROM l_gmail_confirmation WHERE gmail = '$email'";
+	$registerNoteModal = false;
+
+   
+    $sql = "SELECT * FROM l_study_response WHERE gmail = '$email'";
     $result = $conn->query($sql);
 
     if ($result && $result->num_rows > 0) {
-        // Email is registered, redirect to question.php
+      
+		$_SESSION['email'] = $email;
         header("Location: php_files/question.php");
         exit();
     } else {
-        // Email not registered, set session variable
+		
         $_SESSION['unregistered_email'] = $email;
+
+		$registerNoteModal = true;
+
+
     }
 
-    if ($result) {
-        $result->free();
-    }
+ 
+
+
 }
 
 
@@ -107,7 +108,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
 
 				</style>
 
+
 <body class="is-boxed has-animations">
+	
     <div class="body-wrap boxed-container">
         <header class="site-header">
 			<div class="header-shape header-shape-1">
@@ -221,20 +224,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
         <h3>Enter Your Email</h3>
         <form action="index.php" method="POST" onsubmit="return validateEmail()">
             <input type="email" name="email" id="emailInput" placeholder="Enter your email address" required style="width: 100%; padding: 8px; margin: 10px 0;">
-            <button type="submit" style="width: 100%; padding: 8px; background-color: orange; color: white; font-weight: bold;">Check Email</button>
+            <button type="submit" style="width: 100%; padding: 8px; background-color: green; color: white; font-weight: bold;">Check Email</button>
         </form>
-        <button onclick="closeModal('emailModal')" style="width: 100%; padding: 8px; margin-top: 10px;">Cancel</button>
+        <button onclick="closeModal('emailModal')" style="width: 100%; padding: 8px; margin-top: 10px; background-color: red; color: white;">Cancel</button>
     </div>
 
     <!-- Not Registered Modal -->
     <div id="notRegisteredModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; padding: 20px; background-color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-        <h3>Your email is not registered.</h3>
-        <p>Please register by clicking the button below.</p>
-        <form action="index.php" method="POST">
-            <input type="hidden" name="email" id="unregisteredEmail" value="<?php echo isset($_SESSION['unregistered_email']) ? $_SESSION['unregistered_email'] : ''; ?>">
-            <button type="submit" name="sendConfirmation" style="width: 100%; padding: 8px; background-color: orange; color: white; font-weight: bold;">Send Confirmation Email</button>
+        <h6 style = "font-size: 20px;">Your email is not registered.</h6>
+        <p style = "font-size: 13px;">Please register by clicking the button below.</p>
+        <form action="auth/gmail_auth.php" method="POST">
+            <input type="hidden" name="unregisteredEmAIL" id="unregisteredEmail" value="<?php echo isset($_SESSION['unregistered_email']) ? $_SESSION['unregistered_email'] : ''; ?>">
+            <button type="submit" name="sendConfirmation" style="width: 100%; padding: 8px; background-color: green; color: white; font-weight: bold;">Send Confirmation Email</button>
         </form>
-        <button onclick="closeModal('notRegisteredModal')" style="width: 100%; padding: 8px; margin-top: 10px;">Cancel</button>
+        <button onclick="closeModal('notRegisteredModal')" style="width: 100%; padding: 8px; margin-top: 10px; background-color: red; color: white;">Cancel</button>
     </div>
 
     <script>
@@ -265,6 +268,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
             <?php unset($_SESSION['unregistered_email']); ?>
         <?php endif; ?>
     </script>
+
+
+
+
+
 
             <section class="features section">
                 <div class="container">
