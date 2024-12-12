@@ -3,68 +3,91 @@ ob_start(); // Start buffering the output
 session_start();
 include '../connection/conn.php'; // Database connection
 
+
+define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
+
+
+function decryptData($encryptedData)
+{
+    $key = ENCRYPTION_KEY;
+    $data = base64_decode($encryptedData);
+    $ivLength = openssl_cipher_iv_length('aes-256-cbc');
+    $iv = substr($data, 0, $ivLength); // Extract the IV
+    $encrypted = substr($data, $ivLength); // Extract the encrypted data
+    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+}
+
+
+function encryptData($data)
+{
+    $key = ENCRYPTION_KEY;
+    $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc')); // Generate a random IV
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($iv . $encrypted); // Store IV and encrypted data together
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize input values to avoid SQL injection
-    $choose_school = isset($_POST['choose_school']) ? mysqli_real_escape_string($conn, $_POST['choose_school']) : '';
-    $name = isset($_POST['name']) ? mysqli_real_escape_string($conn, $_POST['name']) : '';
-    $sex = isset($_POST['sex']) ? mysqli_real_escape_string($conn, $_POST['sex']) : '';
-    $age = isset($_POST['age']) ? mysqli_real_escape_string($conn, $_POST['age']) : '';
-    $degree = isset($_POST['degree']) ? mysqli_real_escape_string($conn, $_POST['degree']) : '';
-    $year_awarded = isset($_POST['year_awarded']) ? mysqli_real_escape_string($conn, $_POST['year_awarded']) : '';
-    $current_study = isset($_POST['current_study']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['current_study'])) : '';
-    $if_no_jobs = isset($_POST['if_no_jobs']) ? mysqli_real_escape_string($conn, $_POST['if_no_jobs']) : '';
-    $if_yes_details = isset($_POST['if_yes_details']) ? mysqli_real_escape_string($conn, $_POST['if_yes_details']) : '';
-    $pursue_reasons = isset($_POST['pursue_reasons']) ? mysqli_real_escape_string($conn, $_POST['pursue_reasons']) : '';
-    $current_position = isset($_POST['current_position']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['current_position'])) : '';
-    $other_position = isset($_POST['other_position']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_position'])) : '';
+    $choose_school = encryptData(isset($_POST['choose_school']) ? mysqli_real_escape_string($conn, $_POST['choose_school']) : '');
+    $name = encryptData(isset($_POST['name']) ? mysqli_real_escape_string($conn, $_POST['name']) : '');
+    $sex = encryptData(isset($_POST['sex']) ? mysqli_real_escape_string($conn, $_POST['sex']) : '');
+    $age = encryptData(isset($_POST['age']) ? mysqli_real_escape_string($conn, $_POST['age']) : '');
+    $degree = encryptData(isset($_POST['degree']) ? mysqli_real_escape_string($conn, $_POST['degree']) : '');
+    $year_awarded = encryptData(isset($_POST['year_awarded']) ? mysqli_real_escape_string($conn, $_POST['year_awarded']) : '');
+    $current_study = encryptData(isset($_POST['current_study']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['current_study'])) : '');
+    $if_no_jobs = encryptData(isset($_POST['if_no_jobs']) ? mysqli_real_escape_string($conn, $_POST['if_no_jobs']) : '');
+    $if_yes_details = encryptData(isset($_POST['if_yes_details']) ? mysqli_real_escape_string($conn, $_POST['if_yes_details']) : '');
+    $pursue_reasons = encryptData(isset($_POST['pursue_reasons']) ? mysqli_real_escape_string($conn, $_POST['pursue_reasons']) : '');
+    $current_position = encryptData(isset($_POST['current_position']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['current_position'])) : '');
+    $other_position = encryptData(isset($_POST['other_position']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_position'])) : '');
 
     // New fields
-    $time_to_job = isset($_POST['time_to_job']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['time_to_job'])) : '';
-    $time_gap = isset($_POST['time_gap']) ? mysqli_real_escape_string($conn, $_POST['time_gap']) : '';
-    $employment_history = isset($_POST['employment_history']) ? mysqli_real_escape_string($conn, $_POST['employment_history']) : '';
-    $job_info_source = isset($_POST['job_info_source']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_info_source'])) : '';
-    $other_job_info = isset($_POST['other_job_info']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_job_info'])) : '';
-    $job_qualifications = isset($_POST['job_qualifications']) ? mysqli_real_escape_string($conn, $_POST['job_qualifications']) : '';
-    $gross_salary = isset($_POST['gross_salary']) ? mysqli_real_escape_string($conn, $_POST['gross_salary']) : '';
-    $job_benefits = isset($_POST['job_benefits']) ? mysqli_real_escape_string($conn, $_POST['job_benefits']) : '';
-    $work_location = isset($_POST['work_location']) ? mysqli_real_escape_string($conn, $_POST['work_location']) : '';
-    $num_employees = isset($_POST['num_employees']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['num_employees'])) : '';
+    $time_to_job = encryptData(isset($_POST['time_to_job']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['time_to_job'])) : '');
+    $time_gap = encryptData(isset($_POST['time_gap']) ? mysqli_real_escape_string($conn, $_POST['time_gap']) : '');
+    $employment_history = encryptData(isset($_POST['employment_history']) ? mysqli_real_escape_string($conn, $_POST['employment_history']) : '');
+    $job_info_source = encryptData(isset($_POST['job_info_source']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_info_source'])) : '');
+    $other_job_info = encryptData(isset($_POST['other_job_info']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_job_info'])) : '');
+    $job_qualifications = encryptData(isset($_POST['job_qualifications']) ? mysqli_real_escape_string($conn, $_POST['job_qualifications']) : '');
+    $gross_salary = encryptData(isset($_POST['gross_salary']) ? mysqli_real_escape_string($conn, $_POST['gross_salary']) : '');
+    $job_benefits = encryptData(isset($_POST['job_benefits']) ? mysqli_real_escape_string($conn, $_POST['job_benefits']) : '');
+    $work_location = encryptData(isset($_POST['work_location']) ? mysqli_real_escape_string($conn, $_POST['work_location']) : '');
+    $num_employees = encryptData(isset($_POST['num_employees']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['num_employees'])) : '');
 
     // Additional new fields
-    $work_nature = isset($_POST['work_nature']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['work_nature'])) : '';
-    $other_work_nature_text = isset($_POST['other_work_nature_text']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_work_nature_text'])) : '';
+    $work_nature = encryptData(isset($_POST['work_nature']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['work_nature'])) : '');
+    $other_work_nature_text = encryptData(isset($_POST['other_work_nature_text']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_work_nature_text'])) : '');
     $proof_image_path = '';
-    $job_problem = isset($_POST['job_problem']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_problem'])) : '';
-    $problem_elaboration = isset($_POST['problem_elaboration']) ? mysqli_real_escape_string($conn, $_POST['problem_elaboration']) : '';
-    $self_employed_reason = isset($_POST['self_employed_reason']) ? mysqli_real_escape_string($conn, $_POST['self_employed_reason']) : '';
-    $knowledge_enhance = isset($_POST['knowledge_enhance']) ? mysqli_real_escape_string($conn, $_POST['knowledge_enhance']) : '';
-    $problem_solving = isset($_POST['problem_solving']) ? mysqli_real_escape_string($conn, $_POST['problem_solving']) : '';
-    $research_skills = isset($_POST['research_skills']) ? mysqli_real_escape_string($conn, $_POST['research_skills']) : '';
-    $learning_efficiency = isset($_POST['learning_efficiency']) ? mysqli_real_escape_string($conn, $_POST['learning_efficiency']) : '';
-    $communication_skills = isset($_POST['communication_skills']) ? mysqli_real_escape_string($conn, $_POST['communication_skills']) : '';
-    $more_inclined = isset($_POST['more_inclined']) ? mysqli_real_escape_string($conn, $_POST['more_inclined']) : '';
-    $team_spirit = isset($_POST['team_spirit']) ? mysqli_real_escape_string($conn, $_POST['team_spirit']) : '';
-    $job_relevance = isset($_POST['job_relevance']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_relevance'])) : '';
-    $applied_course = isset($_POST['applied_course']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['applied_course'])) : '';
-    $possible_reasons = isset($_POST['possible_reasons']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['possible_reasons'])) : '';
-    $other_reasons = isset($_POST['other_reasons']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_reasons'])) : '';
-    $present_job = isset($_POST['present_job']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['present_job'])) : '';
-    $other_job = isset($_POST['other_job']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_job'])) : '';
+    $job_problem = encryptData(isset($_POST['job_problem']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_problem'])) : '');
+    $problem_elaboration = encryptData(isset($_POST['problem_elaboration']) ? mysqli_real_escape_string($conn, $_POST['problem_elaboration']) : '');
+    $self_employed_reason = encryptData(isset($_POST['self_employed_reason']) ? mysqli_real_escape_string($conn, $_POST['self_employed_reason']) : '');
+    $knowledge_enhance = encryptData(isset($_POST['knowledge_enhance']) ? mysqli_real_escape_string($conn, $_POST['knowledge_enhance']) : '');
+    $problem_solving = encryptData(isset($_POST['problem_solving']) ? mysqli_real_escape_string($conn, $_POST['problem_solving']) : '');
+    $research_skills = encryptData(isset($_POST['research_skills']) ? mysqli_real_escape_string($conn, $_POST['research_skills']) : '');
+    $learning_efficiency = encryptData(isset($_POST['learning_efficiency']) ? mysqli_real_escape_string($conn, $_POST['learning_efficiency']) : '');
+    $communication_skills = encryptData(isset($_POST['communication_skills']) ? mysqli_real_escape_string($conn, $_POST['communication_skills']) : '');
+    $more_inclined = encryptData(isset($_POST['more_inclined']) ? mysqli_real_escape_string($conn, $_POST['more_inclined']) : '');
+    $team_spirit = encryptData(isset($_POST['team_spirit']) ? mysqli_real_escape_string($conn, $_POST['team_spirit']) : '');
+    $job_relevance = encryptData(isset($_POST['job_relevance']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_relevance'])) : '');
+    $applied_course = encryptData(isset($_POST['applied_course']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['applied_course'])) : '');
+    $possible_reasons = encryptData(isset($_POST['possible_reasons']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['possible_reasons'])) : '');
+    $other_reasons = encryptData(isset($_POST['other_reasons']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_reasons'])) : '');
+    $present_job = encryptData(isset($_POST['present_job']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['present_job'])) : '');
+    $other_job = encryptData(isset($_POST['other_job']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['other_job'])) : '');
 
-    $range_module = isset($_POST['range_module']) ? mysqli_real_escape_string($conn, $_POST['range_module']) : '';
-    $optional_module = isset($_POST['optional_module']) ? mysqli_real_escape_string($conn, $_POST['optional_module']) : '';
-    $relevance = isset($_POST['relevance']) ? mysqli_real_escape_string($conn, $_POST['relevance']) : '';
-    $worlkload = isset($_POST['worlkload']) ? mysqli_real_escape_string($conn, $_POST['worlkload']) : '';
-    $solving = isset($_POST['solving']) ? mysqli_real_escape_string($conn, $_POST['solving']) : '';
-    $learning = isset($_POST['learning']) ? mysqli_real_escape_string($conn, $_POST['learning']) : '';
-    $placement = isset($_POST['placement']) ? mysqli_real_escape_string($conn, $_POST['placement']) : '';
-    $environment = isset($_POST['environment']) ? mysqli_real_escape_string($conn, $_POST['environment']) : '';
-    $quality = isset($_POST['quality']) ? mysqli_real_escape_string($conn, $_POST['quality']) : '';
+    $range_module = encryptData(isset($_POST['range_module']) ? mysqli_real_escape_string($conn, $_POST['range_module']) : '');
+    $optional_module = encryptData(isset($_POST['optional_module']) ? mysqli_real_escape_string($conn, $_POST['optional_module']) : '');
+    $relevance = encryptData(isset($_POST['relevance']) ? mysqli_real_escape_string($conn, $_POST['relevance']) : '');
+    $worlkload = encryptData(isset($_POST['worlkload']) ? mysqli_real_escape_string($conn, $_POST['worlkload']) : '');
+    $solving = encryptData(isset($_POST['solving']) ? mysqli_real_escape_string($conn, $_POST['solving']) : '');
+    $learning = encryptData(isset($_POST['learning']) ? mysqli_real_escape_string($conn, $_POST['learning']) : '');
+    $placement = encryptData(isset($_POST['placement']) ? mysqli_real_escape_string($conn, $_POST['placement']) : '');
+    $environment = encryptData(isset($_POST['environment']) ? mysqli_real_escape_string($conn, $_POST['environment']) : '');
+    $quality = encryptData(isset($_POST['quality']) ? mysqli_real_escape_string($conn, $_POST['quality']) : '');
 
 
-    $job_satisfaction = isset($_POST['job_satisfaction']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_satisfaction'])) : '';
-    $job_stay = isset($_POST['job_stay']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_stay'])) : '';
-    $stay_other_text = isset($_POST['stay_other_text']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['stay_other_text'])) : '';
+    $job_satisfaction = encryptData(isset($_POST['job_satisfaction']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_satisfaction'])) : '');
+    $job_stay = encryptData(isset($_POST['job_stay']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['job_stay'])) : '');
+    $stay_other_text = encryptData(isset($_POST['stay_other_text']) ? mysqli_real_escape_string($conn, implode(", ", $_POST['stay_other_text'])) : '');
 
     $status = isset($_POST['status']) ? mysqli_real_escape_string($conn, $_POST['status']) : '';
 
@@ -226,7 +249,7 @@ ob_end_flush();
 
                                                 if ($schoolsResult) {
                                                     while ($schoolRow = mysqli_fetch_assoc($schoolsResult)) {
-                                                        echo '<option value="' . htmlspecialchars($schoolRow['school_name']) . '">' . htmlspecialchars($schoolRow['school_name']) . '</option>';
+                                                        echo '<option value="' . decryptData(htmlspecialchars($schoolRow['school_name']) ). '">' . decryptData(htmlspecialchars($schoolRow['school_name']) ) . '</option>';
                                                     }
                                                 } else {
                                                     echo '<option disabled>No schools available</option>';
