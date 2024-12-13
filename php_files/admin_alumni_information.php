@@ -22,6 +22,34 @@ function encryptData($data)
     return base64_encode($iv . $encrypted); // Store IV and encrypted data together
 }
 
+// Handle the deletion logic
+if (isset($_GET['delete_id'])) {
+    $delete_id = $_GET['delete_id'];
+    $delete_query = "DELETE FROM l_study_response WHERE id = $delete_id";
+    if (mysqli_query($conn, $delete_query)) {
+        echo "<script>alert('Record deleted successfully'); window.location.href='admin_alumni_information.php';</script>";
+    } else {
+        echo "<script>alert('Error deleting record'); window.location.href='admin_alumni_information.php';</script>";
+    }
+}
+
+// Handle the update logic
+if (isset($_POST['update_id'])) {
+    $update_id = $_POST['update_id'];
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $choose_school = mysqli_real_escape_string($conn, $_POST['choose_school']);
+
+    $update_query = "UPDATE l_study_response SET name = '$name', choose_school = '$choose_school' WHERE id = $update_id";
+    if (mysqli_query($conn, $update_query)) {
+        echo "<script>alert('Record updated successfully'); window.location.href='admin_alumni_information.php';</script>";
+    } else {
+        echo "<script>alert('Error updating record'); window.location.href='admin_alumni_information.php';</script>";
+    }
+}
+
+// Fetch all records to display
+$select_info = mysqli_query($conn, "SELECT * FROM l_study_response");
+
 ?>
 
 <!DOCTYPE html>
@@ -84,11 +112,11 @@ function encryptData($data)
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="../template/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle" src="<?php echo $call['profile_img'];  ?>" alt="" style="width: 40px; height: 40px;">
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0"><?php echo $call["name"] ?? 'N/A'; ?></h6>
+                        <h6 class="mb-0"><?php echo decryptData($call["name"]) ?? 'N/A'; ?></h6>
                         <span>Admin</span>
                     </div>
                 </div>
@@ -158,8 +186,8 @@ function encryptData($data)
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="../template/img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">John Doe</span>
+                            <img class="rounded-circle me-lg-2" src="<?php echo $call['profile_img'];  ?>" alt="" style="width: 40px; height: 40px;">
+                            <span class="d-none d-lg-inline-flex"><?php echo decryptData($call["name"]) ?? 'N/A'; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="admin_profile.php" class="dropdown-item">My Profile</a>
