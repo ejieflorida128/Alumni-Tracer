@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2024 at 10:21 AM
+-- Generation Time: Dec 13, 2024 at 04:25 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `alumni_tracer`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `e_notifications`
+--
+
+CREATE TABLE `e_notifications` (
+  `id` int(11) NOT NULL,
+  `school_name` varchar(255) NOT NULL,
+  `alumni_gmail` varchar(255) NOT NULL,
+  `notification` text NOT NULL,
+  `date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `e_notifications`
+--
+
+INSERT INTO `e_notifications` (`id`, `school_name`, `alumni_gmail`, `notification`, `date`) VALUES
+(2, 'National High School', 'ejieflorida128@gmail.com', 'ejieflorida128@gmail.com has submitted the alumni information directory for the school NpLwGrR4YEr8oObcgD6hQis0MmtiUG10WWMrNFE2UUNYNzVhWk5LNDJ6NmEvRkwwUUZhTHFsd0N2d0U9', '2024-12-13 03:23:19'),
+(3, 'National High School', 'ejieflorida128@gmail.com', 'ejieflorida128@gmail.com has updated the alumni information directory for the school YSdVp+Ogr7d/gj/lEjFfaEtrR3pDSFpFbDVUbjhBeWVoRTVBaGc1dG9wY0lqMUR6Ym01aE9OcGtRMG89', '2024-12-13 03:23:41'),
+(4, 'National High School', 'ejieflorida128@gmail.com', 'ejieflorida128@gmail.com has updated the alumni information directory for the school M0GmmkBdQB2EQ/TMGj5iBm9HSzIzaHpndm15M0Z6UkdSUlI4TUVoakdOOE9LMkJQUXdyT1FQbGdhUHM9', '2024-12-13 03:23:55');
 
 -- --------------------------------------------------------
 
@@ -104,15 +127,16 @@ CREATE TABLE `l_study_response` (
   `job_stay` varchar(255) DEFAULT NULL,
   `stay_other_text` text DEFAULT NULL,
   `status` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `check_mode` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `l_study_response`
 --
 
-INSERT INTO `l_study_response` (`id`, `gmail`, `choose_school`, `name`, `sex`, `age`, `degree`, `year_awarded`, `current_study`, `if_no_jobs`, `if_yes_details`, `pursue_reasons`, `current_position`, `other_position`, `time_to_job`, `time_gap`, `employment_history`, `job_info_source`, `other_job_info`, `job_qualifications`, `gross_salary`, `job_benefits`, `work_location`, `num_employees`, `work_nature`, `other_work_nature_text`, `proof_image`, `job_problem`, `problem_elaboration`, `self_employed_reason`, `knowledge_enhance`, `problem_solving`, `research_skills`, `learning_efficiency`, `communication_skills`, `more_inclined`, `team_spirit`, `job_relevance`, `applied_course`, `possible_reasons`, `other_reasons`, `present_job`, `other_job`, `range_module`, `optional_module`, `relevance`, `worlkload`, `solving`, `learning`, `placement`, `environment`, `quality`, `job_satisfaction`, `job_stay`, `stay_other_text`, `status`, `created_at`) VALUES
-(19, 'ejieflorida128@gmail.com', '8KY6zCUsPDc/JMjm9CVANVRkYlVIcDBYQUlWdWUvcFZ4MzRBSlR2akVtYTFTb2M0Vnl3R3BhUGdRUm89', 'OdF6vR8M8Tzriq9Ocih33URQRlBUWFVBK09KN1hzRlVpUnBCbUE9PQ==', 'fC0c6LGH4mkJSmMXMVThZGpLWkRkR3pVYlFtMnIrcXVnY1I1Zmc9PQ==', 20, 'CUVrro5HwpSb1JqER55K8lMwNS9HZGdUOTc3VUlSYW9zOU5maEdrL1Awa2NudEZNaS81WnNjWTFQbFU9', '2024', 'DFE15IQqbzv0FfZH1LqCyjlLd0RJNmdoNmU3SVk0L0VtSmRHZlE9PQ==', 'vsoyBpHC0TBvXuiqQ+9eM3ptMnk3dUFjN2dxdStvbDc5ZnhWcFE9PQ==', '7merqTOZTcrv1CQrPukW8U9Hd0x5ZzJ6bWQwR28xcjE4Z1d6Q3c9PQ==', 'ilWd88NCuGpXXZmMQm+quklCdU5nMk1VS01ZT1pMcW9JSEUyb1E9PQ==', 'RzG12Fx7POIUgBQUQ5XZkFd5T1RzSGVYVXpkcm1MQ1dpemhmTW5jVnppWDJ3U0s0T2REaHhpUHFTWkE9', 'PROBvDkapcbtU/GHn8AwjURUZWJteDFWeXZBMnBUL3NmUnJQZFE9PQ==', 'a0LNw4KIXNzoqIofRdfbvk5uMjgzN280aU00QjgwWWpEcTVtVEE9PQ==', '8ci5KTlzGZeFV8jFStATg1RCNUNaSzRiSXQ1MlFsU0pKd2d2SWc9PQ==', 'eoyzvWFvJ1cBeCNxBpUImlhwcXJMcloyZStJdmNMWktwZTR5K2c9PQ==', 'vrDzxtHqIvK+kczmgUZ7H2VvMGJwQStBR2NmRTJQb2s1Nk5IZ2c9PQ==', 'sKbCE88YcrWUi9jYPrIHg2EzdmE3eVNQVUt6UVVRbmpJMDNzcmc9PQ==', '2RLemcP2PUQfbUc5hCoYC0tBNGxaaEZqZ1lxeG1vcWMvVithc1E9PQ==', '1000', '2t/A8GuH92GSpdSWYHZe2zRUYXpRenozRktGd0VwWU5NR1FZTUE9PQ==', 'IJPcHu3givyC4XvORtS9rEN1Z0N1VC9nR293UlpPeXhZRWJ0bFE9PQ==', 'JlKjEWO7KcrW5ka2DxzEglA4UTA3cXNQQnV3NzE0alFWQkJmV3c9PQ==', 'T9QHKRminiEH6nYcPmlFHC9QdVZCVFV6cW5jclNXMjExMVNMRkE9PQ==', 'PqEiAk3e33GIPCMyckpgkWp6UjVHaURrVzJuVG9YTERWTFR3bmc9PQ==', '', 'w5cqIxvXzYqaVp1RdEd3PTN1WGZ6TTFaVGxtSHkyb1luSmJ6S3c9PQ==', 'DBhBDzhBlmH8vaBvqQELkEZIUXRoN0hpTEFPNHR3UFowZEhQUnc9PQ==', 'p/e5O/tqQA0yaqvZwYyUP2FZb3NTRjJjVzJPdjJaL2U4M1ZiU0E9PQ==', 'yPq53RE/ceygWXR4AQ2JD01uMDF3ZFBMY3d4VnJtUzlqZkl1K1E9PQ==', 'aGCY06x+NLZFFulfAPX6xG55SWlQQ2xWdHJ4b3NGM0Z1WmVWU2c9PQ==', 'v7fCcOZHXx9tDYu0oPBDqkU4bVRpQUZYaitPK1hZc0gwVDJ1L3c9PQ==', 'zlEutGPL6sm0BLyNF2HTz0pTbFcyRTJ1OG5SdVh5S3hEOVhPaWc9PQ==', 'is2UjB1crSoAT0ALUP1sF0gxWGwwKzFjVThQL2VNVDBYd2pMMmc9PQ==', 'f5XUGR8JQ/HyMLoz/cLpWCthWjl1eVhwYzlNK082SlVRblFCSFE9PQ==', 'g68fSWiFiLi6ujyOTXq2hlNlQ0NpQkJpbG9FZ2JxazhBWVpVbGc9PQ==', 'T+matikdZVgFxt7A21DczkVLbXUzaVZOd1p1NWJLNmFBQVJrWWc9PQ==', 'ZPXPHJf/DySWru1JlwIaClE4RlJjYUJVVmN4YjAyZXFTSGFqV0E9PQ==', 'jp2onuipjfIQLJdc/GaEaG80RzA3czRpWlM0azM5dlZVRlFRZjdPWFFaSUdxS3NqdUpOT29taG9Ld0k9', '26+vzLk7NfP4lrnnqLdL2TgvQWl5bStwQjZvVW45Vk9Fd1ppQ0E9PQ==', '7lfOuzUfoH4clVFnRjJIe2k5SXVwL2w5dVFHb1dnZWZmb2V4VGdENm14bTFWOTRTZHI4allmYkVYc2pOWEt2aGFRaytFTk10ZHNNMlRFbFhUMnlqQmFQTTg5V1g4SVNJQTFOTkJnPT0=', 'Fpr1Lqi9VAjFJm5AhtxTYzNhNllFM2Mvb2xlSUR6bHNKZi9OVEE9PQ==', 'T9L/aWK706A7lizhDzaKhkNENVdqd1NNRW5VMitQaTdwcnc2dkE9PQ==', 'NR57yl+oe58VKhBm3GoHMG5nRmwwTTVpYlp6U0c4NUl6SWwrY1E9PQ==', 'yL7jz6IM7gQq4u4BJ/34uEhvZWhkOE5tVHJEMTZtUFBwTnRvT2c9PQ==', 'EwVaSLkK5i2yxs54UxV3hCs1eXhWYmtCVmdFT2xNZ2UvRzNRQ3c9PQ==', 'FD1hm+3LGxi/mxuKbLT3MHBHR1hqNmVTTStCQldFR0ZYdE1kT0E9PQ==', 'uGEcNIfSUSIc2Qc2LrIEgFQ1TjBOOEU3SzNnZXFaaUJITit6Qmc9PQ==', 'tXclrejz+PGmgnGD540SWlN4K2tIQUpKaVBIWHZmdWFYb3RoWXc9PQ==', '/bLEt5Wx3aBhcDS7DQdcHi9YSDR4RGNKOFJsa1hkZ0dzYXArTVE9PQ==', 'IGLAiRUGr63LkX10mfKX2HpEWDlFbDdNTkt3QWtvd2d0RVQvS2c9PQ==', 'RXadzzB2O8eF2XwmQnS2PlVsK01xcis2bFdaMTc4MUhPZXYrZEE9PQ==', 'U3YPPEkoRC33HLVjh4lihTZQQzJkSDE5MExadFp0Z3VHaW04M2c9PQ==', 'fZFKWIlgdBmyLJ+WYWBTPUVYWHZyZHlPSnlXK0JaQ3FmRndPbUE9PQ==', 'pending', '2024-12-12 05:35:22');
+INSERT INTO `l_study_response` (`id`, `gmail`, `choose_school`, `name`, `sex`, `age`, `degree`, `year_awarded`, `current_study`, `if_no_jobs`, `if_yes_details`, `pursue_reasons`, `current_position`, `other_position`, `time_to_job`, `time_gap`, `employment_history`, `job_info_source`, `other_job_info`, `job_qualifications`, `gross_salary`, `job_benefits`, `work_location`, `num_employees`, `work_nature`, `other_work_nature_text`, `proof_image`, `job_problem`, `problem_elaboration`, `self_employed_reason`, `knowledge_enhance`, `problem_solving`, `research_skills`, `learning_efficiency`, `communication_skills`, `more_inclined`, `team_spirit`, `job_relevance`, `applied_course`, `possible_reasons`, `other_reasons`, `present_job`, `other_job`, `range_module`, `optional_module`, `relevance`, `worlkload`, `solving`, `learning`, `placement`, `environment`, `quality`, `job_satisfaction`, `job_stay`, `stay_other_text`, `status`, `created_at`, `check_mode`) VALUES
+(19, 'ejieflorida128@gmail.com', 'M0GmmkBdQB2EQ/TMGj5iBm9HSzIzaHpndm15M0Z6UkdSUlI4TUVoakdOOE9LMkJQUXdyT1FQbGdhUHM9', '3hxXXnVFdcNXbzWpSa7P90RvOUNxT0l3U0lSeEhwS25DR2EzcWc9PQ==', 'XAwd34FPt45Yi+o/Mk77PnBENmZpWEozM09YQXBmQkltelhhZFE9PQ==', 20, 'YvMZJ6g3y+n1vYfsu/fdJy9qRHovZlpRMjROZnllR2FBRWJNTXNmN1RPOEtQSnpXRVVQNncyWDZpa3M9', '2024', 'GSKF9XryAvtNXU6g+xFs21Z4c3cyeGFkYnJFUU9VUC82dG1xelE9PQ==', 'IEkHQTXQWdTBpSCevP6zsWw0dXhFdElqUDEyY3pYampaRHFBZ1E9PQ==', 'Ii32SO+IQY2Hz5IdwFu99VlDaHV5M0MyYjJQZnkvZ2N5Q1RyT3c9PQ==', 'LyC6CjqP806pCBL+Vq5i9DZBVllOMXdVdVJ3WW1tSmc4Rm9Nemc9PQ==', '5R91HFGoDl5EO6jgBARtT0ZtVUkzR0NwNlVYL042bnQxTTVmNnJGZlhhVFQzN3lJTkMrZWNKVytCZm89', 'i7/qaLZYWefMK56A4Pbxn3dzM2xFaUsyd2NBZnh4cWFOZzJBRkE9PQ==', 'MIKDAuprQegQK+qA5M0XDWhqZ2xMYitIRzcxeFBoOTl6VHJaeFE9PQ==', 'h7Z0Wkj04TiEUoZrSdCt+jh2QUVRZ3h2amY3ZnVoYWZ0Z1l1UlE9PQ==', 'c0RFEaN4TmtweoJTywPN229JT2srTHNFSW55L1Q4dzZqSUYxRlE9PQ==', '/duf9veJHnU8EueKkxBHT29ZOHJOWFBPMTRhbmR0NG5UQS9MZWc9PQ==', '0/+rkvKP4mi+uT49s02WMzBseTU4Z1VxNmVBUStaVHJ6MlZURkE9PQ==', '2Id7x10iaNrRxvAcxBevVnJLRGpBK0ZSQm56SWFWdmMrUndJYmc9PQ==', '1000', '2eVz94cMSTUk++fEqGEgC25Xc1E5SDZ1dEZHbjYxU0ppYmFXMHc9PQ==', 'OB45L6lpD9N2onfr/aXQWW5yN0x0bWU2TVd3cmxXMU53TUczOHc9PQ==', 'OppEirXh1G5zuVQ8/GBWSlFlVW4wSE1Tc0x4aGVUd3NUTzVRMGc9PQ==', 'AH6K+YEPS5f88UViKIW2h3FRSlhQV2RQZGNEV25CblQvTWNudHc9PQ==', 'f8tiYz4tbid3BXYqUTm8xFVWQ3dDSmdYOWRZMmJKRzBadFMzVUE9PQ==', '', '+1togA4WCs2xrLUbpIQIxnhrb1VYTUh4TE1FdG5TNjRiRHl0aXc9PQ==', '7xuFXa6R42adxkVBU81QCFNadW16a0ZtelNwbDNwUWpDVy9OVHc9PQ==', '6+uLJzsv515rvb3w6fsCakJhNDdBeW9qbUx4N3VSTXQ1SW5xQUE9PQ==', '8nVEyl/WvyZ3BT1qL317QW5wdGloc0VoQ0hKNVVCcVU3b1NhU1E9PQ==', 'NcrTKYuSq826owZc/HEEQ3lka09sT0NkUkNPVjgzRzF4MmtsNGc9PQ==', 'cB3FPiqdgqj/wgOdHAs0QmRlanltZDNuZVlDTnhDTloyRDZNOVE9PQ==', 'FrAM35fijPlt5dv3z0wUYTdZTTlUdWsxdTkrSVZaVm9DRXV0akE9PQ==', 'tl6MuBjIXSOHF8XpbYoNGzY4dUo3cjk2NXQ4UHdWcnJKWXlhbWc9PQ==', '8vZPwTQ/LDoqdYJpsxpODmpvZmZFa2JlbUVXcHlWaFRMRE1mb3c9PQ==', 'GAlu6trywvTdgbTj5xkExmowbk1GZWRSbVZlWXdMWGN2M3p4VUE9PQ==', '7tN+CqUumcK7k0P+5epMfGdxbWFsUU00djRGblNhVzJ5RjNsVVE9PQ==', 'chg6dfq4AZse0L7KgH6q/05VcE9rVUJXS3kza2sydll3dFYrbGc9PQ==', 'g6HqftOxIfoQ0EeF8zQVIGE4ZHlvTVBZeWVKeE15cUlvaGJsWERkRGFuR1dFQ1FQYVhnT0wweVhRVkU9', 'sZBggT/GGkauhgmEQdoU+2JIL1Q4c2hrVmxrSUx3R0ZwTWxMUmc9PQ==', '3w6GJptpRKBPcg61mXCuzDRseUZDRWsvalFLVzJXSGdGQ1A5aHE0TmVWTHFPQWNjU0pORjcvdHd2MFRaeitVV1IyVzJIS1pocDRVOUxOWWZWWUhpbUdFN1JqQk1nNVhnUmVYOW9BPT0=', 'AWeAsnHmxADCS2cWDZwGNWdnOEFtR04xMjhRL3p1NGN3TEhqemc9PQ==', 'W7kkHTwdvHUP0FlMw6ZLKG9IMmZ2VkdrZGhOTEROZ0VuZWxwb2c9PQ==', 'BZhk15sRXq1Dj/O+tsmO3UZiVHNCdnIyQU82TWoyaloyUE1JdGc9PQ==', 'UkBWtrB+uU3X76xv0J0xmWNHWmxVaEt3UTJwOVlLUDE0OVAwTGc9PQ==', 'FX+ieYszTC6nRBrMs1Twd2NVYU9RcUtuMXZlWkxtR3Z1Skdqc3c9PQ==', 'pOKrT0rWElRVAwTSdHxXs1NCRlVuV2xuTFRXMzZ3YjhuT05yYmc9PQ==', 'NVeNAVpJCWGGYF4fYKDMt09MbnZVTVlMM25Pa1p1SzQxc2h5Qnc9PQ==', 'H3JNp6rSvVjonIgTjfpw+WJoZXJSbDFtaHhsWEQ0REZ2dHpXdVE9PQ==', '9C/qWpj8JWSmqWRWGMQ+rlN4NnlsZHd5QUFhcVk2Y1ZKanllMlE9PQ==', 'nOVH7Q31HDIzTmzve9XXrDlRdEw5OVgrYUpuUTZSUkNMTVRXUVE9PQ==', 'W1cDawp6/aKFS8RXWH2QCSsyUzFKT2lDczdyYXFHR0k1cEpSREE9PQ==', 'CmRgWFX7RZy1H0y6TAaa9lNwOHNsVGROQzZ4NzJHZEZuNTNMS3c9PQ==', 'cnFPKfMuOp/wQm+vghxFrldHZGc4K0JKQjJwYXExeHhYeXNFdWc9PQ==', 'pending', '2024-12-12 05:35:22', 1);
 
 -- --------------------------------------------------------
 
@@ -140,11 +164,17 @@ CREATE TABLE `r_accounts` (
 --
 
 INSERT INTO `r_accounts` (`id`, `name`, `email`, `school_role`, `school`, `password`, `date_registered`, `profile_img`, `contact`, `bio`, `status`, `face_data`) VALUES
-(37, '9KnNHleYQs5oSBpHs7/jklkxNEtxWk5WdUt1dVoxYVVzaThUa1E9PQ==', 'ejieflorida123@gmail.com', '7Sobzp+a/aXA0BqRfjh6yG4wK1RIUjBWbTdFVWE3MHJrUStKOFE9PQ==', 'fo4evhjUNtI1QZ79fWXj4ERKenNKTTNrb1lsUmtncEU5YVY3UjFTS0F1eHE4WktpRHZ5UG5KWHRxL009', '$2y$10$BQcTurhNzAdRetwfZJ7TL.4v9XwXe.WdSE1T3uTr7Nkg4KVhxlfOS', '2024-11-21 11:18:08', 'pictures/default.jpg', '', '', 'Approved', '../uploads/faces/face_673ea6700f3580.53003875.png');
+(38, 'BdVmTxTFiFxcObY2yx4lCjRFSVB1UkxidStPM3pIV2xPU1ZHZHc9PQ==', 'ejieflorida123@gmail.com', '2njgmhs9aXBZTUcdeQkruytOLzZoSk44YjRPVXM4cGUyekQ2aUE9PQ==', 'fGfjBnOetxpKv81vYADINkJxLyt3bVZFNjRJSlRsV1dCVWg5N1RNandmK3FwTVNvQnkrbEJWTWNzZWM9', '$2y$10$gMchPIGCYE5IKYIRoEaHzeebc.H9C93WtWJSkKCTOh9/0Wq1IIA9O', '2024-12-12 17:25:46', 'pictures/Default.png', '', '', 'Approved', '../uploads/faces/face_675aac1a83c217.42143673.png');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `e_notifications`
+--
+ALTER TABLE `e_notifications`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `e_schools`
@@ -169,6 +199,12 @@ ALTER TABLE `r_accounts`
 --
 
 --
+-- AUTO_INCREMENT for table `e_notifications`
+--
+ALTER TABLE `e_notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `e_schools`
 --
 ALTER TABLE `e_schools`
@@ -184,7 +220,7 @@ ALTER TABLE `l_study_response`
 -- AUTO_INCREMENT for table `r_accounts`
 --
 ALTER TABLE `r_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
