@@ -128,7 +128,7 @@ $student_counts_json = json_encode($student_counts);
                 <a href="admin_alumni_directory.php" class="nav-item nav-link"><i class="fa fa-address-book me-2"></i>Alumni Directory</a>
                 <a href="admin_alumni_information.php" class="nav-item nav-link"><i class="fa fa-info-circle me-2"></i>Alumni Info</a>
                 <a href="admin_alumni_analysis.php" class="nav-item nav-link"><i class="fa fa-chart-line me-2"></i>Alumni Analysis</a>
-
+                <a href="admin_notification.php" class="nav-item nav-link"><i class="fa fa-bell me-2"></i>Notification</a>
 
                    
 

@@ -158,6 +158,32 @@ $alumni_gmail = $_SESSION['email'];
             }
         }
 
+        $check_mode = 1;
+
+        $selectResponse = "SELECT * FROM l_study_response WHERE gmail = '$alumni_gmail'";
+        $queryCheck = mysqli_query($conn,$selectResponse);
+
+        $resultCheck = mysqli_fetch_assoc($queryCheck);
+
+        if($resultCheck['check_mode'] == 1){
+
+            $notification = $alumni_gmail . " has updated the alumni information directory for the school " . $choose_school;
+
+
+        }else{
+            $notification = $alumni_gmail . " has submitted the alumni information directory for the school " . $choose_school;
+            
+            
+        }
+
+        $decryptSchool = decryptData($choose_school);
+
+        $notifGo = "INSERT INTO e_notifications (school_name,alumni_gmail,notification) VALUES ('$decryptSchool','$alumni_gmail','$notification')";
+        mysqli_query($conn,$notifGo);
+
+
+
+
 
 
     $query = "UPDATE l_study_response 
@@ -215,8 +241,12 @@ $alumni_gmail = $_SESSION['email'];
         job_satisfaction = '$job_satisfaction',
         job_stay = '$job_stay',
         stay_other_text = '$stay_other_text',
-        status = '$status'
+        status = '$status',
+        check_mode = '$check_mode'
     WHERE gmail = '$alumni_gmail'";
+
+
+        
 
 
         // Execute the query
@@ -227,6 +257,9 @@ $alumni_gmail = $_SESSION['email'];
         } else {
             echo "Error: " . mysqli_error($conn);
         }
+
+      
+
     }
     ob_end_flush();
 ?>
