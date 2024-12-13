@@ -24,69 +24,7 @@ function encryptData($data)
     return base64_encode($iv . $encrypted); // Store IV and encrypted data together
 }
 
-// Check if form is submitted for information update
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $Name = $_POST["name"];
-    $email = $_POST["email"];
-    $contact = $_POST["contact"];
-    $school = $_POST["school"];
-    $schoolrole = $_POST["school_role"];
-    $bio = $_POST["bio"];
-    $id = $_SESSION['user_id'];
 
-    // Escape user inputs for security
-    $firstName = mysqli_real_escape_string($conn, $Name);
-    $email = mysqli_real_escape_string($conn, $email);
-    $contact = mysqli_real_escape_string($conn, $contact);
-    $school = mysqli_real_escape_string($conn, $school);
-    $schoolrole = mysqli_real_escape_string($conn, $schoolrole);
-    $bio = mysqli_real_escape_string($conn, $bio);
-
-    // Handle profile picture upload
-    $profilePicturePath = "";
-    if (isset($_FILES['profilePicture']) && $_FILES['profilePicture']['error'] === UPLOAD_ERR_OK) {
-        $file = $_FILES['profilePicture'];
-        $uploadDir = "profilePicture/";
-        $uploadFile = $uploadDir . basename($file['name']);
-        if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
-            $profilePicturePath = mysqli_real_escape_string($conn, $uploadFile);
-        }
-    }
-
-    // Check if the user already has a profile record
-    $check_sql = "SELECT id FROM r_accounts WHERE id = '$id'";
-    $check_result = mysqli_query($conn, $check_sql);
-    
-    if (mysqli_num_rows($check_result) > 0) {
-        // Update existing profile record
-        $sql = "UPDATE r_accounts SET 
-                    name = '$Name', 
-                    email = '$email', 
-                    contact = '$contact', 
-                    school = '$school', 
-                    school_role = '$schoolrole', 
-                    bio = '$bio'";
-
-        // Update profile picture if a new one was uploaded
-        if (!empty($profilePicturePath)) {
-            $sql .= ", profile_img = '$profilePicturePath'";
-        }
-
-        $sql .= " WHERE id = '$id'";
-    } else {
-        // Insert a new profile record
-        $sql = "INSERT INTO r_accounts (id, name, email, contact, school_role,school, bio, profile_img) 
-                VALUES ('$id', '$Name', '$email', '$contact', '$schoolrole', '$school', '$bio', '$profilePicturePath')";
-    }
-
-    // Execute the query
-    if (mysqli_query($conn, $sql)) {
-        echo "";
-    } else {
-        echo "Error: " . mysqli_error($conn);
-    }
-}
 
 // Fetch user's profile information
 $id = $_SESSION['user_id'];
@@ -131,11 +69,11 @@ $call = mysqli_fetch_assoc($query);
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
-        </div>
+        </div> -->
         <!-- Spinner End -->
 
 
@@ -233,111 +171,8 @@ $call = mysqli_fetch_assoc($query);
 
 
             <div class="container-fluid pt-4 px-4">
-                
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-lg-4 text-center">
-        <div class="card p-3" style="display: flex; justify-content: center; align-items: center; height: 300px;"> <!-- Added styles -->
-        <img src="<?php echo $call['profile_img']; ?>" alt="Profile Picture" id="profile_pic"  style=" height: 250px; width: 250px; border-radius: 50%;">
-        <img id="propPIc" class="rounded-circle img-fluid mt-2" style="max-height: 200px; max-width: 200px; display:none;">
-    </div>
-            <!-- <div class="mt-3">
-                <input type="file" class="form-control" id="profilePicture" name="profilePicture" accept="image/*" hidden>
-                <label class="btn btn-success mt-2" for="profilePicture">Change Profile Pic</label>
-            </div> -->
-            <!-- Update Profile Button -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateProfileModal" style=" margin-top: 10px;">Update Profile!</button>
-
-<!-- Modal -->
-<div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg"> <!-- Optional: Use modal-lg for larger width -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateProfileModalLabel">Update Profile Information</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <!--  deria mag start ang code sa profile -->
             </div>
-            <div class="modal-body">
-                <form action="admin_profile.php" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" name="name" required placeholder="Enter your name" value="<?php echo decryptData($call['name']) ?? ''; ?>">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" name="email" required placeholder="Enter your email" value="<?php echo $call['email'] ?? ''; ?>">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="contact" class="form-label">Contact</label>
-                        <input type="text" class="form-control" name="contact" placeholder="Enter your contact number" value="<?php echo decryptData($call['contact']) ?? ''; ?>">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="schoolRole" class="form-label">School Role</label>
-                        <input type="text" class="form-control" name="school_role" placeholder="Enter your school role" value="<?php echo decryptData($call['school_role']) ?? ''; ?>">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="school" class="form-label">School</label>
-                        <input type="text" class="form-control" name="school" placeholder="Enter your school" value="<?php echo decryptData($call['school']) ?? ''; ?>">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="bio" class="form-label">Bio</label>
-                        <textarea class="form-control" name="bio" rows="3" placeholder="Tell something about yourself"><?php echo decryptData($call['bio']) ?? ''; ?></textarea>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="profilePicture" class="form-label">Profile Picture</label>
-                        <input type="file" class="form-control" id="profilePicture" name="profilePicture" accept="image/*">
-                    </div>
-                    
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Update Information</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-        </div>
-        <div class="col-lg-8">
-            <div class="card p-4">
-                <!-- <h4></h4>
-                <form action="adminprofile.php" method="post" enctype="multipart/form-data"> -->
-
-                <div class="col-lg-8">
-                    <p class="h6 text-secondary"><strong>Name:</strong> <?php echo decryptData($call['name']) ?? 'N/A'; ?></p>
-                    <p class="h6 text-secondary"><strong>Email:</strong> <?php echo $call['email'] ?? 'N/A'; ?></p>
-                    <p class="h6 text-secondary"><strong>Contact:</strong> <?php echo decryptData($call['contact']) ?? '000-0000-000'; ?></p>
-                    <p class="h6 text-secondary"><strong>School Role:</strong> <?php echo decryptData($call['school_role']) ?? 'N/A'; ?></p>
-                    <p class="h6 text-secondary"><strong>School:</strong> <?php echo decryptData($call['school']) ?? 'N/A'; ?></p>
-                    <p class="h6 text-secondary"><strong>Bio:</strong> <?php echo decryptData($call['bio']) ?? 'N/A'; ?></p>
-                </div>
-
-                   
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.getElementById('profilePicture').addEventListener('change', function(event) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            const preview = document.getElementById('propPIc');
-            preview.src = reader.result;
-            preview.style.display = 'block';
-            document.getElementById('profile_pic').style.display = 'none';
-        }
-        reader.readAsDataURL(event.target.files[0]);
-    });
-</script>
-            </div>
-
 
 
             <!-- Footer Start -->
