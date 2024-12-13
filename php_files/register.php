@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $emailExisted = true;
         } else {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $defaultProfileImg = 'pictures/default.jpg'; // Default profile image
+            $defaultProfileImg = 'pictures/Default.png'; // Default profile image
            
             $pending = "Pending";
 

@@ -11,6 +11,7 @@ function decryptData($encryptedData)
     $iv = substr($data, 0, $ivLength); // Extract the IV
     $encrypted = substr($data, $ivLength); // Extract the encrypted data
     return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+
 }
 
 
@@ -21,6 +22,12 @@ function encryptData($data)
     $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
     return base64_encode($iv . $encrypted); // Store IV and encrypted data together
 }
+
+$id = $_SESSION['user_id'];
+$sql = "SELECT * FROM r_accounts WHERE id = '$id'";
+$query = mysqli_query($conn, $sql);
+$call = mysqli_fetch_assoc($query);
+
 
 ?>
 
@@ -84,11 +91,11 @@ function encryptData($data)
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="../template/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle" src="<?php echo $call['profile_img'];  ?>" alt="" style="width: 40px; height: 40px;">
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0"><?php echo $call["name"] ?? 'N/A'; ?></h6>
+                        <h6 class="mb-0"><?php echo decryptData($call["name"]) ?? 'N/A'; ?></h6>
                         <span>Admin</span>
                     </div>
                 </div>
@@ -158,8 +165,8 @@ function encryptData($data)
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="../template/img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">John Doe</span>
+                            <img class="rounded-circle me-lg-2" src="<?php echo $call['profile_img'];  ?>" alt="" style="width: 40px; height: 40px;">
+                            <span class="d-none d-lg-inline-flex"><?php echo decryptData($call["name"]) ?? 'N/A'; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="admin_profile.php" class="dropdown-item">My Profile</a>
