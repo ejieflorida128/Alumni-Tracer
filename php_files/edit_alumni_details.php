@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("../connection/conn.php");
+date_default_timezone_set('Asia/Manila');
 
 define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
 function decryptData($encryptedData)

@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("../connection/conn.php");
+date_default_timezone_set('Asia/Manila');
 
 define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
 
@@ -154,15 +155,57 @@ $student_counts_json = json_encode($student_counts);
                             <i class="fa fa-bell me-lg-2"></i>
                             <span class="d-none d-lg-inline-flex">Notification</span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                            <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
 
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all notifications</a>
+                        <?php                    
+                                $school_name = $_SESSION['school'];
+                                $decryptSchool = decryptData($school_name);
+                                $sqlRecent = "SELECT * FROM e_notifications WHERE school_name = '$decryptSchool' ORDER BY id DESC LIMIT 2";
+                                $query = mysqli_query($conn,$sqlRecent);
+
+                                while( $resultData = mysqli_fetch_assoc($query)){
+
+                                $date_now = new DateTime(); 
+
+                                            
+                                $date_post = new DateTime($resultData['date']); 
+
+
+
+
+                                $interval = $date_now->diff($date_post);
+
+
+
+                                if ($interval->y > 0) {
+                                    $timeString = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+                                } elseif ($interval->m > 0) {
+                                    $timeString = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+                                } elseif ($interval->d > 0) {
+                                    $timeString = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+                                } elseif ($interval->h > 0) {
+                                    $timeString = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '') . ' ago';
+                                } elseif ($interval->i > 0) {
+                                    $timeString = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '') . ' ago';
+                                } else {
+                                    $timeString = 'Just now';
+                                }
+
+
+                                ?>
+
+
+                                <a href="#" class="dropdown-item">
+                                    <h6 class="fw-normal mb-0">New Information</h6>
+                                    <small><?php echo $timeString; ?></small>
+                                </a>
+                                <hr class="dropdown-divider">
+
+                                <?php  } ?>
+
+                               
+                              
+                                <a href="admin_notification.php" class="dropdown-item text-center">See all notifications</a>
                         </div>
                     </div>
                     <div class="nav-item dropdown">

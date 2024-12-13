@@ -62,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     // Successful login
                                     $_SESSION['user_id'] = $user['id'];
                                     $_SESSION['email'] = $user['email'];
+                                    $_SESSION['school'] = $user['school'];
                                     header('Location: admin_dashboard.php'); // Redirect to a dashboard page
                                     exit();
                                 } else {

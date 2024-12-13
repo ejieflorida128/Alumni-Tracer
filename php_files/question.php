@@ -2,6 +2,7 @@
 ob_start(); // Start buffering the output
 session_start();
 include '../connection/conn.php'; // Database connection
+date_default_timezone_set('Asia/Manila');
 
 
 define('ENCRYPTION_KEY', getenv('MY_SECRET_KEY'));
@@ -165,18 +166,20 @@ $alumni_gmail = $_SESSION['email'];
 
         $resultCheck = mysqli_fetch_assoc($queryCheck);
 
+        $decryptSchool = decryptData($choose_school);
+
         if($resultCheck['check_mode'] == 1){
 
-            $notification = $alumni_gmail . " has updated the alumni information directory for the school " . $choose_school;
+            $notification = $alumni_gmail . " has updated the alumni information directory for the school " . $decryptSchool;
 
 
         }else{
-            $notification = $alumni_gmail . " has submitted the alumni information directory for the school " . $choose_school;
+            $notification = $alumni_gmail . " has submitted the alumni information directory for the school " . $decryptSchool;
             
             
         }
 
-        $decryptSchool = decryptData($choose_school);
+      
 
         $notifGo = "INSERT INTO e_notifications (school_name,alumni_gmail,notification) VALUES ('$decryptSchool','$alumni_gmail','$notification')";
         mysqli_query($conn,$notifGo);
