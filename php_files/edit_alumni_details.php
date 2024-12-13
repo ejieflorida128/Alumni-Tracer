@@ -22,6 +22,139 @@ function encryptData($data)
     return base64_encode($iv . $encrypted); // Store IV and encrypted data together
 }
 
+// Check if the form was submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $user_id = mysqli_real_escape_string($conn, $_POST['id']);
+    $name = encryptData($_POST['name']);
+    $sex = isset($_POST['sex']) ? encryptData($_POST['sex']) : null;
+    $age = mysqli_real_escape_string($conn, $_POST['age']);
+    $degree = encryptData($_POST['degree']);
+    $year_awarded = mysqli_real_escape_string($conn, $_POST['year_awarded']);
+    $current_study = isset($_POST['current_study']) ? encryptData($_POST['current_study']) : null;
+    $if_no_jobs = isset($_POST['if_no_jobs']) ? encryptData($_POST['if_no_jobs']) : null;
+    $if_yes_details = isset($_POST['if_yes_details']) ? encryptData($_POST['if_yes_details']) : null;
+    $pursue_reasons = isset($_POST['pursue_reasons']) ? encryptData($_POST['pursue_reasons']) : null;
+    $current_position = isset($_POST['current_position']) ? encryptData($_POST['current_position'][0]) : null;
+    $other_position = isset($_POST['other_position']) ? encryptData($_POST['other_position'][0]) : null;
+
+    // New fields
+    $time_to_job = isset($_POST['time_to_job']) ? encryptData($_POST['time_to_job'][0]) : null;
+    $time_gap = isset($_POST['time_gap']) ? encryptData($_POST['time_gap']) : null;
+    $employment_history = isset($_POST['employment_history']) ? encryptData($_POST['employment_history']) : null;
+    $job_info_source = isset($_POST['job_info_source']) ? encryptData($_POST['job_info_source'][0]) : null;
+    $other_job_info = isset($_POST['other_job_info']) ? encryptData($_POST['other_job_info'][0]) : null;
+    $job_qualifications = isset($_POST['job_qualifications']) ? encryptData($_POST['job_qualifications']) : null;
+    $gross_salary = mysqli_real_escape_string($conn, $_POST['gross_salary']);
+    $job_benefits = isset($_POST['job_benefits']) ? encryptData($_POST['job_benefits']) : null;
+    $work_location = isset($_POST['work_location']) ? encryptData($_POST['work_location']) : null;
+    $num_employees = isset($_POST['num_employees']) ? encryptData($_POST['num_employees'][0]) : null;
+    $work_nature = isset($_POST['work_nature']) ? encryptData($_POST['work_nature'][0]) : null;
+    $other_work_nature_text = isset($_POST['other_work_nature_text']) ? encryptData($_POST['other_work_nature_text'][0]) : null;
+    $proof_image = isset($_POST['proof_image']) ? $_POST['proof_image'] : null;
+
+    // New fields from questions 22-27
+    $job_problem = isset($_POST['job_problem']) ? encryptData($_POST['job_problem'][0]) : null;
+    $problem_elaboration = isset($_POST['problem_elaboration']) ? encryptData($_POST['problem_elaboration']) : null;
+    $self_employed_reason = isset($_POST['self_employed_reason']) ? encryptData($_POST['self_employed_reason']) : null;
+    $knowledge_enhance = isset($_POST['knowledge_enhance']) ? encryptData($_POST['knowledge_enhance']) : null;
+    $problem_solving = isset($_POST['problem_solving']) ? encryptData($_POST['problem_solving']) : null;
+    $research_skills = isset($_POST['research_skills']) ? encryptData($_POST['research_skills']) : null;
+    $learning_efficiency = isset($_POST['learning_efficiency']) ? encryptData($_POST['learning_efficiency']) : null;
+    $communication_skills = isset($_POST['communication_skills']) ? encryptData($_POST['communication_skills']) : null;
+    $more_inclined = isset($_POST['more_inclined']) ? encryptData($_POST['more_inclined']) : null;
+    $team_spirit = isset($_POST['team_spirit']) ? encryptData($_POST['team_spirit']) : null;
+    $job_relevance = isset($_POST['job_relevance']) ? encryptData($_POST['job_relevance'][0]) : null;
+
+    // New fields 27-29
+    $applied_course = isset($_POST['applied_course']) ? encryptData($_POST['applied_course'][0]) : null;
+    $possible_reasons = isset($_POST['possible_reasons']) ? encryptData($_POST['possible_reasons'][0]) : null;
+    $other_reasons = isset($_POST['other_reasons']) ? encryptData($_POST['other_reasons'][0]) : null;
+    $present_job = isset($_POST['present_job']) ? encryptData($_POST['present_job'][0]) : null;
+    $other_job = isset($_POST['other_job']) ? encryptData($_POST['other_job'][0]) : null;
+
+    // New fields 30-31
+    $range_module = isset($_POST['range_module']) ? encryptData($_POST['range_module']) : null;
+    $optional_module = isset($_POST['optional_module']) ? encryptData($_POST['optional_module']) : null;
+    $relevance = isset($_POST['relevance']) ? encryptData($_POST['relevance']) : null;
+    $worlkload = isset($_POST['worlkload']) ? encryptData($_POST['worlkload']) : null;
+    $solving = isset($_POST['solving']) ? encryptData($_POST['solving']) : null;
+    $learning = isset($_POST['learning']) ? encryptData($_POST['learning']) : null;
+    $placement = isset($_POST['placement']) ? encryptData($_POST['placement']) : null;
+    $environment = isset($_POST['environment']) ? encryptData($_POST['environment']) : null;
+    $quality = isset($_POST['quality']) ? encryptData($_POST['quality']) : null;
+    $job_satisfaction = isset($_POST['job_satisfaction']) ? encryptData($_POST['job_satisfaction']) : null;
+
+    // New fields for question 32
+    $job_stay = isset($_POST['job_stay']) ? encryptData($_POST['job_stay']) : null;
+    $stay_other_text = isset($_POST['stay_other_text']) ? encryptData($_POST['stay_other_text']) : null;
+
+    // Update query with new fields
+    $updateQuery = "
+        UPDATE l_study_response SET 
+            name = '$name',
+            sex = '$sex',
+            age = '$age',
+            degree = '$degree',
+            year_awarded = '$year_awarded',
+            current_study = '$current_study',
+            if_no_jobs = '$if_no_jobs',
+            if_yes_details = '$if_yes_details',
+            pursue_reasons = '$pursue_reasons',
+            current_position = '$current_position',
+            other_position = '$other_position',
+            time_to_job = '$time_to_job',
+            time_gap = '$time_gap',
+            employment_history = '$employment_history',
+            job_info_source = '$job_info_source',
+            other_job_info = '$other_job_info',
+            job_qualifications = '$job_qualifications',
+            gross_salary = '$gross_salary',
+            job_benefits = '$job_benefits',
+            work_location = '$work_location',
+            num_employees = '$num_employees',
+            work_nature = '$work_nature',
+            other_work_nature_text = '$other_work_nature_text',
+            proof_image = '$proof_image',
+            job_problem = '$job_problem',
+            problem_elaboration = '$problem_elaboration',
+            self_employed_reason = '$self_employed_reason',
+            knowledge_enhance = '$knowledge_enhance',
+            problem_solving = '$problem_solving',
+            research_skills = '$research_skills',
+            learning_efficiency = '$learning_efficiency',
+            communication_skills = '$communication_skills',
+            more_inclined = '$more_inclined',
+            team_spirit = '$team_spirit',
+            job_relevance = '$job_relevance',
+            applied_course = '$applied_course',
+            possible_reasons = '$possible_reasons',
+            other_reasons = '$other_reasons',
+            present_job = '$present_job',
+            other_job = '$other_job',
+            range_module = '$range_module',
+            optional_module = '$optional_module',
+            relevance = '$relevance',
+            worlkload = '$worlkload',
+            solving = '$solving',
+            learning = '$learning',
+            placement = '$placement',
+            environment = '$environment',
+            quality = '$quality',
+            job_satisfaction = '$job_satisfaction',
+            job_stay = '$job_stay'
+        WHERE id = '$user_id'
+    ";
+
+    if (mysqli_query($conn, $updateQuery)) {
+        echo "User data updated successfully.";
+        // Optionally redirect to another page
+        // header("Location: user_list.php");
+    } else {
+        echo "Error updating record: " . mysqli_error($conn);
+    }
+}
+
+
 // Assuming $conn is your database connection and $user_id is defined
 $user_id = $_GET['id'];  // Or use a different way to get the user_id
 
@@ -100,8 +233,8 @@ if ($userResult && mysqli_num_rows($userResult) > 0) {
                 <div class="navbar-nav w-100">
                     <a href="admin_dashboard.php" class="nav-item nav-link "><i class="fa fa-home me-2"></i>Dashboard</a>
                     <a href="admin_profile.php" class="nav-item nav-link"><i class="fa fa-user me-2"></i>Profile</a>
-                    <a href="admin_alumni_directory.php" class="nav-item nav-link active"><i class="fa fa-address-book me-2"></i>Alumni Directory</a>
-                    <a href="admin_alumni_information.php" class="nav-item nav-link"><i class="fa fa-info-circle me-2"></i>Alumni Info</a>
+                    <a href="admin_alumni_directory.php" class="nav-item nav-link "><i class="fa fa-address-book me-2"></i>Alumni Directory</a>
+                    <a href="admin_alumni_information.php" class="nav-item nav-link active"><i class="fa fa-info-circle me-2"></i>Alumni Info</a>
                     <a href="admin_alumni_analysis.php" class="nav-item nav-link"><i class="fa fa-chart-line me-2"></i>Alumni Analysis</a>
                     <a href="admin_notification.php" class="nav-item nav-link"><i class="fa fa-bell me-2"></i>Notification</a>
 
@@ -167,9 +300,8 @@ if ($userResult && mysqli_num_rows($userResult) > 0) {
                           <span class="d-none d-lg-inline-flex">John Doe</span>
                       </a>
                       <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                          <a href="#" class="dropdown-item">My Profile</a>
-                          <a href="#" class="dropdown-item">Settings</a>
-                          <a href="#" class="dropdown-item">Log Out</a>
+                          <a href="admin_profile.php" class="dropdown-item">My Profile</a>
+                          <a href="../index.php" class="dropdown-item">Log Out</a>
                       </div>
                   </div>
               </div>
@@ -180,7 +312,7 @@ if ($userResult && mysqli_num_rows($userResult) > 0) {
                 <div class="bg-light rounded p-4" style="width:fit-content">
                     <h3 class="mb-4">A Tracer Study of the BSIT Graduates-Southern Leyte State University from School Years 2015-2018</h3>
                     <form method="POST" enctype="multipart/form-data">
-
+                    <input type="hidden" name="id" value="<?php echo $user_id; ?>">
 
                           <!-- 1. Name -->
                     <div class="card mb-3">
@@ -511,9 +643,6 @@ if ($userResult && mysqli_num_rows($userResult) > 0) {
                             <?php endif; ?>
                         </div>
                     </div>
-
-
-
 
                     <!-- 22. Do you face any major problem in your job assignments? -->
                     <div class="card mb-3">
@@ -853,9 +982,7 @@ if ($userResult && mysqli_num_rows($userResult) > 0) {
                         </div>
 
 
-
-                        <!-- status -->
-                        <input type="hidden" id="status" name="status" value="pending">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
 
                        <!-- Back Button -->
                         <a href="admin_alumni_directory.php" class="btn btn-primary">Back</a>
