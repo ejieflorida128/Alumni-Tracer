@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2024 at 04:53 AM
+-- Generation Time: Dec 14, 2024 at 06:07 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -164,7 +164,8 @@ CREATE TABLE `r_accounts` (
 --
 
 INSERT INTO `r_accounts` (`id`, `name`, `email`, `school_role`, `school`, `password`, `date_registered`, `profile_img`, `contact`, `bio`, `status`, `face_data`) VALUES
-(38, 'BdVmTxTFiFxcObY2yx4lCjRFSVB1UkxidStPM3pIV2xPU1ZHZHc9PQ==', 'ejieflorida123@gmail.com', '2njgmhs9aXBZTUcdeQkruytOLzZoSk44YjRPVXM4cGUyekQ2aUE9PQ==', 'fGfjBnOetxpKv81vYADINkJxLyt3bVZFNjRJSlRsV1dCVWg5N1RNandmK3FwTVNvQnkrbEJWTWNzZWM9', '$2y$10$gMchPIGCYE5IKYIRoEaHzeebc.H9C93WtWJSkKCTOh9/0Wq1IIA9O', '2024-12-12 17:25:46', 'pictures/Default.png', '', '', 'Approved', '../uploads/faces/face_675aac1a83c217.42143673.png');
+(38, 'BdVmTxTFiFxcObY2yx4lCjRFSVB1UkxidStPM3pIV2xPU1ZHZHc9PQ==', 'ejieflorida123@gmail.com', '2njgmhs9aXBZTUcdeQkruytOLzZoSk44YjRPVXM4cGUyekQ2aUE9PQ==', 'fGfjBnOetxpKv81vYADINkJxLyt3bVZFNjRJSlRsV1dCVWg5N1RNandmK3FwTVNvQnkrbEJWTWNzZWM9', '$2y$10$gMchPIGCYE5IKYIRoEaHzeebc.H9C93WtWJSkKCTOh9/0Wq1IIA9O', '2024-12-12 17:25:46', 'pictures/Default.png', '', '', 'Approved', '../uploads/faces/face_675aac1a83c217.42143673.png'),
+(40, 'R52p1kc9iFg7kf7jXARw4WR0ZFBQMEt6NVdMVFJ3UHRwUTl5a2c9PQ==', 'deguzlovely13@gmail.com', 'Pnrw9kNO1O00rF8cDIz1rkpvSEx0SnE3VDM1T3Y1ek42QS84MXc9PQ==', 'TDjRjvcUXAwD89vHNlW+/EZhQTVrRm5LWXJONmVMcDRPSmtwMkFYTWVldFBEenRpcE5FT1o0WWhYblk9', '$2y$10$1kXSg1yhoLClG.IvBLGT.uyF.VPnOefY43eBPB85WCJzoJWA0SYkq', '2024-12-14 12:58:21', '../uploads/dog.jpeg', '', '', 'Pending', '../uploads/faces/face_675d106d3d2217.25855326.png');
 
 --
 -- Indexes for dumped tables
@@ -220,7 +221,7 @@ ALTER TABLE `l_study_response`
 -- AUTO_INCREMENT for table `r_accounts`
 --
 ALTER TABLE `r_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
