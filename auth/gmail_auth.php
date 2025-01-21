@@ -17,12 +17,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $mail->isSMTP();
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
-    $mail->Username = 'alumnitracer1@gmail.com';
-    $mail->Password = 'jicy rjgh zecx mvci';
+    $mail->Username = 'slsualumnitracer@gmail.com';
+    $mail->Password = 'amll jnuc stte jpub';
     $mail->SMTPSecure = 'ssl';
     $mail->Port = 465;
 
-    $mail->setFrom('alumnitracer1@gmail.com');
+    $mail->setFrom('slsualumnitracer@gmail.com');
     $mail->addAddress($_POST['unregisteredEmAIL']);
 
     $mail->isHTML(true);
